@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'export',
   env: {
-    API_URL: 'http://localhost:8000/api/v1',
+    API_URL: 'http://localhost:8100/api/v1',
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -18,3 +18,6 @@ build:
 
 	cd api/public && find ! -name robots.txt ! -name .htaccess ! -name index.php -delete
 	cp -r app/dist/* api/public
+
+	rm -rf api/dist
+	cd api && php artisan native:build
