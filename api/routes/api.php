@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UnitController;
@@ -46,6 +47,14 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::get('/refunds/{refund}', 'show');
             Route::put('/refunds/{refund}', 'update');
             Route::delete('/refunds/{refund}', 'destroy');
+        });
+
+        Route::controller(AccountController::class)->group(function () {
+            Route::get('/accounts', 'index');
+            Route::post('/accounts', 'store');
+            Route::get('/accounts/{account}', 'show');
+            Route::put('/accounts/{account}', 'update');
+            Route::delete('/accounts/{account}', 'destroy');
         });
     }
 );

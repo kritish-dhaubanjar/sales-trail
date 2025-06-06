@@ -26,6 +26,7 @@ class StoreRefundRequest extends FormRequest
             'discount' => 'required|numeric',
             'title' => 'present|string|nullable',
             'description' => 'present|string|nullable',
+            'account_id' => 'required|exists:accounts,id',
 
             'items' => 'array|required|min:1',
             'items.*.item_id' => 'required|exists:items,id',
