@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { useMutation } from 'react-query';
 import { logout } from '@/services/auth.service';
 import { usePathname } from 'next/navigation';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const items = [
   {
@@ -63,24 +64,25 @@ export default function Sidebar() {
   });
 
   return (
-    <div className="min-h-lvh max-w-48 border-r px-3 py-10">
-      {items.map(({ name, Icon, href }) => {
-        const className = pathname.includes(href) ? 'bg-accent' : '';
+    <div className="relative min-h-lvh max-w-48 border-r px-3">
+      <div className="py-10">
+        {items.map(({ name, Icon, href }) => {
+          const className = pathname.includes(href) ? 'bg-accent' : '';
 
-        return (
-          <Button
-            key={name}
-            asChild
-            variant="ghost"
-            className={cn('mb-1.5 min-w-full justify-start py-2', className)}
-          >
-            <Link href={href}>
-              <Icon className="mr-2 h-4 w-4" /> {name}
-            </Link>
-          </Button>
-        );
-      })}
-
+          return (
+            <Button
+              key={name}
+              asChild
+              variant="ghost"
+              className={cn('mb-1.5 min-w-full justify-start py-2', className)}
+            >
+              <Link href={href}>
+                <Icon className="mr-2 h-4 w-4" /> {name}
+              </Link>
+            </Button>
+          );
+        })}
+      </div>
       <Button
         variant="ghost"
         className="mb-1.5 min-w-full justify-start py-2"
@@ -90,6 +92,9 @@ export default function Sidebar() {
         {(isLoading || data) && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
         <ExitIcon className="mr-2 h-4 w-4" /> Sign Out
       </Button>
+      <div className="absolute bottom-6 left-0 flex w-full flex-col items-center">
+        <ThemeToggle />
+      </div>
     </div>
   );
 }
