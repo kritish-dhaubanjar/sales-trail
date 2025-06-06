@@ -224,6 +224,11 @@ function Sale() {
         cell: ({ row }) => <div>{formatter.format(row.getValue('grand_total'))} </div>,
       },
       {
+        accessorKey: 'account.name',
+        header: 'Account',
+        cell: ({ row }) => <div>{row.original.account?.name}</div>,
+      },
+      {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {
