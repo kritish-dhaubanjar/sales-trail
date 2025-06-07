@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('refunds', function (Blueprint $table) {
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('account_id')->default(1)->constrained();
         });
     }
 
