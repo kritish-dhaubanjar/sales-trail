@@ -18,14 +18,14 @@ export async function deleteReturn({ id }) {
   return data;
 }
 
-export async function createReturn({ description, items = [], discount = 0, date, title }) {
-  const data = await axios.post('/refunds', { description, items, discount, date, title });
+export async function createReturn({ description, items = [], discount = 0, date, title, account_id }) {
+  const data = await axios.post('/refunds', { description, items, discount, date, title, account_id });
 
   return data;
 }
 
-export async function updateReturn({ description, items = [], discount = 0, date, id, title }) {
-  const data = await axios.put(`/refunds/${id}`, { description, items, discount, date, title });
+export async function updateReturn({ description, items = [], discount = 0, date, id, title, account_id }) {
+  const data = await axios.put(`/refunds/${id}`, { description, items, discount, date, title, account_id });
 
   return data;
 }

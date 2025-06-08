@@ -1,0 +1,96 @@
+name: Electron App Build (Windows)
+
+on:
+  push:
+    branches:
+      - electron
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up the environment
+        run: |
+          choco uninstall composer
+          choco uninstall php
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Set up PHP 8.3
+        run: |
+          $URI = "https://github.com/NativePHP/php-bin/raw/refs/heads/main/bin/win/x64/php-8.3.zip"
+
+          $OutFile = "$(pwd)\electron\php-bin\php-8.3.zip"
+          $PHP = "$(pwd)\electron\php-bin"
+
+          Invoke-WebRequest -Uri $URI -OutFile $OutFile
+          Expand-Archive -Path $OutFile -DestinationPath $PHP -Force
+          Remove-Item -Path $OutFile -Force
+
+          echo "$PHP" >> $Env:GITHUB_PATH
+
+      - name: Set up Composer
+        run: |
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php
+          php -r "unlink('composer-setup.php');"
+
+          Set-Content composer.bat '@php "%~dp0composer.phar" %*'
+
+      - name: Install Node.js Dependencies (electron)
+        run: |
+          cd electron
+          npm install
+
+      - name: Install Node.js Dependencies (app)
+        run: |
+          cd app
+          npm install
+
+      - name: Install PHP Dependencies (api)
+        run: |
+          cd api
+          composer install --no-dev
+
+      - name: Build app
+        run: |
+          cd app
+          npm run build
+
+      - name: Build server
+        run: |
+          Copy-Item -Path "api\.env.example" -Destination "api\.env"
+
+          Remove-Item -Path "api\resources\views\welcome.blade.php" -Force
+          Copy-Item "app\dist\index.html" -Destination "api\resources\views\welcome.blade.php" -Force
+
+          Get-ChildItem -Path 'api\public' | Where-Object { $_.Name -notin @('robots.txt', '.htaccess', 'index.php') } | Remove-Item -Recurse -Force
+
+          Copy-Item -Path 'app\dist\*' -Destination 'api\public' -Recurse -Force
+
+          New-Item 'api\database\database.sqlite' -type file
+
+          cd api
+          php artisan key:generate
+          php artisan migrate:refresh
+          # php artisan db:seed --class=ItemSeeder
+
+      - name: Build electron
+        run: |
+          cd electron
+          npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sales-trail-win64
+          include-hidden-files: true
+          path: |
+            electron/dist/win-unpacked

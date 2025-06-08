@@ -37,7 +37,7 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-        DB::table('users')->insert(['name' => 'Kritish Dhaubanjar', 'email' => 'admin@sales-trail.com', 'password' => bcrypt('Pa55w0rd')]);
+        DB::table('users')->insert(['name' => 'Bimochan Shrestha', 'email' => 'sushitime@gihmttc.com', 'password' => bcrypt('salm0n')]);
     }
 
     /**

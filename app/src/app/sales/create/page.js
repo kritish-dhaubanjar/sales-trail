@@ -30,6 +30,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 import { Input } from '@/components/ui/input';
 
 import {
@@ -55,6 +65,7 @@ import { NepaliDate } from '@/lib/date';
 import { getItems } from '@/services/item.service';
 import { useToast } from '@/hooks/use-toast';
 import { createSale } from '@/services/sale.service';
+import { getAccounts } from '@/services/account.service';
 
 const DEFAULT_ITEM = {
   item_id: 0,
@@ -68,6 +79,7 @@ const schema = z.object({
   title: z.string().min(0).nullable(),
   description: z.string().min(0).nullable(),
   date: z.string({ required_error: 'A date of sale is required.' }),
+  account_id: z.coerce.number(),
   items: z.array(
     z.object({
       item_id: z.coerce.number().gt(0),
@@ -93,6 +105,7 @@ function Sale() {
       title: '',
       description: '',
       items: [DEFAULT_ITEM],
+      account_id: 1,
     },
   });
 
@@ -100,16 +113,27 @@ function Sale() {
 
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
 
+  const account_id = watch('account_id', 1);
   const discount = watch('discount', 0);
   const watchedItems = useWatch({ control, name: 'items' });
 
-  const { data: products, isFetching } = useQuery({
+  const { data: products, isFetching: isFetchingProducts } = useQuery({
     queryKey: ['items'],
     enabled: true,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => {
       return getItems({ page: 1, limit: 10240, query: '' });
+    },
+  });
+
+  const { data: accounts, isFetching: isFetchingAccounts } = useQuery({
+    queryKey: ['accounts'],
+    enabled: true,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
+    queryFn: () => {
+      return getAccounts({ page: 1, limit: 10240, query: '' });
     },
   });
 
@@ -136,7 +160,7 @@ function Sale() {
     return (acc += amt - adj);
   }, 0);
 
-  if (isLoadingAuth || !auth || isFetching) {
+  if (isLoadingAuth || !auth || isFetchingProducts || isFetchingAccounts) {
     return (
       <div className="flex h-lvh items-center justify-center space-x-4">
         <div className="space-y-2">
@@ -338,14 +362,14 @@ function Sale() {
                         ].some(isNaN)
                           ? '0.00'
                           : formatter.format(
-                              Number(watchedItems[index].price) *
-                                Number(watchedItems[index].quantity) -
-                                ((Number(watchedItems[index].discount) || 0) / 100) *
-                                  Number(
-                                    watchedItems[index].price *
-                                      Number(watchedItems[index].quantity),
-                                  ),
-                            )}
+                            Number(watchedItems[index].price) *
+                            Number(watchedItems[index].quantity) -
+                            ((Number(watchedItems[index].discount) || 0) / 100) *
+                            Number(
+                              watchedItems[index].price *
+                              Number(watchedItems[index].quantity),
+                            ),
+                          )}
                       </TableCell>
 
                       <TableCell className="text-center">
@@ -418,6 +442,47 @@ function Sale() {
                   <TableCell className="text-right">{formatter.format(total - discount)}</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
+
+                <TableRow>
+                  <TableCell className="h-11 text-right" colSpan={6}>
+                    Account
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <FormField
+                      name="account_id"
+                      control={control}
+                      render={({ field }) => (
+                        <FormItem className="mb-3 w-full">
+                          <FormControl>
+                            <Select
+                              className="w-full"
+                              value={String(account_id)}
+                              onValueChange={field.onChange}
+                            >
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue
+                                  placeholder={<span className="text-gray-500">Select an account</span>}
+                                />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectLabel>Accounts</SelectLabel>
+                                  {accounts?.data?.data.map(({ id, name }) => (
+                                    <SelectItem key={id} value={String(id)}>
+                                      {name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
               </TableFooter>
             </Table>
 
@@ -428,6 +493,7 @@ function Sale() {
             >
               <PlusIcon className="h-4 w-4" /> Add
             </Button>
+
 
             <FormField
               control={control}

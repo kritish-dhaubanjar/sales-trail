@@ -2,18 +2,15 @@
 import dynamic from 'next/dynamic';
 
 import { useMutation, useQuery } from 'react-query';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
-import { deleteSale, getSales } from '@/services/sale.service';
+import { deleteAccount, getAccounts } from '@/services/account.service';
 
-import Link from 'next/link';
-
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,8 +32,6 @@ import {
   DoubleArrowRightIcon,
   Cross2Icon,
 } from '@radix-ui/react-icons';
-import { EyeIcon, PlusIcon, PrinterIcon } from 'lucide-react';
-
 import {
   flexRender,
   useReactTable,
@@ -63,7 +58,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableFooter,
 } from '@/components/ui/table';
 
 import {
@@ -76,8 +70,10 @@ import {
 
 import Alert from '@/components/layout/alert';
 import Sidebar from '@/components/layout/sidebar';
+import { PlusIcon } from 'lucide-react';
+import { AccountDialog } from '@/components/accounts/dialog';
 
-function Sale() {
+function Account() {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
@@ -98,10 +94,14 @@ function Sale() {
 
   const { isLoading, data: auth } = useAuthUser();
 
+  const [open, setOpen] = useState(false);
+  const [editRow, setEditRow] = useState(null);
   const [deleteRow, setDeleteRow] = useState(null);
 
+  const deleteRowRef = useRef(null);
+
   const { data, refetch, isFetching } = useQuery({
-    queryKey: ['sales', pagination, debouncedQuery],
+    queryKey: ['accounts', pagination, debouncedQuery],
     enabled: true,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
@@ -109,7 +109,7 @@ function Sale() {
       const limit = pagination.pageSize;
       const page = pagination.pageIndex + 1;
 
-      return getSales({ page, limit, query: debouncedQuery });
+      return getAccounts({ page, limit, query: debouncedQuery });
     },
   });
 
@@ -123,8 +123,6 @@ function Sale() {
     router.push(pathname + '?' + params.toString());
   }, [pagination, columnFilters, debouncedQuery]);
 
-  const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
   const columns = useMemo(
     () => [
       {
@@ -133,100 +131,9 @@ function Sale() {
         cell: ({ row }) => <div>{row.getValue('id')}</div>,
       },
       {
-        accessorKey: 'date',
-        header: 'Date',
-        cell: ({ row }) => <div>{row.getValue('date')}</div>,
-      },
-      {
-        accessorKey: 'title',
-        header: 'Title',
-        cell: ({ row }) => <div>{row.getValue('title')}</div>,
-      },
-      {
-        id: 'view',
-        header: 'View',
-        cell: ({ row }) => {
-          return (
-            <Popover>
-              <PopoverTrigger>
-                <EyeIcon className="h-4 w-4" />
-              </PopoverTrigger>
-              <PopoverContent className="min-w-[600px]">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[50px]">S.N.</TableHead>
-                      <TableHead>Particulars</TableHead>
-                      <TableHead>Qty</TableHead>
-                      <TableHead>Unit</TableHead>
-                      <TableHead>Rate</TableHead>
-                      <TableHead>Discount %</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {row.original?.sale_items?.map((sale, index) => (
-                      <TableRow key={sale.id}>
-                        <TableCell>{index + 1}</TableCell>
-
-                        <TableCell>{sale.item.name}</TableCell>
-
-                        <TableCell>{sale.quantity}</TableCell>
-
-                        <TableCell>{sale.item.unit.name}</TableCell>
-
-                        <TableCell>{formatter.format(sale.price)}</TableCell>
-
-                        <TableCell>{formatter.format(sale.discount)}%</TableCell>
-
-                        <TableCell className="text-right">{formatter.format(sale.total)}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                  <TableFooter>
-                    <TableRow>
-                      <TableCell className="text-right" colSpan={6}>
-                        Adj.
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatter.format(row?.original?.discount)}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell className="text-right" colSpan={6}>
-                        Total
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatter.format(row?.original?.total)}
-                      </TableCell>
-                    </TableRow>
-                  </TableFooter>
-                </Table>
-              </PopoverContent>
-            </Popover>
-          );
-        },
-      },
-      {
-        accessorKey: 'total',
-        header: 'Total',
-        cell: ({ row }) => <div>{formatter.format(row.getValue('total'))}</div>,
-      },
-      {
-        accessorKey: 'discount',
-        header: 'Discount',
-        cell: ({ row }) => <div>{formatter.format(row.getValue('discount'))} </div>,
-      },
-      {
-        accessorKey: 'grand_total',
-        header: 'Grand Total',
-        cell: ({ row }) => <div>{formatter.format(row.getValue('grand_total'))} </div>,
-      },
-      {
-        accessorKey: 'account.name',
-        header: 'Account',
-        cell: ({ row }) => <div>{row.original.account?.name}</div>,
+        accessorKey: 'name',
+        header: 'Name',
+        cell: ({ row }) => <div>{row.getValue('name')}</div>,
       },
       {
         id: 'actions',
@@ -242,19 +149,9 @@ function Sale() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={{ pathname: '/sales/print', query: { id: row.original.id } }}
-                    target="_blank"
-                  >
-                    <PrinterIcon className="mr-2 h-4 w-4" /> Print
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href={{ pathname: '/sales/edit', query: { id: row.original.id } }}>
-                    <Pencil2Icon className="mr-2 h-4 w-4" /> Edit
-                  </Link>
+                <DropdownMenuItem onClick={() => setEditRow(row.original)}>
+                  <Pencil2Icon className="mr-2 h-4 w-4" /> Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setDeleteRow(row.original)}>
                   <TrashIcon className="mr-2 h-4 w-4" /> Delete
@@ -290,10 +187,12 @@ function Sale() {
     onPaginationChange: setPagination,
   });
 
-  const { mutate: onDelete } = useMutation(deleteSale, {
+  const { mutate: onDelete } = useMutation(deleteAccount, {
     onSuccess: () => {
+      deleteRowRef.current = deleteRow;
+
       refetch();
-      toast({ title: `Sale successfully deleted.` });
+      toast({ title: `Account "${deleteRowRef.current?.name}" successfully deleted.` });
 
       setDeleteRow(null);
     },
@@ -304,10 +203,13 @@ function Sale() {
         description: error?.response?.data?.message,
       });
     },
-    onSettled: () => {
-      setDeleteRow(null);
-    },
   });
+
+  const onClear = () => {
+    setDeleteRow(null);
+    setEditRow(null);
+    setOpen(false);
+  };
 
   if (isLoading || !auth) {
     return (
@@ -325,9 +227,16 @@ function Sale() {
 
       <Alert
         open={Boolean(deleteRow)}
-        onCancel={() => setDeleteRow(null)}
+        onCancel={onClear}
         onContinue={() => onDelete(deleteRow)}
-        description={`This action cannot be undone. This will permanently delete sale from our servers.`}
+        description={`This action cannot be undone. This will permanently delete ${deleteRow?.name || deleteRowRef.current?.name} from our servers.`}
+      />
+
+      <AccountDialog
+        open={open || Boolean(editRow)}
+        row={editRow}
+        refetch={refetch}
+        onClose={onClear}
       />
 
       <div className="min-h-lvh w-full px-10 py-10">
@@ -338,15 +247,15 @@ function Sale() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Sales</BreadcrumbPage>
+              <BreadcrumbPage>Accounts</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
 
         <div className="my-4">
-          <h1 className="text-2xl font-bold">Sales ({data?.data?.total ?? 0})</h1>
+          <h1 className="text-2xl font-bold">Accounts ({data?.data?.total ?? 0})</h1>
           <p className="text-xs text-gray-600">
-            Use the filter input to quickly search and display specific items by name, status, or
+            Use the filter input to quickly search and display specific accounts by name, status, or
             other relevant criteria.
           </p>
         </div>
@@ -356,7 +265,7 @@ function Sale() {
             <div className="relative">
               <Input
                 className="max-w-sm"
-                placeholder="Filter items..."
+                placeholder="Filter accounts..."
                 value={query ?? ''}
                 onChange={(event) => {
                   setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
@@ -401,10 +310,8 @@ function Sale() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button asChild className="ml-2">
-                <Link href="/sales/create">
-                  <PlusIcon className="h-4 w-4" /> Add Sale
-                </Link>
+              <Button className="ml-2" onClick={() => setOpen(true)}>
+                <PlusIcon className="h-4 w-4" /> Add Account
               </Button>
             </div>
           </div>
@@ -536,4 +443,4 @@ function Sale() {
   );
 }
 
-export default dynamic(() => Promise.resolve(Sale), { ssr: false });
+export default dynamic(() => Promise.resolve(Account), { ssr: false });
