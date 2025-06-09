@@ -67,6 +67,8 @@ export default function Sidebar() {
   return (
     <div className="relative min-h-lvh max-w-48 border-r px-3">
       <div className="py-10">
+        <img src="/images/logo.jpg" width="100px" className="mx-auto mb-5" />
+
         {items.map(({ name, Icon, href }) => {
           const className = pathname.includes(href) ? 'bg-accent' : '';
 

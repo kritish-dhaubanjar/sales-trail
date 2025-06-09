@@ -7,8 +7,8 @@ import QueryClientProvider from '@/components/provider/QueryClientProvider';
 import { ThemeProvider } from '@/components/provider/ThemeProvider';
 
 export const metadata = {
-  title: 'Sales-Trail',
-  description: 'Sales-Trail',
+  title: 'Sushi Time',
+  description: 'Sushi Time',
 };
 
 export default function RootLayout({ children }) {
