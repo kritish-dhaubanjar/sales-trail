@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState } from 'react';
 
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
 import Sidebar from '@/components/layout/sidebar';
-import { ProfileDialog } from '@/components/settings/dialog';
+import { ProfileDialog } from '@/components/settings';
 
 function Unit() {
   const [open, setOpen] = useState(false);
