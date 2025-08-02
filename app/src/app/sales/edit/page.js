@@ -178,7 +178,7 @@ function Sale() {
     sale.description = sale.description || '';
     sale.transactions = sale.transactions;
 
-    reset(data.data);
+    reset(sale);
   }, [isSuccess, isFetching]);
 
   const { mutate, isLoading } = useMutation(updateSale, {
