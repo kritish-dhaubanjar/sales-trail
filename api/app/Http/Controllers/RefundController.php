@@ -98,7 +98,7 @@ class RefundController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreRefundRequest $request, refund $refund)
+    public function update(StoreRefundRequest $request, Refund $refund)
     {
         $data = $request->validated();
 
