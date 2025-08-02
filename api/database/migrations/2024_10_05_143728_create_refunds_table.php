@@ -17,6 +17,7 @@ return new class extends Migration
             $table->double('total', 15, 2);
             $table->double('discount', 15, 2);
             $table->double('grand_total', 15, 2);
+            $table->text('title')->nullable();
             $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
