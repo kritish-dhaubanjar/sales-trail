@@ -14,6 +14,7 @@ import {
   GearIcon,
   MixIcon,
   FileTextIcon,
+  WidthIcon,
 } from '@radix-ui/react-icons';
 
 import Link from 'next/link';
@@ -33,6 +34,11 @@ const items = [
     name: 'Accounts',
     Icon: IdCardIcon,
     href: '/accounts',
+  },
+  {
+    name: 'Transfers',
+    Icon: WidthIcon,
+    href: '/transfers',
   },
   {
     name: 'Categories',
