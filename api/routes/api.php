@@ -9,6 +9,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\TableController;
 use App\Http\Controllers\TransferController;
 
 Route::post('/v1/login', [AuthController::class, 'login']);
@@ -27,6 +28,14 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::get('/units/{unit}', 'show');
             Route::put('/units/{unit}', 'update');
             Route::delete('/units/{unit}', 'destroy');
+        });
+
+        Route::controller(TableController::class)->group(function () {
+            Route::get('/tables', 'index');
+            Route::post('/tables', 'store');
+            Route::get('/tables/{table}', 'show');
+            Route::put('/tables/{table}', 'update');
+            Route::delete('/tables/{table}', 'destroy');
         });
 
         Route::controller(ItemController::class)->group(function () {

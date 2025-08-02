@@ -4,7 +4,7 @@ namespace App\Http\Requests\Table;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAccountRequest extends FormRequest
+class StoreTableRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class StoreAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:accounts,name',
+            'name' => 'required|string|unique:tables,name',
         ];
     }
 }
