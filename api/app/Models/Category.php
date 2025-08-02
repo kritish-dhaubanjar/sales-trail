@@ -5,7 +5,7 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
@@ -13,9 +13,9 @@ class Category extends Model
 
     protected $fillable = ["name"];
 
-    public function items(): BelongsTo
+    public function items(): HasMany
     {
-        return $this->belongsTo(Item::class);
+        return $this->hasMany(Item::class);
     }
 
     public function delete()

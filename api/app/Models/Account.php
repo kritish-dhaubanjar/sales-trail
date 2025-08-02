@@ -17,9 +17,23 @@ class Account extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function fromAccountTransfer()
+    {
+        return $this->hasMany(Transfer::class, 'from_account_id');
+    }
+
+    public function toAccountTransfer()
+    {
+        return $this->hasMany(Transfer::class, 'to_account_id');
+    }
+
     public function delete()
     {
-        if ($this->transactions()->exists()) {
+        if ($this->fromAccountTransfer()->exists() || $this->toAccountTransfer()->exists()) {
+            throw new Exception('This item cannot be deleted because it is associated with transfers.');
+        }
+
+        if ($this->transfers()->exists()) {
             throw new Exception('This item cannot be deleted because it is associated with transactions.');
         }
 

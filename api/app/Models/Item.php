@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Item extends Model
 {
@@ -24,19 +25,19 @@ class Item extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function sale_items(): BelongsTo
+    public function sale_items(): HasMany
     {
-        return $this->belongsTo(SaleItem::class);
+        return $this->hasMany(SaleItem::class);
     }
 
-    public function refund_items(): BelongsTo
+    public function refund_items(): HasMany
     {
-        return $this->belongsTo(RefundItem::class);
+        return $this->hasMany(RefundItem::class);
     }
 
-    public function purchase_items(): BelongsTo
+    public function purchase_items(): HasMany
     {
-        return $this->belongsTo(PurchaseItem::class);
+        return $this->hasMany(PurchaseItem::class);
     }
 
     public function delete()
