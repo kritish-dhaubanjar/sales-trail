@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\SaleController;
 
@@ -49,6 +50,14 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::get('/refunds/{refund}', 'show');
             Route::put('/refunds/{refund}', 'update');
             Route::delete('/refunds/{refund}', 'destroy');
+        });
+
+        Route::controller(PurchaseController::class)->group(function () {
+            Route::get('/purchases', 'index');
+            Route::post('/purchases', 'store');
+            Route::get('/purchases/{purchase}', 'show');
+            Route::put('/purchases/{purchase}', 'update');
+            Route::delete('/purchases/{purchase}', 'destroy');
         });
 
         Route::controller(AccountController::class)->group(function () {

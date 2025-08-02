@@ -34,6 +34,11 @@ class Item extends Model
         return $this->belongsTo(RefundItem::class);
     }
 
+    public function purchase_items(): BelongsTo
+    {
+        return $this->belongsTo(PurchaseItem::class);
+    }
+
     public function delete()
     {
         if ($this->sale_items()->exists()) {
@@ -42,6 +47,10 @@ class Item extends Model
 
         if ($this->refund_items()->exists()) {
             throw new Exception('This item cannot be deleted because it is associated with return items.');
+        }
+
+        if ($this->purchase_items()->exists()) {
+            throw new Exception('This item cannot be deleted because it is associated with purchase items.');
         }
 
         return parent::delete();

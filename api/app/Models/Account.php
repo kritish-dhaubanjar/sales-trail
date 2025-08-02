@@ -20,7 +20,7 @@ class Account extends Model
     public function delete()
     {
         if ($this->transactions()->exists()) {
-            throw new Exception('This item cannot be deleted because it is associated with sales.');
+            throw new Exception('This item cannot be deleted because it is associated with transactions.');
         }
 
         return parent::delete();
