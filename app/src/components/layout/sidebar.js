@@ -15,6 +15,7 @@ import {
   MixIcon,
   FileTextIcon,
   WidthIcon,
+  AlignTopIcon,
 } from '@radix-ui/react-icons';
 
 import Link from 'next/link';
@@ -64,6 +65,11 @@ const items = [
     name: 'Returns',
     Icon: FileMinusIcon,
     href: '/returns',
+  },
+  {
+    name: 'Tables',
+    Icon: AlignTopIcon,
+    href: '/tables',
   },
   {
     name: 'Settings',
