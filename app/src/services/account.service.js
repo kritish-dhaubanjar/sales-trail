@@ -12,14 +12,14 @@ export async function deleteAccount({ id }) {
   return data;
 }
 
-export async function createAccount({ name }) {
-  const data = await axios.post('/accounts', { name });
+export async function createAccount({ name, opening_balance }) {
+  const data = await axios.post('/accounts', { name, opening_balance });
 
   return data;
 }
 
-export async function updateAccount({ name, id }) {
-  const data = await axios.put(`/accounts/${id}`, { name });
+export async function updateAccount({ name, id, opening_balance }) {
+  const data = await axios.put(`/accounts/${id}`, { name, opening_balance });
 
   return data;
 }

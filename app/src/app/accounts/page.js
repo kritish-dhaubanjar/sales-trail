@@ -73,6 +73,8 @@ import Sidebar from '@/components/layout/sidebar';
 import { PlusIcon } from 'lucide-react';
 import { AccountDialog } from '@/components/accounts/dialog';
 
+const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 function Account() {
   const { toast } = useToast();
   const router = useRouter();
@@ -134,6 +136,11 @@ function Account() {
         accessorKey: 'name',
         header: 'Name',
         cell: ({ row }) => <div>{row.getValue('name')}</div>,
+      },
+      {
+        accessorKey: 'opening_balance',
+        header: 'Opening Balance',
+        cell: ({ row }) => <div>{formatter.format(row.getValue('opening_balance'))} </div>,
       },
       {
         id: 'actions',

@@ -14,8 +14,14 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Form, FormField } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { ReloadIcon } from '@radix-ui/react-icons';
 
 import { useToast } from '@/hooks/use-toast';
@@ -24,9 +30,10 @@ import { createAccount, updateAccount } from '@/services/account.service';
 const schema = z.object({
   id: z.coerce.number(),
   name: z.string().min(1, { message: 'Account name is required' }),
+  opening_balance: z.coerce.number()
 });
 
-const DEFAULT_ACCOUNT = { id: '', name: '' };
+const DEFAULT_ACCOUNT = { id: '', name: '', opening_balance: 0 };
 
 export function AccountDialog({ open = true, row = null, refetch = () => { }, onClose = () => { } }) {
   const { toast } = useToast();
@@ -74,12 +81,8 @@ export function AccountDialog({ open = true, row = null, refetch = () => { }, on
 
         <form onSubmit={handleSubmit(mutate)}>
           <Form {...form}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-6 items-center gap-4">
-                <Label htmlFor="name" className="text-right col-span-2">
-                  Account Name
-                </Label>
-
+            <div className="py-4">
+              <div className="items-center">
                 <FormField
                   name="id"
                   control={control}
@@ -90,7 +93,27 @@ export function AccountDialog({ open = true, row = null, refetch = () => { }, on
                   name="name"
                   control={control}
                   render={({ field }) => (
-                    <Input type="text" placeholder="Cash" {...field} className="col-span-4" />
+                    <FormItem className="mb-3">
+                      <FormLabel className="font-medium">Name</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="Cash" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="opening_balance"
+                  control={control}
+                  render={({ field }) => (
+                    <FormItem className="mb-3 w-full">
+                      <FormLabel className="font-medium">Opening Balance</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="70.00" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
               </div>
