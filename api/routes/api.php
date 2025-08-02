@@ -9,6 +9,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\TransferController;
 
 Route::post('/v1/login', [AuthController::class, 'login']);
 
@@ -66,6 +67,14 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::get('/accounts/{account}', 'show');
             Route::put('/accounts/{account}', 'update');
             Route::delete('/accounts/{account}', 'destroy');
+        });
+
+        Route::controller(TransferController::class)->group(function () {
+            Route::get('/transfers', 'index');
+            Route::post('/transfers', 'store');
+            Route::get('/transfers/{transfer}', 'show');
+            Route::put('/transfers/{transfer}', 'update');
+            Route::delete('/transfers/{transfer}', 'destroy');
         });
 
         Route::controller(CategoryController::class)->group(function () {
