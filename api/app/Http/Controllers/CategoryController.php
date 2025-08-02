@@ -23,10 +23,8 @@ class CategoryController extends Controller
         $limit = $data['limit'] ?? 10;
 
         return Category::orderBy('created_at', 'desc')
-            ->where('date', 'like', "%$q%")
-            ->orWhere('description', 'like', "%$q%")
             ->orWhere('id', 'like', "%$q%")
-            ->orWhere('title', 'like', "%$q%")
+            ->orWhere('name', 'like', "%$q%")
             ->paginate($limit, ['*'], 'page', $page);
     }
 
