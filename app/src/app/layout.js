@@ -7,8 +7,8 @@ import QueryClientProvider from '@/components/provider/QueryClientProvider';
 import { ThemeProvider } from '@/components/provider/ThemeProvider';
 
 export const metadata = {
-  title: 'Sushi Time',
-  description: 'Sushi Time',
+  title: 'Loop Studio Cafe',
+  description: 'Loop Studio Cafe',
 };
 
 export default function RootLayout({ children }) {

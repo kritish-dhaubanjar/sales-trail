@@ -72,8 +72,6 @@ function Login() {
     <div className="container mx-auto flex h-lvh items-center justify-center pb-20">
       <Form {...form}>
         <form onSubmit={handleSubmit(mutate)} className="min-w-96 space-y-4">
-          <img src="/images/logo.jpg" width="150px" className="mx-auto"/>
-
           <h1 className="mb-1 text-2xl font-bold">Sign In</h1>
           <span className="text-sm text-slate-500">
             Enter your email below to sign into your account
