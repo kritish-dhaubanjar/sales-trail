@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import Sidebar from '@/components/layout/sidebar';
 import { ProfileDialog } from '@/components/settings';
 
-function Unit() {
+function Setting() {
   const [open, setOpen] = useState(false);
 
   const { isLoading, data: auth } = useAuthUser();
@@ -72,4 +72,4 @@ function Unit() {
   );
 }
 
-export default dynamic(() => Promise.resolve(Unit), { ssr: false });
+export default dynamic(() => Promise.resolve(Setting), { ssr: false });
