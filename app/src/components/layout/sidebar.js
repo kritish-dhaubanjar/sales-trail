@@ -13,6 +13,7 @@ import {
   ReloadIcon,
   GearIcon,
   MixIcon,
+  FileTextIcon,
 } from '@radix-ui/react-icons';
 
 import Link from 'next/link';
@@ -47,6 +48,11 @@ const items = [
     name: 'Sales',
     Icon: FilePlusIcon,
     href: '/sales',
+  },
+  {
+    name: 'Purchases',
+    Icon: FileTextIcon,
+    href: '/purchases',
   },
   {
     name: 'Returns',
