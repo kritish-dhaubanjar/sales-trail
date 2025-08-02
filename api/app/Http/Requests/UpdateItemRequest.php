@@ -30,7 +30,8 @@ class UpdateItemRequest extends FormRequest
             ],
             'description' => 'present|string|nullable',
             'price' => 'required|numeric|min:0',
-            'unit_id' => 'required|exists:units,id'
+            'unit_id' => 'required|exists:units,id',
+            'category_id' => 'required|exists:categories,id',
         ];
     }
 }

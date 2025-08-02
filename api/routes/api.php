@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\ItemController;
@@ -56,6 +57,14 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::get('/accounts/{account}', 'show');
             Route::put('/accounts/{account}', 'update');
             Route::delete('/accounts/{account}', 'destroy');
+        });
+
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('/categories', 'index');
+            Route::post('/categories', 'store');
+            Route::get('/categories/{category}', 'show');
+            Route::put('/categories/{category}', 'update');
+            Route::delete('/categories/{category}', 'destroy');
         });
     }
 );

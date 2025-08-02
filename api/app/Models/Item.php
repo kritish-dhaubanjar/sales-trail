@@ -11,12 +11,17 @@ class Item extends Model
 {
     use HasFactory;
 
-    protected $with = ['unit'];
-    protected $fillable = ["name", "description", "price", "unit_id"];
+    protected $with = ['unit', 'category'];
+    protected $fillable = ["name", "description", "price", "unit_id", "category_id"];
 
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function sale_items(): BelongsTo

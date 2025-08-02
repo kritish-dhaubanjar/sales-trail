@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
-import { deleteItem, getItems } from '@/services/item.service';
+import { deleteCategory, getCategories } from '@/services/category.service';
 
 import {
   Breadcrumb,
@@ -32,8 +32,6 @@ import {
   DoubleArrowRightIcon,
   Cross2Icon,
 } from '@radix-ui/react-icons';
-import { PlusIcon } from 'lucide-react';
-
 import {
   flexRender,
   useReactTable,
@@ -72,9 +70,10 @@ import {
 
 import Alert from '@/components/layout/alert';
 import Sidebar from '@/components/layout/sidebar';
-import { ItemDialog } from '@/components/items/dialog';
+import { PlusIcon } from 'lucide-react';
+import { CategoryDialog } from '@/components/categories/dialog';
 
-function Item() {
+function Category() {
   const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
@@ -102,7 +101,7 @@ function Item() {
   const deleteRowRef = useRef(null);
 
   const { data, refetch, isFetching } = useQuery({
-    queryKey: ['items', pagination, debouncedQuery],
+    queryKey: ['accounts', pagination, debouncedQuery],
     enabled: true,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
@@ -110,11 +109,9 @@ function Item() {
       const limit = pagination.pageSize;
       const page = pagination.pageIndex + 1;
 
-      return getItems({ page, limit, query: debouncedQuery });
+      return getCategories({ page, limit, query: debouncedQuery });
     },
   });
-
-  const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -137,26 +134,6 @@ function Item() {
         accessorKey: 'name',
         header: 'Name',
         cell: ({ row }) => <div>{row.getValue('name')}</div>,
-      },
-      {
-        accessorKey: 'category.name',
-        header: 'Category',
-        cell: ({row}) => <div>{row.original.category.name}</div>,
-      },
-      {
-        accessorKey: 'description',
-        header: 'Description',
-        cell: ({ row }) => <div>{row.getValue('description')}</div>,
-      },
-      {
-        accessorKey: 'unit',
-        header: 'Unit',
-        cell: ({ row }) => <div>{row.original.unit.name}</div>,
-      },
-      {
-        accessorKey: 'price',
-        header: 'Rate',
-        cell: ({ row }) => <div>{formatter.format(row.getValue('price'))}</div>,
       },
       {
         id: 'actions',
@@ -210,12 +187,12 @@ function Item() {
     onPaginationChange: setPagination,
   });
 
-  const { mutate: onDelete } = useMutation(deleteItem, {
+  const { mutate: onDelete } = useMutation(deleteCategory, {
     onSuccess: () => {
       deleteRowRef.current = deleteRow;
 
       refetch();
-      toast({ title: `Item "${deleteRowRef.current?.name}" successfully deleted.` });
+      toast({ title: `Category "${deleteRowRef.current?.name}" successfully deleted.` });
 
       setDeleteRow(null);
     },
@@ -255,7 +232,7 @@ function Item() {
         description={`This action cannot be undone. This will permanently delete ${deleteRow?.name || deleteRowRef.current?.name} from our servers.`}
       />
 
-      <ItemDialog
+      <CategoryDialog
         open={open || Boolean(editRow)}
         row={editRow}
         refetch={refetch}
@@ -270,15 +247,15 @@ function Item() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Items</BreadcrumbPage>
+              <BreadcrumbPage>Cateogries</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
 
         <div className="my-4">
-          <h1 className="text-2xl font-bold">Items ({data?.data?.total ?? 0})</h1>
+          <h1 className="text-2xl font-bold">Categories ({data?.data?.total ?? 0})</h1>
           <p className="text-xs text-gray-600">
-            Use the filter input to quickly search and display specific items by name, status, or
+            Use the filter input to quickly search and display specific accounts by name, status, or
             other relevant criteria.
           </p>
         </div>
@@ -288,7 +265,7 @@ function Item() {
             <div className="relative">
               <Input
                 className="max-w-sm"
-                placeholder="Filter items..."
+                placeholder="Filter accounts..."
                 value={query ?? ''}
                 onChange={(event) => {
                   setPagination({ pageIndex: 0, pageSize: pagination.pageSize });
@@ -334,7 +311,7 @@ function Item() {
               </DropdownMenu>
 
               <Button className="ml-2" onClick={() => setOpen(true)}>
-                <PlusIcon className="h-4 w-4" /> Add Item
+                <PlusIcon className="h-4 w-4" /> Add Category
               </Button>
             </div>
           </div>
@@ -466,4 +443,4 @@ function Item() {
   );
 }
 
-export default dynamic(() => Promise.resolve(Item), { ssr: false });
+export default dynamic(() => Promise.resolve(Category), { ssr: false });

@@ -37,18 +37,20 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 import { useToast } from '@/hooks/use-toast';
 import { getUnits } from '@/services/unit.service';
 import { createItem, updateItem } from '@/services/item.service';
+import { getCategories } from '@/services/category.service';
 
 const schema = z.object({
   id: z.coerce.number(),
   price: z.coerce.number().gt(0, { message: 'Rate is required' }),
   unit_id: z.coerce.number().gt(0, { message: 'Unit is required' }),
+  category_id: z.coerce.number().gt(0, { message: 'Category is required' }),
   description: z.string().nullable(),
   name: z.string().min(1, { message: 'Item name is required' }),
 });
 
-const DEFAULT_ITEM = { id: '', name: '', unit_id: '', description: '', price: '' };
+const DEFAULT_ITEM = { id: '', name: '', unit_id: '', description: '', price: '', category_id: '' };
 
-export function ItemDialog({ open = true, row = null, refetch = () => {}, onClose = () => {} }) {
+export function ItemDialog({ open = true, row = null, refetch = () => { }, onClose = () => { } }) {
   const { toast } = useToast();
 
   const form = useForm({
@@ -59,6 +61,7 @@ export function ItemDialog({ open = true, row = null, refetch = () => {}, onClos
   const { control, handleSubmit, reset, watch } = form;
 
   const unitId = watch('unit_id');
+  const categoryId = watch('category_id');
 
   useEffect(() => {
     const defaultValue = row || DEFAULT_ITEM;
@@ -71,6 +74,14 @@ export function ItemDialog({ open = true, row = null, refetch = () => {}, onClos
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => getUnits({ page: 1, limit: 1024, query: '' }),
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    enabled: true,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
+    queryFn: () => getCategories({ page: 1, limit: 1024, query: '' }),
   });
 
   const { mutate, isLoading } = useMutation(
@@ -120,6 +131,40 @@ export function ItemDialog({ open = true, row = null, refetch = () => {}, onClos
                       <FormLabel className="font-medium">Name</FormLabel>
                       <FormControl>
                         <Input type="text" placeholder="CPVC FAPT - 3/4" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="category_id"
+                  control={control}
+                  render={({ field }) => (
+                    <FormItem className="mb-3 w-full">
+                      <FormLabel className="font-medium">Category</FormLabel>
+                      <FormControl>
+                        <Select
+                          className="w-full"
+                          value={String(categoryId)}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={<span className="text-gray-500">Select a category</span>}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Categories</SelectLabel>
+                              {categories?.data?.data.map(({ id, name }) => (
+                                <SelectItem key={id} value={String(id)}>
+                                  {name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

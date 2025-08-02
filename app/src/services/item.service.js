@@ -12,14 +12,14 @@ export async function deleteItem({ id }) {
   return data;
 }
 
-export async function createItem({ name, price, unit_id, description }) {
-  const data = await axios.post('/items', { name, price, unit_id, description });
+export async function createItem({ name, price, unit_id, description, category_id }) {
+  const data = await axios.post('/items', { name, price, unit_id, description, category_id });
 
   return data;
 }
 
-export async function updateItem({ name, id, price, unit_id, description }) {
-  const data = await axios.put(`/items/${id}`, { name, price, unit_id, description });
+export async function updateItem({ name, id, price, unit_id, description, category_id }) {
+  const data = await axios.put(`/items/${id}`, { name, price, unit_id, description, category_id });
 
   return data;
 }
