@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 
 import dynamic from 'next/dynamic';
+import DevTool from '@/components/DevTool';
 import 'nepali-datepicker-reactjs/dist/index.css';
 import { NepaliDatePicker } from 'nepali-datepicker-reactjs';
 
@@ -47,7 +48,6 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableFooter,
 } from '@/components/ui/table';
 
 import Combobox from '@/components/Combobox';
@@ -61,9 +61,9 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
 import { getItems } from '@/services/item.service';
+import { getAccounts } from '@/services/account.service';
 import { useToast } from '@/hooks/use-toast';
 import { getSale, updateSale } from '@/services/sale.service';
-import { getAccounts } from '@/services/account.service';
 import { NepaliDate } from '@/lib/date';
 
 const DEFAULT_ITEM = {
@@ -71,6 +71,12 @@ const DEFAULT_ITEM = {
   price: 0,
   quantity: 0,
   discount: 0,
+  transactions: []
+};
+
+const DEFAULT_TRANSACTION = {
+  account_id: 1,
+  amount: 0,
 };
 
 const schema = z.object({
@@ -79,7 +85,6 @@ const schema = z.object({
   title: z.string().min(0).nullable(),
   description: z.string().min(0).nullable(),
   date: z.string({ required_error: 'A date of sale is required.' }),
-  account_id: z.coerce.number(),
   items: z.array(
     z.object({
       item_id: z.coerce.number().gt(0),
@@ -88,6 +93,12 @@ const schema = z.object({
       discount: z.coerce.number(),
     }),
   ),
+  transactions: z.array(
+    z.object({
+      account_id: z.coerce.number().gt(0),
+      amount: z.coerce.number().gt(0),
+    })
+  )
 });
 
 function Sale() {
@@ -110,17 +121,18 @@ function Sale() {
       title: '',
       description: '',
       items: [DEFAULT_ITEM],
-      account_id: 1,
+      transactions: [DEFAULT_TRANSACTION],
     },
   });
 
   const { handleSubmit, control, setValue, watch, reset } = form;
 
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
+  const transactions = useFieldArray({ control, name: 'transactions', rules: { minLength: 1 } });
 
-  const account_id = watch('account_id');
   const discount = watch('discount', 0);
   const watchedItems = useWatch({ control, name: 'items', defaultValue: [] });
+  const watchedTransactions = useWatch({ control, name: 'transactions', defaultValue: [] });
 
   const { data: products, isFetching: isFetchingItems } = useQuery({
     queryKey: ['items'],
@@ -161,10 +173,10 @@ function Sale() {
 
     const sale = data.data;
 
-    sale.account_id = sale.account_id || 1;
     sale.items = sale.sale_items;
     sale.title = sale.title || '';
     sale.description = sale.description || '';
+    sale.transactions = sale.transactions;
 
     reset(data.data);
   }, [isSuccess, isFetching]);
@@ -187,6 +199,10 @@ function Sale() {
     const amt = Number(quantity) * Number(price);
     const adj = (Number(discount) / 100) * amt;
     return (acc += amt - adj);
+  }, 0);
+
+  const paymentTotal = watchedTransactions.reduce((acc, { amount = 0 }) => {
+    return (acc += Number(amount));
   }, 0);
 
   if (isLoadingAuth || !auth || isFetching || isFetchingItems || isFetchingAccounts) {
@@ -419,10 +435,8 @@ function Sale() {
                     </TableRow>
                   );
                 })}
-              </TableBody>
 
-              <TableFooter>
-                <TableRow>
+                <TableRow className="bg-gray-50">
                   <TableCell className="h-11 text-right" colSpan={6}>
                     Subtotal
                   </TableCell>
@@ -469,55 +483,109 @@ function Sale() {
                   <TableCell></TableCell>
                 </TableRow>
 
-                <TableRow>
+                <TableRow className="bg-gray-50">
                   <TableCell className="h-11 text-right" colSpan={6}>
                     Grand Total
                   </TableCell>
                   <TableCell className="text-right">{formatter.format(total - discount)}</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
-                <TableRow>
+
+                {
+                  transactions.fields.map((transaction, index) => {
+                    return (
+                      <TableRow key={transaction.id}>
+                        <TableCell className="h-11 text-right" colSpan={5}>
+                        </TableCell>
+
+                        <TableCell className="text-right">
+                          <FormField
+                            name={`transactions[${index}].account_id`}
+                            control={control}
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormControl>
+                                  <Select
+                                    className="w-full"
+                                    value={String(field.value)}
+                                    onValueChange={(value) => value && field.onChange(value)}
+                                  >
+                                    <SelectTrigger className="w-[180px]">
+                                      <SelectValue placeholder={<span className="text-gray-500">Select an account</span>} />
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        <SelectLabel>Accounts</SelectLabel>
+
+                                        {accounts?.data?.data.map(({ id, name }) => (
+                                          <SelectItem key={id} value={String(id)}>
+                                            {name}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </TableCell>
+
+                        <TableCell>
+                          <FormField
+                            name={`transactions[${index}].amount`}
+                            control={control}
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormControl>
+                                  <Input
+                                    className="shadow-none"
+                                    type="text"
+                                    placeholder=""
+                                    {...field}
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </TableCell>
+
+                        <TableCell className="text-center">
+                          <Button
+                            type="button"
+                            onClick={() => transactions.remove(index)}
+                            variant="ghost"
+                            className="h-8 w-8 p-0"
+                          >
+                            <Trash2Icon className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
+                }
+
+                <TableRow className="bg-gray-50">
                   <TableCell className="h-11 text-right" colSpan={6}>
-                    Account
+                    Payment Total
                   </TableCell>
-                  <TableCell className="text-right">
-                    <FormField
-                      name="account_id"
-                      control={control}
-                      render={({ field }) => (
-                        <FormItem className="mb-3 w-full">
-                          <FormControl>
-                            <Select
-                              className="w-full"
-                              value={String(account_id)}
-                              onValueChange={(value) => value && field.onChange(value)}
-                            >
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder={<span className="text-gray-500">Select an account</span>} />
-                              </SelectTrigger>
-
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Accounts</SelectLabel>
-
-                                  {accounts?.data?.data.map(({ id, name }) => (
-                                    <SelectItem key={id} value={String(id)}>
-                                      {name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </TableCell>
+                  <TableCell className="text-right">{formatter.format(paymentTotal)}</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
 
-              </TableFooter>
+                <TableRow>
+                  <TableCell colSpan={6} />
+
+                  <TableCell colSpan={2}>
+                    <Button type="button" onClick={() => transactions.append(DEFAULT_ITEM)} className="rounded-full" >
+                      <PlusIcon className="h-4 w-4" /> Add Payment
+                    </Button>
+                  </TableCell>
+                </TableRow>
+
+              </TableBody>
             </Table>
 
             <Button
@@ -549,6 +617,8 @@ function Sale() {
           </form>
         </Form>
       </div>
+
+      <DevTool control={control} />
     </div>
   );
 }

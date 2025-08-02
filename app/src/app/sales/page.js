@@ -224,9 +224,9 @@ function Sale() {
         cell: ({ row }) => <div>{formatter.format(row.getValue('grand_total'))} </div>,
       },
       {
-        accessorKey: 'account.name',
-        header: 'Account',
-        cell: ({ row }) => <div>{row.original.account?.name}</div>,
+        accessorKey: 'transactions',
+        header: 'Accounts',
+        cell: ({ row }) => <div>{row.original.transactions.map(({ account: { name } }) => name).join(', ')}</div>,
       },
       {
         id: 'actions',

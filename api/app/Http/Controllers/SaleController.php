@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Sale;
 use App\Models\SaleItem;
-use Illuminate\Support\Facades\DB;
+use App\Models\Transaction;
+
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\PaginationRequest;
 
@@ -39,6 +42,7 @@ class SaleController extends Controller
 
         $discount = $data['discount'];
         $sale_items = $data['items'];
+        $sale_transactions = $data['transactions'];
         $total = 0;
 
         DB::beginTransaction();
@@ -58,17 +62,21 @@ class SaleController extends Controller
                 ]);
             }, $sale_items);
 
+            $transactions = array_map(function ($transaction) {
+                return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
+            }, $sale_transactions);
+
             $sale = Sale::create([
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => $data['description'],
-                'account_id' => $data['account_id'],
                 'total' => $total,
                 'discount' => $discount,
                 'grand_total' => $total - $discount,
             ]);
 
             $sale->sale_items()->saveMany($items);
+            $sale->transactions()->saveMany($transactions);
         } catch (Exception $error) {
             DB::rollBack();
             throw $error;
@@ -96,12 +104,14 @@ class SaleController extends Controller
 
         $discount = $data['discount'];
         $sale_items = $data['items'];
+        $sale_transactions = $data['transactions'];
         $total = 0;
 
         DB::beginTransaction();
 
         try {
             $sale->sale_items()->forceDelete();
+            $sale->transactions()->forceDelete();
 
             $items = array_map(function ($item) use (&$total) {
                 $amt = ($item['quantity'] * $item['price']);
@@ -117,18 +127,21 @@ class SaleController extends Controller
                 ]);
             }, $sale_items);
 
+            $transactions = array_map(function ($transaction) {
+                return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
+            }, $sale_transactions);
 
             $sale->update([
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => $data['description'],
-                'account_id' => $data['account_id'],
                 'total' => $total,
                 'discount' => $discount,
                 'grand_total' => $total - $discount,
             ]);
 
             $sale->sale_items()->saveMany($items);
+            $sale->transactions()->saveMany($transactions);
         } catch (Exception $error) {
             DB::rollBack();
             throw $error;

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Refund;
 use App\Models\RefundItem;
-use Illuminate\Support\Facades\DB;
+use App\Models\Transaction;
+
 use App\Http\Requests\StoreRefundRequest;
 use App\Http\Requests\PaginationRequest;
 
@@ -39,6 +42,7 @@ class RefundController extends Controller
 
         $discount = $data['discount'];
         $refund_items = $data['items'];
+        $refund_transactions = $data['transactions'];
         $total = 0;
 
         DB::beginTransaction();
@@ -58,17 +62,21 @@ class RefundController extends Controller
                 ]);
             }, $refund_items);
 
+            $transactions = array_map(function ($transaction) {
+                return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
+            }, $refund_transactions);
+
             $refund = Refund::create([
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => $data['description'],
-                'account_id' => $data['account_id'],
                 'total' => $total,
                 'discount' => $discount,
                 'grand_total' => $total - $discount,
             ]);
 
             $refund->refund_items()->saveMany($items);
+            $refund->transactions()->saveMany($transactions);
         } catch (Exception $error) {
             DB::rollBack();
             throw $error;
@@ -96,12 +104,14 @@ class RefundController extends Controller
 
         $discount = $data['discount'];
         $refund_items = $data['items'];
+        $refund_transactions = $data['transactions'];
         $total = 0;
 
         DB::beginTransaction();
 
         try {
             $refund->refund_items()->forceDelete();
+            $refund->transactions()->forceDelete();
 
             $items = array_map(function ($item) use (&$total) {
                 $amt = ($item['quantity'] * $item['price']);
@@ -117,18 +127,21 @@ class RefundController extends Controller
                 ]);
             }, $refund_items);
 
+            $transactions = array_map(function ($transaction) {
+                return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
+            }, $refund_transactions);
 
             $refund->update([
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => $data['description'],
-                'account_id' => $data['account_id'],
                 'total' => $total,
                 'discount' => $discount,
                 'grand_total' => $total - $discount,
             ]);
 
             $refund->refund_items()->saveMany($items);
+            $refund->transactions()->saveMany($transactions);
         } catch (Exception $error) {
             DB::rollBack();
             throw $error;

@@ -32,6 +32,10 @@ class StoreSaleRequest extends FormRequest
             'items.*.price' => 'required|numeric',
             'items.*.quantity' => 'required|numeric',
             'items.*.discount' => 'required|numeric',
+
+            'transactions' => 'array|required|min:1',
+            'transactions.*.account_id' => 'required|exists:accounts,id',
+            'transactions.*.amount' => 'required|numeric',
         ];
     }
 }
