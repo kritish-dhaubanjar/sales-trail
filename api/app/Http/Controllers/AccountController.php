@@ -22,10 +22,41 @@ class AccountController extends Controller
         $page = $data['page'] ?? 1;
         $limit = $data['limit'] ?? 10;
 
-        return Account::orderBy('created_at', 'desc')
-            ->orWhere('id', 'like', "%$q%")
-            ->orWhere('name', 'like', "%$q%")
-            ->paginate($limit, ['*'], 'page', $page);
+        $query = Account::query()
+            ->select('accounts.*')
+            ->selectRaw("
+            COALESCE((
+                SELECT SUM(amount) FROM transactions
+                WHERE transactions.account_id = accounts.id
+                AND transactions.transaction_type = 'App\\\\Models\\\\Sale'
+                AND deleted_at IS NULL
+            ), 0) -
+            COALESCE((
+                SELECT SUM(amount) FROM transactions
+                WHERE transactions.account_id = accounts.id
+                AND transactions.transaction_type = 'App\\\\Models\\\\Purchase'
+                AND deleted_at IS NULL
+            ), 0) +
+            COALESCE((
+                SELECT SUM(amount) FROM transfers
+                WHERE transfers.to_account_id = accounts.id
+                AND deleted_at IS NULL
+            ), 0) -
+            COALESCE((
+                SELECT SUM(amount) FROM transfers
+                WHERE transfers.from_account_id = accounts.id
+                AND deleted_at IS NULL
+            ), 0) AS balance
+        ")
+            ->when($q, function ($query) use ($q) {
+                $query->where(function ($query) use ($q) {
+                    $query->where('id', 'like', "%$q%")
+                        ->orWhere('name', 'like', "%$q%");
+                });
+            })
+            ->orderBy('created_at', 'desc');
+
+        return $query->paginate($limit, ['*'], 'page', $page);
     }
 
     /**
