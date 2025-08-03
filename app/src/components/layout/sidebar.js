@@ -16,6 +16,7 @@ import {
   FileTextIcon,
   WidthIcon,
   AlignTopIcon,
+  LaptopIcon,
 } from '@radix-ui/react-icons';
 
 import Link from 'next/link';
@@ -72,6 +73,12 @@ const items = [
     href: '/tables',
   },
   {
+    name: 'Point of Sale',
+    Icon: LaptopIcon,
+    href: '/pos',
+    target: '_blank',
+  },
+  {
     name: 'Settings',
     Icon: GearIcon,
     href: '/settings',
@@ -91,7 +98,7 @@ export default function Sidebar() {
   return (
     <div className="relative min-h-lvh max-w-48 border-r px-3">
       <div className="py-10">
-        {items.map(({ name, Icon, href }) => {
+        {items.map(({ name, Icon, href, target = '_self' }) => {
           const className = pathname.includes(href) ? 'bg-accent' : '';
 
           return (
@@ -101,7 +108,7 @@ export default function Sidebar() {
               variant="ghost"
               className={cn('mb-1.5 min-w-full justify-start py-2', className)}
             >
-              <Link href={href}>
+              <Link href={href} target={target}>
                 <Icon className="mr-2 h-4 w-4" /> {name}
               </Link>
             </Button>
