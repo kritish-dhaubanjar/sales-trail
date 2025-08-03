@@ -1,7 +1,8 @@
 'use client';
 import { z } from 'zod';
+import DevTool from '@/components/DevTool';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -40,6 +41,14 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Card, CardAction, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { Table, TableRow, TableBody, TableCell } from '@/components/ui/table';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 import { cn } from '@/lib/utils';
 import { NepaliDate } from '@/lib/date';
@@ -85,6 +94,7 @@ function POS() {
   const { isLoading, data: auth } = useAuthUser();
 
   const { toast } = useToast();
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(null);
 
@@ -101,6 +111,12 @@ function POS() {
   });
 
   const { control, setValue, watch, reset, getValues } = form;
+
+  useEffect(() => {
+    setValue('title', '');
+    setValue('discount', 0)
+    setValue('transactions', [DEFAULT_TRANSACTION]);
+  }, [open])
 
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
   const transactions = useFieldArray({ control, name: 'transactions', rules: { minLength: 1 } });
@@ -183,6 +199,7 @@ function POS() {
         table_id: '',
         items: [],
       });
+      setOpen(false)
     },
   });
 
@@ -370,9 +387,9 @@ function POS() {
               />
             </div>
 
-            <ScrollArea className="mt-4 h-[calc(100vh-650px)]">
+            <ScrollArea className="mt-4 min-h-[calc(100vh-200px)]">
               {(!items.fields.length || !tableId) && (
-                <div className="m-auto mr-4">
+                <div className="m-auto mr-4 text-sm">
                   To proceed, please choose a table and then continue to add items to the customer's
                   order.
                 </div>
@@ -381,11 +398,11 @@ function POS() {
                 const product = products?.data?.data?.find((p) => String(p.id) === String(item.item_id));
 
                 return (
-                  <div key={item.id} className="me-4 mt-4">
-                    <Card className="border-0 p-0 pt-2 shadow-none">
+                  <div key={item.id} className="me-4">
+                    <Card className="border-0 gap-3 p-0 pt-2 shadow-none">
                       <CardHeader className="px-0">
                         <CardTitle>
-                          <span className="font-semibold">{product?.name}</span>{' '}
+                          <small className="font-semibold">{product?.name}</small>{' '}
                           <small>
                             ({product?.price}/{product?.unit?.name})
                           </small>
@@ -452,207 +469,239 @@ function POS() {
               })}
             </ScrollArea>
 
-            <div className="mr-4 font-semibold">
+            <Sheet open={open} onOpenChange={setOpen}>
               <Table>
                 <TableBody>
                   <TableRow className="bg-gray-50">
                     <TableCell className="h-11 text-right" colSpan={6}>
-                      Subtotal
+                      Total
                     </TableCell>
                     <TableCell className="text-right">
                       <span className="mr-2">{formatter.format(total)}</span>
                     </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
-
-                  <TableRow>
-                    <TableCell className="h-11 text-right" colSpan={6}>
-                      Adj
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <FormField
-                        name="discount"
-                        control={control}
-                        render={({ field }) => (
-                          <FormItem className="ml-auto w-[100px]">
-                            <FormControl>
-                              <Input
-                                className="text-right shadow-none"
-                                type="text"
-                                placeholder=""
-                                {...field}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  const isDiscountPercentage = String(value).endsWith('%');
-
-                                  if (!isDiscountPercentage) {
-                                    field.onChange(e);
-                                    return;
-                                  }
-
-                                  const adj = (
-                                    Number(Number(value.slice(0, -1)) / 100) * total
-                                  ).toFixed(2);
-                                  setTimeout(() => setValue('discount', adj), 0);
-                                }}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-
-                  <TableRow className="bg-gray-50">
-                    <TableCell className="h-11 text-right" colSpan={6}>
-                      Grand Total
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className="mr-2">{formatter.format(total - discount)}</span>
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-
-                  {transactions.fields.map((transaction, index) => {
-                    return (
-                      <TableRow key={transaction.id}>
-                        <TableCell className="h-11 text-right" colSpan={5}></TableCell>
-
-                        <TableCell className="text-right">
-                          <FormField
-                            name={`transactions[${index}].account_id`}
-                            control={control}
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormControl>
-                                  <Select
-                                    className="w-full"
-                                    value={String(field.value)}
-                                    onValueChange={(value) => value && field.onChange(value)}
-                                  >
-                                    <SelectTrigger className="w-[100px]">
-                                      <SelectValue
-                                        placeholder={
-                                          <span className="text-gray-500">Select an account</span>
-                                        }
-                                      />
-                                    </SelectTrigger>
-
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Accounts</SelectLabel>
-
-                                        {accounts?.data?.data.map(({ id, name }) => (
-                                          <SelectItem key={id} value={String(id)}>
-                                            {name}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </TableCell>
-
-                        <TableCell>
-                          <FormField
-                            name={`transactions[${index}].amount`}
-                            control={control}
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormControl>
-                                  <Input
-                                    className="shadow-none"
-                                    type="text"
-                                    placeholder=""
-                                    {...field}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </TableCell>
-
-                        <TableCell className="text-center">
-                          <Button
-                            type="button"
-                            onClick={() => transactions.remove(index)}
-                            variant="ghost"
-                            className="h-8 w-8 p-0"
-                          >
-                            <Trash2Icon className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-
-                  <TableRow>
-                    <TableCell colSpan={6} />
-
-                    <TableCell colSpan={2}>
-                      <Button
-                        type="button"
-                        onClick={() => transactions.append(DEFAULT_TRANSACTION)}
-                        className="rounded-full"
-                      >
-                        <PlusIcon className="h-4 w-4" /> Add Payment
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow className="bg-gray-50">
-                    <TableCell className="h-11 text-right" colSpan={6}>
-                      Payment Total
-                    </TableCell>
-                    <TableCell className="text-right">{formatter.format(paymentTotal)}</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center text-xs text-gray-500">
-                      <FormField
-                        control={control}
-                        name="title"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Textarea
-                                rows={5}
-                                placeholder="Notes"
-                                className="resize-none"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow className="bg-gray-50">
-                    <TableCell className="h-11 text-right" colSpan={8}>
-                      <Button
-                        type="submit"
-                        disabled={!tableId || !paymentTotal}
-                        className="w-full"
-                        onClick={onCheckout}
-                      >
-                        Confirm Payment
-                      </Button>
-                    </TableCell>
-                  </TableRow>
                 </TableBody>
               </Table>
-            </div>
+
+              <SheetTrigger className="w-full pr-4 mt-2">
+                <Button className="w-full mt-2">
+                  Checkout
+                </Button>
+              </SheetTrigger>
+
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Are you absolutely sure?</SheetTitle>
+                  <SheetDescription>
+                    This action cannot be undone.
+
+                    <div className="mt-5 font-semibold text-black">
+                      <Table>
+                        <TableBody>
+                          <TableRow className="bg-gray-50">
+                            <TableCell className="h-11 text-right" colSpan={6}>
+                              Subtotal
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <span className="mr-2">{formatter.format(total)}</span>
+                            </TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell className="h-11 text-right" colSpan={6}>
+                              Adj
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <FormField
+                                name="discount"
+                                control={control}
+                                render={({ field }) => (
+                                  <FormItem className="ml-auto w-[100px]">
+                                    <FormControl>
+                                      <Input
+                                        className="text-right shadow-none"
+                                        type="text"
+                                        placeholder=""
+                                        {...field}
+                                        onChange={(e) => {
+                                          const value = e.target.value;
+                                          const isDiscountPercentage = String(value).endsWith('%');
+
+                                          if (!isDiscountPercentage) {
+                                            field.onChange(e);
+                                            return;
+                                          }
+
+                                          const adj = (
+                                            Number(Number(value.slice(0, -1)) / 100) * total
+                                          ).toFixed(2);
+                                          setTimeout(() => setValue('discount', adj), 0);
+                                        }}
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                            </TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+
+                          <TableRow className="bg-gray-50">
+                            <TableCell className="h-11 text-right" colSpan={6}>
+                              Grand Total
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <span className="mr-2">{formatter.format(total - discount)}</span>
+                            </TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+
+                          {transactions.fields.map((transaction, index) => {
+                            return (
+                              <TableRow key={transaction.id}>
+                                <TableCell className="h-11 text-right" colSpan={5}></TableCell>
+
+                                <TableCell className="text-right">
+                                  <FormField
+                                    name={`transactions[${index}].account_id`}
+                                    control={control}
+                                    render={({ field }) => (
+                                      <FormItem className="w-full">
+                                        <FormControl>
+                                          <Select
+                                            className="w-full"
+                                            value={String(field.value)}
+                                            onValueChange={(value) => value && field.onChange(value)}
+                                          >
+                                            <SelectTrigger className="w-[100px]">
+                                              <SelectValue
+                                                placeholder={
+                                                  <span className="text-gray-500">Select an account</span>
+                                                }
+                                              />
+                                            </SelectTrigger>
+
+                                            <SelectContent>
+                                              <SelectGroup>
+                                                <SelectLabel>Accounts</SelectLabel>
+
+                                                {accounts?.data?.data.map(({ id, name }) => (
+                                                  <SelectItem key={id} value={String(id)}>
+                                                    {name}
+                                                  </SelectItem>
+                                                ))}
+                                              </SelectGroup>
+                                            </SelectContent>
+                                          </Select>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </TableCell>
+
+                                <TableCell>
+                                  <FormField
+                                    name={`transactions[${index}].amount`}
+                                    control={control}
+                                    render={({ field }) => (
+                                      <FormItem className="w-full">
+                                        <FormControl>
+                                          <Input
+                                            className="shadow-none"
+                                            type="text"
+                                            placeholder=""
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                </TableCell>
+
+                                <TableCell className="text-center">
+                                  <Button
+                                    type="button"
+                                    onClick={() => transactions.remove(index)}
+                                    variant="ghost"
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Trash2Icon className="h-4 w-4" />
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+
+                          <TableRow>
+                            <TableCell colSpan={6} />
+
+                            <TableCell colSpan={2}>
+                              <Button
+                                type="button"
+                                onClick={() => transactions.append(DEFAULT_TRANSACTION)}
+                                className="rounded-full"
+                              >
+                                <PlusIcon className="h-4 w-4" /> Add Payment
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow className="bg-gray-50">
+                            <TableCell className="h-11 text-right" colSpan={6}>
+                              Payment Total
+                            </TableCell>
+                            <TableCell className="text-right">{formatter.format(paymentTotal)}</TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell colSpan={8} className="text-center text-xs text-gray-500">
+                              <FormField
+                                control={control}
+                                name="title"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormControl>
+                                      <Textarea
+                                        rows={5}
+                                        placeholder="Notes"
+                                        className="resize-none"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow className="bg-gray-50">
+                            <TableCell className="h-11 text-right" colSpan={8}>
+                              <Button
+                                type="submit"
+                                disabled={!tableId || !paymentTotal}
+                                className="w-full"
+                                onClick={onCheckout}
+                              >
+                                Confirm Payment
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
           </form>
         </Form>
       </div>
+      <DevTool control={control} />
     </div>
   );
 }
