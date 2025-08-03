@@ -6,6 +6,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { useToast } from '@/hooks/use-toast';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
 import { Input } from '@/components/ui/input';
@@ -83,6 +84,7 @@ const schema = z.object({
 function POS() {
   const { isLoading, data: auth } = useAuthUser();
 
+  const { toast } = useToast();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(null);
 
@@ -174,8 +176,9 @@ function POS() {
     onSuccess: refetchTables,
   });
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
-    onSuccess: () => {
+    onSuccess: (response) => {
       refetchTables();
+      toast({ title: `Sales "${response.data.name}" successfully saved.` });
       reset({
         table_id: '',
         items: [],
