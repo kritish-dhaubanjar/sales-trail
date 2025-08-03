@@ -143,6 +143,16 @@ function Account() {
         cell: ({ row }) => <div>{formatter.format(row.getValue('opening_balance'))} </div>,
       },
       {
+        accessorKey: 'balance',
+        header: 'Transaction & Transfer Balance',
+        cell: ({ row }) => <div>{formatter.format(row.getValue('balance'))} </div>,
+      },
+      {
+        accessorKey: 'created_at',
+        header: 'Net Balance',
+        cell: ({ row }) => <div>{formatter.format(row.getValue('balance') + row.getValue('opening_balance'))} </div>,
+      },
+      {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {

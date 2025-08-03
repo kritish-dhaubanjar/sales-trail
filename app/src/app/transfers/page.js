@@ -143,7 +143,7 @@ function Transfer() {
         cell: ({ row }) => <div>{row.original.from_account.name}</div>,
       },
       {
-        accessorKey: 'id',
+        accessorKey: 'none',
         header: '',
         cell: <ArrowRightIcon className="h-4 w-4" />,
       },
