@@ -27,6 +27,7 @@ class Purchase extends Model
     public function delete()
     {
         $this->purchase_items()->delete();
+        $this->transactions()->delete();
         parent::delete();
     }
 }

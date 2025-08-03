@@ -27,6 +27,7 @@ class Sale extends Model
     public function delete()
     {
         $this->sale_items()->delete();
+        $this->transactions()->delete();
         parent::delete();
     }
 }

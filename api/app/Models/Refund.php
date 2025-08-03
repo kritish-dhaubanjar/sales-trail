@@ -27,6 +27,7 @@ class Refund extends Model
     public function delete()
     {
         $this->refund_items()->delete();
+        $this->transactions()->delete();
         parent::delete();
     }
 }
