@@ -62,6 +62,22 @@ const DEFAULT_TRANSACTION = {
 
 const schema = z.object({
   table_id: z.coerce.number(),
+  date: z.string({ required_error: 'A date of sale is required.' }),
+  discount: z.coerce.number(),
+  title: z.string().min(0).nullable(),
+  transactions: z.array(
+    z.object({
+      account_id: z.coerce.number().gt(0),
+      amount: z.coerce.number().gt(0),
+    }),
+  ),
+  items: z.array(
+    z.object({
+      item_id: z.coerce.number().gt(0),
+      price: z.coerce.number().gt(0),
+      quantity: z.coerce.number().gt(0),
+    }),
+  ),
 });
 
 function POS() {
@@ -359,7 +375,7 @@ function POS() {
                 </div>
               )}
               {items.fields.map((item, index) => {
-                const product = products?.data?.data?.find((p) => p.id === item.item_id);
+                const product = products?.data?.data?.find((p) => String(p.id) === String(item.item_id));
 
                 return (
                   <div key={item.id} className="me-4 mt-4">
