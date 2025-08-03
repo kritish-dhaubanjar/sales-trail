@@ -387,7 +387,7 @@ function POS() {
               />
             </div>
 
-            <ScrollArea className="mt-4 min-h-[calc(100vh-200px)]">
+            <ScrollArea className="mt-4 h-[calc(100vh-200px)]">
               {(!items.fields.length || !tableId) && (
                 <div className="m-auto mr-4 text-sm">
                   To proceed, please choose a table and then continue to add items to the customer's
