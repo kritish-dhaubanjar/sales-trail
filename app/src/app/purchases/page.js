@@ -179,7 +179,9 @@ function Purchase() {
 
                         <TableCell>{formatter.format(purchase.discount)}%</TableCell>
 
-                        <TableCell className="text-right">{formatter.format(purchase.total)}</TableCell>
+                        <TableCell className="text-right">
+                          {formatter.format(purchase.total)}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -226,7 +228,9 @@ function Purchase() {
       {
         accessorKey: 'transactions',
         header: 'Accounts',
-        cell: ({ row }) => <div>{row.original.transactions.map(({ account: { name } }) => name).join(', ')}</div>,
+        cell: ({ row }) => (
+          <div>{row.original.transactions.map(({ account: { name } }) => name).join(', ')}</div>
+        ),
       },
       {
         id: 'actions',

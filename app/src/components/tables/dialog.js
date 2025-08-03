@@ -28,7 +28,7 @@ const schema = z.object({
 
 const DEFAULT_TABLE = { id: '', name: '' };
 
-export function TableDialog({ open = true, row = null, refetch = () => { }, onClose = () => { } }) {
+export function TableDialog({ open = true, row = null, refetch = () => {}, onClose = () => {} }) {
   const { toast } = useToast();
 
   const form = useForm({

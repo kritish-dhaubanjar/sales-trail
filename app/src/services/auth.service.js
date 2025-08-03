@@ -15,7 +15,17 @@ export async function getAuthenticatedUser() {
   return data;
 }
 
-export async function changePassword({ email, new_password, current_password, new_password_confirmation }) {
-  const data = await axios.post('/change-password', { email, new_password, current_password, new_password_confirmation });
+export async function changePassword({
+  email,
+  new_password,
+  current_password,
+  new_password_confirmation,
+}) {
+  const data = await axios.post('/change-password', {
+    email,
+    new_password,
+    current_password,
+    new_password_confirmation,
+  });
   return data;
 }

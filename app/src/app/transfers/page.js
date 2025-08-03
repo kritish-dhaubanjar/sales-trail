@@ -145,7 +145,7 @@ function Transfer() {
       {
         accessorKey: 'id',
         header: '',
-        cell: <ArrowRightIcon className="h-4 w-4" />
+        cell: <ArrowRightIcon className="h-4 w-4" />,
       },
       {
         accessorKey: 'to_account.name',
@@ -282,8 +282,8 @@ function Transfer() {
         <div className="my-4">
           <h1 className="text-2xl font-bold">Transfers ({data?.data?.total ?? 0})</h1>
           <p className="text-xs text-gray-600">
-            Use the filter input to quickly search and display specific transfers by name, status, or
-            other relevant criteria.
+            Use the filter input to quickly search and display specific transfers by name, status,
+            or other relevant criteria.
           </p>
         </div>
 

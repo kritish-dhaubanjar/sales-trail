@@ -141,7 +141,7 @@ function Item() {
       {
         accessorKey: 'category.name',
         header: 'Category',
-        cell: ({row}) => <div>{row.original.category.name}</div>,
+        cell: ({ row }) => <div>{row.original.category.name}</div>,
       },
       {
         accessorKey: 'description',

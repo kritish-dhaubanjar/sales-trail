@@ -59,11 +59,13 @@ function Setting() {
         <div className="my-4">
           <h1 className="text-xl font-bold">Login and Password</h1>
           <hr className="my-2" />
-          <p className="text-xs text-gray-600 mb-2">Manage your passwords and login preferences.</p>
+          <p className="mb-2 text-xs text-gray-600">Manage your passwords and login preferences.</p>
         </div>
 
         <div className="w-full">
-          <Button size="sm" onClick={() => setOpen(true)}>Change Login and Password</Button>
+          <Button size="sm" onClick={() => setOpen(true)}>
+            Change Login and Password
+          </Button>
 
           {open && <ProfileDialog auth={auth} open={open} onClose={onClear} />}
         </div>

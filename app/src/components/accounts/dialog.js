@@ -30,12 +30,12 @@ import { createAccount, updateAccount } from '@/services/account.service';
 const schema = z.object({
   id: z.coerce.number(),
   name: z.string().min(1, { message: 'Account name is required' }),
-  opening_balance: z.coerce.number()
+  opening_balance: z.coerce.number(),
 });
 
 const DEFAULT_ACCOUNT = { id: '', name: '', opening_balance: 0 };
 
-export function AccountDialog({ open = true, row = null, refetch = () => { }, onClose = () => { } }) {
+export function AccountDialog({ open = true, row = null, refetch = () => {}, onClose = () => {} }) {
   const { toast } = useToast();
 
   const form = useForm({

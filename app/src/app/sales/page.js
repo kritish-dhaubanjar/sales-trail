@@ -226,7 +226,9 @@ function Sale() {
       {
         accessorKey: 'transactions',
         header: 'Accounts',
-        cell: ({ row }) => <div>{row.original.transactions.map(({ account: { name } }) => name).join(', ')}</div>,
+        cell: ({ row }) => (
+          <div>{row.original.transactions.map(({ account: { name } }) => name).join(', ')}</div>
+        ),
       },
       {
         id: 'actions',

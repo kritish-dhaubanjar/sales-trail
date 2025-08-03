@@ -22,28 +22,35 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 import { useToast } from '@/hooks/use-toast';
 import { changePassword, logout } from '@/services/auth.service';
 
-const schema = z.object({
-  email: z.string().min(1, { message: 'Email is required' }),
-  current_password: z.string().min(1, { message: 'Current Password is required' }),
-  new_password: z.string().min(8, { message: 'New Password must be at least 8 characters' }),
-  new_password_confirmation: z.string().min(8, { message: 'Confirm Password must be at least 8 characters' }),
-}).refine(
-  ({ new_password, new_password_confirmation }) => new_password_confirmation === new_password,
-  {
-    message: "Confirm password must be the same as the new password.",
-    path: ["new_password_confirmation"],
-  }
-).refine(
-  ({ current_password, new_password }) => current_password !== new_password,
-  {
-    message: "New password cannot be the same as the current password.",
-    path: ["new_password"],
-  }
-);
+const schema = z
+  .object({
+    email: z.string().min(1, { message: 'Email is required' }),
+    current_password: z.string().min(1, { message: 'Current Password is required' }),
+    new_password: z.string().min(8, { message: 'New Password must be at least 8 characters' }),
+    new_password_confirmation: z
+      .string()
+      .min(8, { message: 'Confirm Password must be at least 8 characters' }),
+  })
+  .refine(
+    ({ new_password, new_password_confirmation }) => new_password_confirmation === new_password,
+    {
+      message: 'Confirm password must be the same as the new password.',
+      path: ['new_password_confirmation'],
+    },
+  )
+  .refine(({ current_password, new_password }) => current_password !== new_password, {
+    message: 'New password cannot be the same as the current password.',
+    path: ['new_password'],
+  });
 
-const DEFAULT_SETTINGS = { email: '', current_password: '', new_password: '', new_password_confirmation: '' };
+const DEFAULT_SETTINGS = {
+  email: '',
+  current_password: '',
+  new_password: '',
+  new_password_confirmation: '',
+};
 
-export function ProfileDialog({ open = true, auth = {}, onClose = () => { } }) {
+export function ProfileDialog({ open = true, auth = {}, onClose = () => {} }) {
   const { toast } = useToast();
 
   const form = useForm({
@@ -51,10 +58,14 @@ export function ProfileDialog({ open = true, auth = {}, onClose = () => { } }) {
     defaultValues: {
       ...DEFAULT_SETTINGS,
       email: auth.data.email,
-    }
+    },
   });
 
-  const { control, handleSubmit, formState: { errors } } = form;
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = form;
 
   const logoutMutation = useMutation(logout, {
     onSettled: () => {
@@ -88,12 +99,15 @@ export function ProfileDialog({ open = true, auth = {}, onClose = () => { } }) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Account</DialogTitle>
-          <DialogDescription>Make changes to your account here. Click save when you're done. After saving, you'll be logged out.</DialogDescription>
+          <DialogDescription>
+            Make changes to your account here. Click save when you're done. After saving, you'll be
+            logged out.
+          </DialogDescription>
         </DialogHeader>
 
         <form className="mb-4" onSubmit={handleSubmit(mutate)}>
           <Form {...form}>
-            <div className="flex flex-col gap-6 mb-5">
+            <div className="mb-5 flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
 
@@ -101,7 +115,13 @@ export function ProfileDialog({ open = true, auth = {}, onClose = () => { } }) {
                   name="email"
                   control={control}
                   render={({ field }) => (
-                    <Input id="email" type="email" placeholder="johndoe@example.com" {...field} required />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="johndoe@example.com"
+                      {...field}
+                      required
+                    />
                   )}
                 />
               </div>
@@ -115,7 +135,13 @@ export function ProfileDialog({ open = true, auth = {}, onClose = () => { } }) {
                   name="current_password"
                   control={control}
                   render={({ field }) => (
-                    <Input id="current_password" type="password" placeholder="••••••••" {...field} required />
+                    <Input
+                      id="current_password"
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      required
+                    />
                   )}
                 />
               </div>
@@ -129,7 +155,13 @@ export function ProfileDialog({ open = true, auth = {}, onClose = () => { } }) {
                   name="new_password"
                   control={control}
                   render={({ field }) => (
-                    <Input id="new_password" type="password" placeholder="••••••••" {...field} required />
+                    <Input
+                      id="new_password"
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      required
+                    />
                   )}
                 />
               </div>
@@ -143,14 +175,22 @@ export function ProfileDialog({ open = true, auth = {}, onClose = () => { } }) {
                   name="new_password_confirmation"
                   control={control}
                   render={({ field }) => (
-                    <Input id="new_password_confirmation" type="password" placeholder="••••••••" {...field} required />
+                    <Input
+                      id="new_password_confirmation"
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                      required
+                    />
                   )}
                 />
               </div>
 
-              {(Object.values(errors).length > 0) && (
+              {Object.values(errors).length > 0 && (
                 <Alert variant="destructive">
-                  {Object.values(errors).map((error) => <AlertDescription>• {error.message}</AlertDescription>)}
+                  {Object.values(errors).map((error) => (
+                    <AlertDescription>• {error.message}</AlertDescription>
+                  ))}
                 </Alert>
               )}
             </div>

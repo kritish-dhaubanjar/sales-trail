@@ -60,7 +60,8 @@ function Print() {
   }
 
   const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const placeholder = data.data.purchase_items.length >= 25 ? 0 : 25 - data.data.purchase_items.length;
+  const placeholder =
+    data.data.purchase_items.length >= 25 ? 0 : 25 - data.data.purchase_items.length;
 
   return (
     <>
@@ -160,7 +161,7 @@ function Print() {
                   <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right">
                     {index + 1}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-left font-medium max-w-32 overflow-hidden text-ellipsis">
+                  <TableCell className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-left font-medium">
                     {purchase.item.name}
                   </TableCell>
                   <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right font-bold">

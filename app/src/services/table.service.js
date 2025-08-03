@@ -31,7 +31,13 @@ export async function updateTable({ name, id }) {
 }
 
 export async function checkoutTable({ id, date, discount, items, title, transactions }) {
-  const data = await axios.put(`/tables/${id}/checkout`, { date, discount, items, title, transactions });
+  const data = await axios.put(`/tables/${id}/checkout`, {
+    date,
+    discount,
+    items,
+    title,
+    transactions,
+  });
 
   return data;
 }

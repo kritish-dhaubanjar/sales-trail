@@ -71,7 +71,7 @@ const DEFAULT_ITEM = {
   price: 0,
   quantity: 0,
   discount: 0,
-  transactions: []
+  transactions: [],
 };
 
 const DEFAULT_TRANSACTION = {
@@ -97,8 +97,8 @@ const schema = z.object({
     z.object({
       account_id: z.coerce.number().gt(0),
       amount: z.coerce.number().gt(0),
-    })
-  )
+    }),
+  ),
 });
 
 function Purchase() {
@@ -412,14 +412,14 @@ function Purchase() {
                         ].some(isNaN)
                           ? '0.00'
                           : formatter.format(
-                            Number(watchedItems[index].price) *
-                            Number(watchedItems[index].quantity) -
-                            ((Number(watchedItems[index].discount) || 0) / 100) *
-                            Number(
-                              watchedItems[index].price *
-                              Number(watchedItems[index].quantity),
-                            ),
-                          )}
+                              Number(watchedItems[index].price) *
+                                Number(watchedItems[index].quantity) -
+                                ((Number(watchedItems[index].discount) || 0) / 100) *
+                                  Number(
+                                    watchedItems[index].price *
+                                      Number(watchedItems[index].quantity),
+                                  ),
+                            )}
                       </TableCell>
 
                       <TableCell className="text-center">
@@ -491,81 +491,82 @@ function Purchase() {
                   <TableCell></TableCell>
                 </TableRow>
 
-                {
-                  transactions.fields.map((transaction, index) => {
-                    return (
-                      <TableRow key={transaction.id}>
-                        <TableCell className="h-11 text-right" colSpan={5}>
-                        </TableCell>
+                {transactions.fields.map((transaction, index) => {
+                  return (
+                    <TableRow key={transaction.id}>
+                      <TableCell className="h-11 text-right" colSpan={5}></TableCell>
 
-                        <TableCell className="text-right">
-                          <FormField
-                            name={`transactions[${index}].account_id`}
-                            control={control}
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormControl>
-                                  <Select
-                                    className="w-full"
-                                    value={String(field.value)}
-                                    onValueChange={(value) => value && field.onChange(value)}
-                                  >
-                                    <SelectTrigger className="w-[180px]">
-                                      <SelectValue placeholder={<span className="text-gray-500">Select an account</span>} />
-                                    </SelectTrigger>
+                      <TableCell className="text-right">
+                        <FormField
+                          name={`transactions[${index}].account_id`}
+                          control={control}
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormControl>
+                                <Select
+                                  className="w-full"
+                                  value={String(field.value)}
+                                  onValueChange={(value) => value && field.onChange(value)}
+                                >
+                                  <SelectTrigger className="w-[180px]">
+                                    <SelectValue
+                                      placeholder={
+                                        <span className="text-gray-500">Select an account</span>
+                                      }
+                                    />
+                                  </SelectTrigger>
 
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Accounts</SelectLabel>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      <SelectLabel>Accounts</SelectLabel>
 
-                                        {accounts?.data?.data.map(({ id, name }) => (
-                                          <SelectItem key={id} value={String(id)}>
-                                            {name}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </TableCell>
+                                      {accounts?.data?.data.map(({ id, name }) => (
+                                        <SelectItem key={id} value={String(id)}>
+                                          {name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </TableCell>
 
-                        <TableCell>
-                          <FormField
-                            name={`transactions[${index}].amount`}
-                            control={control}
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormControl>
-                                  <Input
-                                    className="shadow-none"
-                                    type="text"
-                                    placeholder=""
-                                    {...field}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </TableCell>
+                      <TableCell>
+                        <FormField
+                          name={`transactions[${index}].amount`}
+                          control={control}
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormControl>
+                                <Input
+                                  className="shadow-none"
+                                  type="text"
+                                  placeholder=""
+                                  {...field}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </TableCell>
 
-                        <TableCell className="text-center">
-                          <Button
-                            type="button"
-                            onClick={() => transactions.remove(index)}
-                            variant="ghost"
-                            className="h-8 w-8 p-0"
-                          >
-                            <Trash2Icon className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })
-                }
+                      <TableCell className="text-center">
+                        <Button
+                          type="button"
+                          onClick={() => transactions.remove(index)}
+                          variant="ghost"
+                          className="h-8 w-8 p-0"
+                        >
+                          <Trash2Icon className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
 
                 <TableRow className="bg-gray-50">
                   <TableCell className="h-11 text-right" colSpan={6}>
@@ -579,12 +580,15 @@ function Purchase() {
                   <TableCell colSpan={6} />
 
                   <TableCell colSpan={2}>
-                    <Button type="button" onClick={() => transactions.append(DEFAULT_ITEM)} className="rounded-full" >
+                    <Button
+                      type="button"
+                      onClick={() => transactions.append(DEFAULT_ITEM)}
+                      className="rounded-full"
+                    >
                       <PlusIcon className="h-4 w-4" /> Add Payment
                     </Button>
                   </TableCell>
                 </TableRow>
-
               </TableBody>
             </Table>
 

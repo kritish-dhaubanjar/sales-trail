@@ -28,7 +28,12 @@ const schema = z.object({
 
 const DEFAULT_CATEGORY = { id: '', name: '' };
 
-export function CategoryDialog({ open = true, row = null, refetch = () => { }, onClose = () => { } }) {
+export function CategoryDialog({
+  open = true,
+  row = null,
+  refetch = () => {},
+  onClose = () => {},
+}) {
   const { toast } = useToast();
 
   const form = useForm({
@@ -76,7 +81,7 @@ export function CategoryDialog({ open = true, row = null, refetch = () => { }, o
           <Form {...form}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-6 items-center gap-4">
-                <Label htmlFor="name" className="text-right col-span-2">
+                <Label htmlFor="name" className="col-span-2 text-right">
                   Category Name
                 </Label>
 

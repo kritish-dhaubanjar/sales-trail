@@ -52,9 +52,22 @@ const schema = z.object({
   amount: z.coerce.number().gt(0, { message: 'Transfer Amount is required' }),
 });
 
-const DEFAULT_TRANSFER = { id: '', date: NepaliDate.getNepaliDate(), title: '', description: '', from_account_id: 1, to_account_id: 1, amount: '' };
+const DEFAULT_TRANSFER = {
+  id: '',
+  date: NepaliDate.getNepaliDate(),
+  title: '',
+  description: '',
+  from_account_id: 1,
+  to_account_id: 1,
+  amount: '',
+};
 
-export function TransferDialog({ open = true, row = null, refetch = () => { }, onClose = () => { } }) {
+export function TransferDialog({
+  open = true,
+  row = null,
+  refetch = () => {},
+  onClose = () => {},
+}) {
   const { toast } = useToast();
 
   const form = useForm({
@@ -122,7 +135,7 @@ export function TransferDialog({ open = true, row = null, refetch = () => { }, o
                   control={control}
                   name="date"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col mb-3">
+                    <FormItem className="mb-3 flex flex-col">
                       <FormLabel>Date</FormLabel>
 
                       <NepaliDatePicker

@@ -18,14 +18,43 @@ export async function deletePurchase({ id }) {
   return data;
 }
 
-export async function createPurchase({ description, items = [], discount = 0, date, title, transactions }) {
-  const data = await axios.post('/purchases', { description, items, discount, date, title, transactions });
+export async function createPurchase({
+  description,
+  items = [],
+  discount = 0,
+  date,
+  title,
+  transactions,
+}) {
+  const data = await axios.post('/purchases', {
+    description,
+    items,
+    discount,
+    date,
+    title,
+    transactions,
+  });
 
   return data;
 }
 
-export async function updatePurchase({ description, items = [], discount = 0, date, id, title, transactions }) {
-  const data = await axios.put(`/purchases/${id}`, { description, items, discount, date, title, transactions });
+export async function updatePurchase({
+  description,
+  items = [],
+  discount = 0,
+  date,
+  id,
+  title,
+  transactions,
+}) {
+  const data = await axios.put(`/purchases/${id}`, {
+    description,
+    items,
+    discount,
+    date,
+    title,
+    transactions,
+  });
 
   return data;
 }
