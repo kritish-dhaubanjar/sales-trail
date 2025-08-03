@@ -366,9 +366,9 @@ function POS() {
                     <Card className="border-0 p-0 pt-2 shadow-none">
                       <CardHeader className="px-0">
                         <CardTitle>
-                          <span className="font-semibold">{product.name}</span>{' '}
+                          <span className="font-semibold">{product?.name}</span>{' '}
                           <small>
-                            ({product.price}/{product.unit.name})
+                            ({product?.price}/{product?.unit?.name})
                           </small>
                         </CardTitle>
 
@@ -420,7 +420,7 @@ function POS() {
 
                             <p className="ml-5 font-semibold text-black">
                               {' '}
-                              {formatter.format(product.price * item.quantity)}
+                              {formatter.format(product?.price * item.quantity)}
                             </p>
                           </div>
                         </CardDescription>
