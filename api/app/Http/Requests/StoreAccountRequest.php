@@ -23,6 +23,7 @@ class StoreAccountRequest extends FormRequest
     {
         return [
             'name' => 'required|string|unique:accounts,name',
+            'opening_balance' => 'required|numeric|min:0',
         ];
     }
 }
