@@ -17,6 +17,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Form, FormField } from '@/components/ui/form';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 import { useToast } from '@/hooks/use-toast';
 import { createCategory, updateCategory } from '@/services/category.service';
@@ -24,15 +31,16 @@ import { createCategory, updateCategory } from '@/services/category.service';
 const schema = z.object({
   id: z.coerce.number(),
   name: z.string().min(1, { message: 'Category name is required' }),
+  type: z.enum(['income', 'expense'], ({ message: 'Category type is required' })),
 });
 
-const DEFAULT_CATEGORY = { id: '', name: '' };
+const DEFAULT_CATEGORY = { id: '', name: '', type: '' };
 
 export function CategoryDialog({
   open = true,
   row = null,
-  refetch = () => {},
-  onClose = () => {},
+  refetch = () => { },
+  onClose = () => { },
 }) {
   const { toast } = useToast();
 
@@ -79,7 +87,7 @@ export function CategoryDialog({
 
         <form onSubmit={handleSubmit(mutate)}>
           <Form {...form}>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-4 pt-4">
               <div className="grid grid-cols-6 items-center gap-4">
                 <Label htmlFor="name" className="col-span-2 text-right">
                   Category Name
@@ -96,6 +104,34 @@ export function CategoryDialog({
                   control={control}
                   render={({ field }) => (
                     <Input type="text" placeholder="Food" {...field} className="col-span-4" />
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-6 items-center gap-4">
+                <Label htmlFor="name" className="col-span-2 text-right">
+                  Category Type
+                </Label>
+
+                <FormField
+                  name="type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      defaultValue="income"
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger className="w-full col-span-4">
+                        <SelectValue placeholder="income" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="income">Income</SelectItem>
+                        <SelectItem value="expense">Expense</SelectItem>
+                      </SelectContent>
+                    </Select>
                   )}
                 />
               </div>

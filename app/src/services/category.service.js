@@ -12,14 +12,14 @@ export async function deleteCategory({ id }) {
   return data;
 }
 
-export async function createCategory({ name }) {
-  const data = await axios.post('/categories', { name });
+export async function createCategory({ name, type }) {
+  const data = await axios.post('/categories', { name, type });
 
   return data;
 }
 
-export async function updateCategory({ name, id }) {
-  const data = await axios.put(`/categories/${id}`, { name });
+export async function updateCategory({ name, id, type }) {
+  const data = await axios.put(`/categories/${id}`, { name, type });
 
   return data;
 }

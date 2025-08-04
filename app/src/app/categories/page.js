@@ -136,6 +136,11 @@ function Category() {
         cell: ({ row }) => <div>{row.getValue('name')}</div>,
       },
       {
+        accessorKey: 'type',
+        header: 'Type',
+        cell: ({ row }) => <div>{row.getValue('type')}</div>,
+      },
+      {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {
