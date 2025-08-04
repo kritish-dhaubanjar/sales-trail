@@ -321,7 +321,7 @@ function POS() {
                   onClick={() => onSelect(product)}
                   variant="outline"
                   key={product.id}
-                  className="h-auto w-1/5 p-2"
+                  className="h-auto w-1/5 p-2 min-w-[max-content]"
                 >
                   <div>
                     <small>{product.category.name}</small>
