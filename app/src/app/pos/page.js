@@ -277,64 +277,68 @@ function POS() {
       {/* <Sidebar /> */}
 
       <div className="min-h-lvh px-4">
-        <div className="relative min-h-lvh w-52 border-r pe-3">
-          <div className="py-6">
-            {categories?.data?.data?.filter(({ type }) => type === 'income').map(({ name }) => {
-              const className = name === category ? 'bg-accent' : '';
+        <ScrollArea className="h-[100vh]">
+          <div className="relative min-h-lvh w-52 border-r pe-3">
+            <div className="py-6">
+              {categories?.data?.data?.filter(({ type }) => type === 'income').map(({ name }) => {
+                const className = name === category ? 'bg-accent' : '';
 
-              return (
-                <Button
-                  onClick={() => setCategory(name)}
-                  key={name}
-                  variant="ghost"
-                  className={cn(
-                    'text-l mb-1.5 min-w-full justify-start px-4 py-2 font-semibold',
-                    className,
-                  )}
-                >
-                  <ArchiveIcon className="me-2 h-4 w-4" /> {name}
-                </Button>
-              );
-            })}
+                return (
+                  <Button
+                    onClick={() => setCategory(name)}
+                    key={name}
+                    variant="ghost"
+                    className={cn(
+                      'text-l mb-1.5 min-w-full justify-start px-4 py-2 font-semibold',
+                      className,
+                    )}
+                  >
+                    <ArchiveIcon className="me-2 h-4 w-4" /> {name}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        </ScrollArea>
+      </div>
+
+      <ScrollArea className="w-full h-[100vh] min-h-[100vh] border-r me-4">
+        <div className="me-4 w-full py-6 pe-4">
+          <Input
+            onChange={(e) => setQuery(e.target.value)}
+            className="mb-4 mt-0"
+            placeholder="Search menu"
+          />
+
+          <div className="flex w-full flex-wrap gap-4">
+            {products?.data?.data
+              ?.filter((product) => product.name.toLowerCase().includes(query))
+              .map((product) => {
+                if (product.category.name !== category && !query) {
+                  return null;
+                }
+
+                return (
+                  <Button
+                    disabled={!tableId}
+                    onClick={() => onSelect(product)}
+                    variant="outline"
+                    key={product.id}
+                    className="h-auto w-1/5 p-2 min-w-[max-content]"
+                  >
+                    <div>
+                      <small>{product.category.name}</small>
+                      <h2 className="font-semibold">{product.name}</h2>
+                      <small>
+                        {formatter.format(product.price)} / {product.unit.name}
+                      </small>
+                    </div>
+                  </Button>
+                );
+              })}
           </div>
         </div>
-      </div>
-
-      <div className="me-4 w-full border-r py-6 pe-4">
-        <Input
-          onChange={(e) => setQuery(e.target.value)}
-          className="mb-4 mt-0"
-          placeholder="Search menu"
-        />
-
-        <div className="flex w-full flex-wrap gap-4">
-          {products?.data?.data
-            ?.filter((product) => product.name.toLowerCase().includes(query))
-            .map((product) => {
-              if (product.category.name !== category && !query) {
-                return null;
-              }
-
-              return (
-                <Button
-                  disabled={!tableId}
-                  onClick={() => onSelect(product)}
-                  variant="outline"
-                  key={product.id}
-                  className="h-auto w-1/5 p-2 min-w-[max-content]"
-                >
-                  <div>
-                    <small>{product.category.name}</small>
-                    <h2 className="font-semibold">{product.name}</h2>
-                    <small>
-                      {formatter.format(product.price)} / {product.unit.name}
-                    </small>
-                  </div>
-                </Button>
-              );
-            })}
-        </div>
-      </div>
+      </ScrollArea>
 
       <div className="w-[512px] py-6">
         <Form {...form}>
