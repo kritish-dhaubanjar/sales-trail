@@ -158,7 +158,7 @@ function POS() {
     enabled: true,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
-    queryFn: () => getItems({ page: 1, limit: 10240, query: '' }),
+    queryFn: () => getItems({ page: 1, limit: 10240, query: '', category_type: 'income' }),
   });
 
   const { data: tables, refetch: refetchTables } = useQuery({
@@ -279,7 +279,7 @@ function POS() {
       <div className="min-h-lvh px-4">
         <div className="relative min-h-lvh w-52 border-r pe-3">
           <div className="py-6">
-            {categories?.data?.data?.map(({ name }) => {
+            {categories?.data?.data?.filter(({ type }) => type === 'income').map(({ name }) => {
               const className = name === category ? 'bg-accent' : '';
 
               return (

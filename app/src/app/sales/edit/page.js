@@ -412,14 +412,14 @@ function Sale() {
                         ].some(isNaN)
                           ? '0.00'
                           : formatter.format(
-                              Number(watchedItems[index].price) *
-                                Number(watchedItems[index].quantity) -
-                                ((Number(watchedItems[index].discount) || 0) / 100) *
-                                  Number(
-                                    watchedItems[index].price *
-                                      Number(watchedItems[index].quantity),
-                                  ),
-                            )}
+                            Number(watchedItems[index].price) *
+                            Number(watchedItems[index].quantity) -
+                            ((Number(watchedItems[index].discount) || 0) / 100) *
+                            Number(
+                              watchedItems[index].price *
+                              Number(watchedItems[index].quantity),
+                            ),
+                          )}
                       </TableCell>
 
                       <TableCell className="text-center">

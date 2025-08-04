@@ -25,6 +25,7 @@ class PaginationRequest extends FormRequest
             'page'  => 'nullable|integer|min:1',
             'limit' => 'nullable|integer|min:1',
             'q' => 'nullable|string',
+            '*' => 'nullable|string',
         ];
     }
 }

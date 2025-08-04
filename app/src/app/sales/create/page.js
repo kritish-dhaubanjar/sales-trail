@@ -134,7 +134,7 @@ function Sale() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => {
-      return getItems({ page: 1, limit: 10240, query: '' });
+      return getItems({ page: 1, limit: 10240, query: '', category_type: 'income'  });
     },
   });
 

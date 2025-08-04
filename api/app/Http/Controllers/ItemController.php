@@ -20,12 +20,28 @@ class ItemController extends Controller
         $q = $data['q'] ?? "";
         $page = $data['page'] ?? 1;
         $limit = $data['limit'] ?? 10;
+        $categoryType = $data['category_type'] ?? null;
 
-        return Item::where('name', 'like', "%$q%")
-            ->orWhere('description', 'like', "%$q%")
-            ->orWhere('price', 'like', "%$q%")
-            ->orderBy('name', 'asc')
+        $query = Item::query();
+
+        if ($q) {
+            $query->where(function ($query) use ($q) {
+                $query->where('name', 'like', "%$q%")
+                    ->orWhere('description', 'like', "%$q%")
+                    ->orWhere('price', 'like', "%$q%");
+            });
+        }
+
+        if ($categoryType) {
+            $query->whereHas('category', function ($query) use ($categoryType) {
+                $query->where('type', $categoryType);
+            });
+        }
+
+        $items = $query->orderBy('name', 'asc')
             ->paginate($limit, ['*'], 'page', $page);
+
+        return $items;
     }
 
     /**
