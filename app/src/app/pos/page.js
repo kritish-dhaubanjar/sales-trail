@@ -312,7 +312,7 @@ function POS() {
 
           <div className="flex w-full flex-wrap gap-4">
             {products?.data?.data
-              ?.filter((product) => product.name.toLowerCase().includes(query))
+              ?.filter((product) => product.name.toLowerCase().includes(query.toLowerCase()))
               .map((product) => {
                 if (product.category.name !== category && !query) {
                   return null;
