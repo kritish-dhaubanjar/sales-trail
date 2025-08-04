@@ -34,7 +34,7 @@ const schema = z.object({
   type: z.enum(['income', 'expense'], ({ message: 'Category type is required' })),
 });
 
-const DEFAULT_CATEGORY = { id: '', name: '', type: '' };
+const DEFAULT_CATEGORY = { id: '', name: '', type: 'income' };
 
 export function CategoryDialog({
   open = true,
