@@ -15,10 +15,11 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->enum('type', ['income', 'expense'])->default('income');
             $table->timestamps();
         });
 
-        DB::table('categories')->insert(['name' => 'None']);
+        DB::table('categories')->insert(['name' => 'None', 'type' => 'income']);
     }
 
     /**
