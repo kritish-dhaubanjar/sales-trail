@@ -92,7 +92,7 @@ function Dashboard() {
     <div className="flex">
       <Sidebar />
 
-      <div className="min-h-lvh w-full px-10 py-10">
+      <div className="min-h-lvh w-full px-10 py-10 print:p-0">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
