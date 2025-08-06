@@ -278,7 +278,7 @@ function POS() {
 
       <div className="min-h-lvh px-4">
         <ScrollArea className="h-[100vh]">
-          <div className="relative min-h-lvh min-w-[max-content] border-r pe-3">
+          <div className="relative min-h-lvh max-w-[min-content] border-r pe-3">
             <div className="py-6">
               {categories?.data?.data?.filter(({ type }) => type === 'income').map(({ name }) => {
                 const className = name === category ? 'bg-accent' : '';
