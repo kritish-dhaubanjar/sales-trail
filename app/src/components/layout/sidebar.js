@@ -17,6 +17,7 @@ import {
   WidthIcon,
   AlignTopIcon,
   LaptopIcon,
+  BarChartIcon,
 } from '@radix-ui/react-icons';
 
 import Link from 'next/link';
@@ -27,6 +28,11 @@ import { usePathname } from 'next/navigation';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 const items = [
+  {
+    name: 'Dashboard',
+    Icon: BarChartIcon,
+    href: '/dashboard',
+  },
   {
     name: 'Units',
     Icon: RulerSquareIcon,
@@ -96,7 +102,7 @@ export default function Sidebar() {
   });
 
   return (
-    <div className="relative min-h-lvh max-w-48 border-r px-3">
+    <div className="print:hidden relative min-h-lvh max-w-48 border-r px-3">
       <div className="py-10">
         {items.map(({ name, Icon, href, target = '_self' }) => {
           const className = pathname.includes(href) ? 'bg-accent' : '';

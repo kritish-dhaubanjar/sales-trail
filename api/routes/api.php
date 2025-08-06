@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\ItemController;
@@ -96,6 +97,10 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::get('/categories/{category}', 'show');
             Route::put('/categories/{category}', 'update');
             Route::delete('/categories/{category}', 'destroy');
+        });
+
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/dashboard', 'index');
         });
     }
 );
