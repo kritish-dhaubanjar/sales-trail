@@ -204,7 +204,7 @@ function POS() {
   });
 
   const onSelect = (item) => {
-    const index = items.fields.findIndex((i) => i.item_id === item.id);
+    const index = watchedItems.findIndex((i) => i.item_id === item.id);
 
     if (index > -1) {
       const item = items.fields[index];
@@ -232,7 +232,7 @@ function POS() {
   };
 
   const onQuantityChange = (index, value) => {
-    const item = items.fields[index];
+    const item = watchedItems[index];
 
     if (value === 1) {
       item.quantity++;
@@ -434,20 +434,20 @@ function POS() {
                             >
                               <MinusIcon className="h-4 w-4" />
                             </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              className="h-7 rounded-none text-black"
-                            >
-                              <Controller
-                                name={`items.${index}.quantity`}
-                                control={control}
-                                render={({ field }) => (
-                                  <span className="text-sm">{field.value}</span>
-                                )}
-                              />
-                            </Button>
+
+                            <FormField
+                              name={`items.${index}.quantity`}
+                              control={control}
+                              render={({ field }) => (
+                                <FormItem className="h-7 w-16">
+                                  <FormControl>
+                                    <Input type="number" placeholder="1" className="h-7 rounded-none" {...field} onChange={e => field.onChange(Number(e.target.value) || 0)} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
                             <Button
                               type="button"
                               onClick={() => onQuantityChange(index, 1)}
@@ -460,7 +460,7 @@ function POS() {
 
                             <p className="ml-5 font-semibold text-black">
                               {' '}
-                              {formatter.format(product?.price * item.quantity)}
+                              {formatter.format(product?.price * watchedItems[index]?.quantity || 0)}
                             </p>
                           </div>
                         </CardDescription>
