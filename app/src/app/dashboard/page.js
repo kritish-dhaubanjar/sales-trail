@@ -180,7 +180,7 @@ function Dashboard() {
                 <TableRow>
                   <TableCell>Total</TableCell>
                   <TableCell>
-                    {formatter.format(dashboard?.data?.sales?.data?.reduce((total, { grand_total }) => total + grand_total, 0))}
+                    {formatter.format(dashboard?.data?.sales?.data?.reduce((total, { grand_total }) => Number(total) + Number(grand_total), 0))}
                   </TableCell>
                 </TableRow>
               </TableFooter>
@@ -293,7 +293,7 @@ function Dashboard() {
               <TableRow>
                 <TableCell>Total</TableCell>
                 <TableCell>
-                  {formatter.format(dashboard?.data?.accounts?.reduce((total, { balance }) => total + balance, 0))}
+                  {formatter.format(dashboard?.data?.accounts?.reduce((total, { balance }) => Number(total) + Number(balance), 0))}
                 </TableCell>
               </TableRow>
             </TableFooter>
