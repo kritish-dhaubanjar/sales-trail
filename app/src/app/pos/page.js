@@ -231,6 +231,18 @@ function POS() {
     }
   };
 
+  const onQuantityUpdate = (index, value) => {
+    const item = watchedItems[index];
+    item.quantity = value;
+    items.update(index, item);
+
+    const data = getValues();
+
+    updateTableItemsMutation({ id: tableId, items: data.items });
+
+    setTimeout(() => document.getElementById(`items.${index}.quantity`)?.focus(), 0)
+  }
+
   const onQuantityChange = (index, value) => {
     const item = watchedItems[index];
 
@@ -441,7 +453,10 @@ function POS() {
                               render={({ field }) => (
                                 <FormItem className="h-7 w-16">
                                   <FormControl>
-                                    <Input type="number" placeholder="1" className="h-7 rounded-none" {...field} onChange={e => field.onChange(Number(e.target.value) || 0)} />
+                                    <Input id={`items.${index}.quantity`} type="number" placeholder="1" className="h-7 rounded-none" {...field} onChange={e => {
+                                      field.onChange(Number(e.target.value) || 0)
+                                      onQuantityUpdate(index, Number(e.target.value) || 0)
+                                    }} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
