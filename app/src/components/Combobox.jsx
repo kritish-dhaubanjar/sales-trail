@@ -41,7 +41,7 @@ function Combobox({ index, products = {}, field, onSelect = () => {}, initOpen =
             )}
           >
             {field.value
-              ? products.data.data.find(({ id }) => id === field.value)?.name
+              ? products.data.data.find(({ id }) => String(id) === String(field.value))?.name
               : 'Select Item'}
             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>

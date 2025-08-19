@@ -136,7 +136,7 @@ function Dashboard() {
                   control={control}
                   name="end_date"
                   render={({ field }) => (
-                    <FormItem className="ml-3 mb-3 flex flex-col">
+                    <FormItem className="mb-3 ml-3 flex flex-col">
                       <FormLabel>End Date</FormLabel>
 
                       <NepaliDatePicker
@@ -157,7 +157,7 @@ function Dashboard() {
 
         <div className="mb-8">
           <div className="mb-8">
-            <h2 className="text-l font-semibold mb-2">Sales</h2>
+            <h2 className="text-l mb-2 font-semibold">Sales</h2>
 
             <Table className="border">
               <TableHeader>
@@ -171,7 +171,9 @@ function Dashboard() {
                 {dashboard?.data?.sales?.data?.map((sale) => (
                   <TableRow key={sale.date}>
                     <TableCell className="font-medium">{sale.date}</TableCell>
-                    <TableCell className="font-medium">{formatter.format(sale.grand_total)}</TableCell>
+                    <TableCell className="font-medium">
+                      {formatter.format(sale.grand_total)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -180,7 +182,12 @@ function Dashboard() {
                 <TableRow>
                   <TableCell>Total</TableCell>
                   <TableCell>
-                    {formatter.format(dashboard?.data?.sales?.data?.reduce((total, { grand_total }) => Number(total) + Number(grand_total), 0))}
+                    {formatter.format(
+                      dashboard?.data?.sales?.data?.reduce(
+                        (total, { grand_total }) => Number(total) + Number(grand_total),
+                        0,
+                      ),
+                    )}
                   </TableCell>
                 </TableRow>
               </TableFooter>
@@ -188,7 +195,7 @@ function Dashboard() {
           </div>
 
           <div>
-            <h2 className="text-l font-semibold mb-2">Purchases</h2>
+            <h2 className="text-l mb-2 font-semibold">Purchases</h2>
 
             <Table className="border">
               <TableHeader>
@@ -202,7 +209,9 @@ function Dashboard() {
                 {dashboard?.data?.purchases?.data?.map((purchase) => (
                   <TableRow key={purchase.date}>
                     <TableCell className="font-medium">{purchase.date}</TableCell>
-                    <TableCell className="font-medium">{formatter.format(purchase.grand_total)}</TableCell>
+                    <TableCell className="font-medium">
+                      {formatter.format(purchase.grand_total)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -211,7 +220,12 @@ function Dashboard() {
                 <TableRow>
                   <TableCell>Total</TableCell>
                   <TableCell>
-                    {formatter.format(dashboard?.data?.purchases?.data?.reduce((total, { grand_total }) => total + grand_total, 0))}
+                    {formatter.format(
+                      dashboard?.data?.purchases?.data?.reduce(
+                        (total, { grand_total }) => total + grand_total,
+                        0,
+                      ),
+                    )}
                   </TableCell>
                 </TableRow>
               </TableFooter>
@@ -221,7 +235,7 @@ function Dashboard() {
 
         <div className="mb-8">
           <div className="mb-8">
-            <h2 className="text-l font-semibold mb-2">Sale Items</h2>
+            <h2 className="text-l mb-2 font-semibold">Sale Items</h2>
 
             <Table className="border">
               <TableHeader>
@@ -245,7 +259,7 @@ function Dashboard() {
           </div>
 
           <div>
-            <h2 className="text-l font-semibold mb-2">Purchase Items</h2>
+            <h2 className="text-l mb-2 font-semibold">Purchase Items</h2>
 
             <Table className="border">
               <TableHeader>
@@ -270,7 +284,7 @@ function Dashboard() {
         </div>
 
         <div>
-          <h2 className="text-l font-semibold mb-2">Accounts | {NepaliDate.getNepaliDate()}</h2>
+          <h2 className="text-l mb-2 font-semibold">Accounts | {NepaliDate.getNepaliDate()}</h2>
 
           <Table className="border">
             <TableHeader>
@@ -293,7 +307,12 @@ function Dashboard() {
               <TableRow>
                 <TableCell>Total</TableCell>
                 <TableCell>
-                  {formatter.format(dashboard?.data?.accounts?.reduce((total, { balance }) => Number(total) + Number(balance), 0))}
+                  {formatter.format(
+                    dashboard?.data?.accounts?.reduce(
+                      (total, { balance }) => Number(total) + Number(balance),
+                      0,
+                    ),
+                  )}
                 </TableCell>
               </TableRow>
             </TableFooter>

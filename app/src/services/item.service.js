@@ -1,6 +1,6 @@
 import axios from '@/lib/axios';
 
-export async function getItems({ page, limit, query, category_type = "" }) {
+export async function getItems({ page, limit, query, category_type = '' }) {
   const data = await axios.get('/items', { params: { page, limit, q: query, category_type } });
 
   return data;

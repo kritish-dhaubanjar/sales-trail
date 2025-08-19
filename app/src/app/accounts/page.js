@@ -150,7 +150,13 @@ function Account() {
       {
         accessorKey: 'created_at',
         header: 'Net Balance',
-        cell: ({ row }) => <div>{formatter.format(Number(row.getValue('balance')) + Number(row.getValue('opening_balance')))} </div>,
+        cell: ({ row }) => (
+          <div>
+            {formatter.format(
+              Number(row.getValue('balance')) + Number(row.getValue('opening_balance')),
+            )}{' '}
+          </div>
+        ),
       },
       {
         id: 'actions',

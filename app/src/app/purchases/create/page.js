@@ -134,7 +134,7 @@ function Purchase() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => {
-      return getItems({ page: 1, limit: 10240, query: '', category_type: 'expense'  });
+      return getItems({ page: 1, limit: 10240, query: '', category_type: 'expense' });
     },
   });
 
@@ -323,7 +323,7 @@ function Purchase() {
                           name={`items[${index}].item_id`}
                           render={({ field }) => {
                             const unit = products.data.data.find(
-                              ({ id }) => id === field.value,
+                              ({ id }) => String(id) === String(field.value),
                             )?.unit;
 
                             return <span>{unit?.name || ''}</span>;

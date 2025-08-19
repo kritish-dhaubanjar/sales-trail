@@ -134,7 +134,7 @@ function Sale() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => {
-      return getItems({ page: 1, limit: 10240, query: '', category_type: 'income'  });
+      return getItems({ page: 1, limit: 10240, query: '', category_type: 'income' });
     },
   });
 
@@ -323,7 +323,7 @@ function Sale() {
                           name={`items[${index}].item_id`}
                           render={({ field }) => {
                             const unit = products.data.data.find(
-                              ({ id }) => id === field.value,
+                              ({ id }) => String(id) === String(field.value),
                             )?.unit;
 
                             return <span>{unit?.name || ''}</span>;

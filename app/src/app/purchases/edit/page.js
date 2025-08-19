@@ -358,7 +358,7 @@ function Purchase() {
                           name={`items[${index}].item_id`}
                           render={({ field }) => {
                             const unit = products.data.data.find(
-                              ({ id }) => id === field.value,
+                              ({ id }) => String(id) === String(field.value),
                             )?.unit;
 
                             return <span>{unit?.name || ''}</span>;

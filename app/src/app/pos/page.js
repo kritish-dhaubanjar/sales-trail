@@ -48,7 +48,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from '@/components/ui/sheet';
 
 import { cn } from '@/lib/utils';
 import { NepaliDate } from '@/lib/date';
@@ -114,9 +114,9 @@ function POS() {
 
   useEffect(() => {
     setValue('title', '');
-    setValue('discount', 0)
+    setValue('discount', 0);
     setValue('transactions', [DEFAULT_TRANSACTION]);
-  }, [open])
+  }, [open]);
 
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
   const transactions = useFieldArray({ control, name: 'transactions', rules: { minLength: 1 } });
@@ -199,7 +199,7 @@ function POS() {
         table_id: '',
         items: [],
       });
-      setOpen(false)
+      setOpen(false);
     },
   });
 
@@ -240,8 +240,8 @@ function POS() {
 
     updateTableItemsMutation({ id: tableId, items: data.items });
 
-    setTimeout(() => document.getElementById(`items.${index}.quantity`)?.focus(), 0)
-  }
+    setTimeout(() => document.getElementById(`items.${index}.quantity`)?.focus(), 0);
+  };
 
   const onQuantityChange = (index, value) => {
     const item = watchedItems[index];
@@ -292,29 +292,31 @@ function POS() {
         <ScrollArea className="h-[100vh]">
           <div className="relative min-h-lvh max-w-[min-content] border-r pe-3">
             <div className="py-6">
-              {categories?.data?.data?.filter(({ type }) => type === 'income').map(({ name }) => {
-                const className = name === category ? 'bg-accent' : '';
+              {categories?.data?.data
+                ?.filter(({ type }) => type === 'income')
+                .map(({ name }) => {
+                  const className = name === category ? 'bg-accent' : '';
 
-                return (
-                  <Button
-                    onClick={() => setCategory(name)}
-                    key={name}
-                    variant="ghost"
-                    className={cn(
-                      'text-l mb-1.5 min-w-full justify-start px-4 py-2 font-semibold',
-                      className,
-                    )}
-                  >
-                    <ArchiveIcon className="me-2 h-4 w-4" /> {name}
-                  </Button>
-                );
-              })}
+                  return (
+                    <Button
+                      onClick={() => setCategory(name)}
+                      key={name}
+                      variant="ghost"
+                      className={cn(
+                        'text-l mb-1.5 min-w-full justify-start px-4 py-2 font-semibold',
+                        className,
+                      )}
+                    >
+                      <ArchiveIcon className="me-2 h-4 w-4" /> {name}
+                    </Button>
+                  );
+                })}
             </div>
           </div>
         </ScrollArea>
       </div>
 
-      <ScrollArea className="w-full h-[100vh] min-h-[100vh] border-r me-4">
+      <ScrollArea className="me-4 h-[100vh] min-h-[100vh] w-full border-r">
         <div className="me-4 w-full py-6 pe-4">
           <Input
             onChange={(e) => setQuery(e.target.value)}
@@ -336,7 +338,7 @@ function POS() {
                     onClick={() => onSelect(product)}
                     variant="outline"
                     key={product.id}
-                    className="h-auto w-1/5 p-2 min-w-[max-content]"
+                    className="h-auto w-1/5 min-w-[max-content] p-2"
                   >
                     <div>
                       <small>{product.category.name}</small>
@@ -411,11 +413,13 @@ function POS() {
                 </div>
               )}
               {items.fields.map((item, index) => {
-                const product = products?.data?.data?.find((p) => String(p.id) === String(item.item_id));
+                const product = products?.data?.data?.find(
+                  (p) => String(p.id) === String(item.item_id),
+                );
 
                 return (
                   <div key={item.id} className="me-4">
-                    <Card className="border-0 gap-3 p-0 pt-2 shadow-none">
+                    <Card className="gap-3 border-0 p-0 pt-2 shadow-none">
                       <CardHeader className="px-0">
                         <CardTitle>
                           <small className="font-semibold">{product?.name}</small>{' '}
@@ -453,10 +457,17 @@ function POS() {
                               render={({ field }) => (
                                 <FormItem className="h-7 w-16">
                                   <FormControl>
-                                    <Input id={`items.${index}.quantity`} type="number" placeholder="1" className="h-7 rounded-none" {...field} onChange={e => {
-                                      field.onChange(Number(e.target.value) || 0)
-                                      onQuantityUpdate(index, Number(e.target.value) || 0)
-                                    }} />
+                                    <Input
+                                      id={`items.${index}.quantity`}
+                                      type="number"
+                                      placeholder="1"
+                                      className="h-7 rounded-none"
+                                      {...field}
+                                      onChange={(e) => {
+                                        field.onChange(Number(e.target.value) || 0);
+                                        onQuantityUpdate(index, Number(e.target.value) || 0);
+                                      }}
+                                    />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -475,7 +486,9 @@ function POS() {
 
                             <p className="ml-5 font-semibold text-black">
                               {' '}
-                              {formatter.format(product?.price * watchedItems[index]?.quantity || 0)}
+                              {formatter.format(
+                                product?.price * watchedItems[index]?.quantity || 0,
+                              )}
                             </p>
                           </div>
                         </CardDescription>
@@ -503,10 +516,8 @@ function POS() {
                 </TableBody>
               </Table>
 
-              <SheetTrigger className="w-full pr-4 mt-2">
-                <Button className="w-full mt-2">
-                  Checkout
-                </Button>
+              <SheetTrigger className="mt-2 w-full pr-4">
+                <Button className="mt-2 w-full">Checkout</Button>
               </SheetTrigger>
 
               <SheetContent>
@@ -514,7 +525,6 @@ function POS() {
                   <SheetTitle>Are you absolutely sure?</SheetTitle>
                   <SheetDescription>
                     This action cannot be undone.
-
                     <div className="mt-5 font-semibold text-black">
                       <Table>
                         <TableBody>
@@ -592,12 +602,16 @@ function POS() {
                                           <Select
                                             className="w-full"
                                             value={String(field.value)}
-                                            onValueChange={(value) => value && field.onChange(value)}
+                                            onValueChange={(value) =>
+                                              value && field.onChange(value)
+                                            }
                                           >
                                             <SelectTrigger className="w-[100px]">
                                               <SelectValue
                                                 placeholder={
-                                                  <span className="text-gray-500">Select an account</span>
+                                                  <span className="text-gray-500">
+                                                    Select an account
+                                                  </span>
                                                 }
                                               />
                                             </SelectTrigger>
@@ -672,7 +686,9 @@ function POS() {
                             <TableCell className="h-11 text-right" colSpan={6}>
                               Payment Total
                             </TableCell>
-                            <TableCell className="text-right">{formatter.format(paymentTotal)}</TableCell>
+                            <TableCell className="text-right">
+                              {formatter.format(paymentTotal)}
+                            </TableCell>
                             <TableCell></TableCell>
                           </TableRow>
 

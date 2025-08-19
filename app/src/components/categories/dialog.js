@@ -23,7 +23,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select';
 
 import { useToast } from '@/hooks/use-toast';
 import { createCategory, updateCategory } from '@/services/category.service';
@@ -31,7 +31,7 @@ import { createCategory, updateCategory } from '@/services/category.service';
 const schema = z.object({
   id: z.coerce.number(),
   name: z.string().min(1, { message: 'Category name is required' }),
-  type: z.enum(['income', 'expense'], ({ message: 'Category type is required' })),
+  type: z.enum(['income', 'expense'], { message: 'Category type is required' }),
 });
 
 const DEFAULT_CATEGORY = { id: '', name: '', type: 'income' };
@@ -39,8 +39,8 @@ const DEFAULT_CATEGORY = { id: '', name: '', type: 'income' };
 export function CategoryDialog({
   open = true,
   row = null,
-  refetch = () => { },
-  onClose = () => { },
+  refetch = () => {},
+  onClose = () => {},
 }) {
   const { toast } = useToast();
 
@@ -124,7 +124,7 @@ export function CategoryDialog({
                       defaultValue="income"
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="w-full col-span-4">
+                      <SelectTrigger className="col-span-4 w-full">
                         <SelectValue placeholder="income" />
                       </SelectTrigger>
                       <SelectContent>

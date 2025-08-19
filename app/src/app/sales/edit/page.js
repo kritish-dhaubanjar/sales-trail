@@ -358,7 +358,7 @@ function Sale() {
                           name={`items[${index}].item_id`}
                           render={({ field }) => {
                             const unit = products.data.data.find(
-                              ({ id }) => id === field.value,
+                              ({ id }) => String(id) === String(field.value),
                             )?.unit;
 
                             return <span>{unit?.name || ''}</span>;
@@ -412,14 +412,14 @@ function Sale() {
                         ].some(isNaN)
                           ? '0.00'
                           : formatter.format(
-                            Number(watchedItems[index].price) *
-                            Number(watchedItems[index].quantity) -
-                            ((Number(watchedItems[index].discount) || 0) / 100) *
-                            Number(
-                              watchedItems[index].price *
-                              Number(watchedItems[index].quantity),
-                            ),
-                          )}
+                              Number(watchedItems[index].price) *
+                                Number(watchedItems[index].quantity) -
+                                ((Number(watchedItems[index].discount) || 0) / 100) *
+                                  Number(
+                                    watchedItems[index].price *
+                                      Number(watchedItems[index].quantity),
+                                  ),
+                            )}
                       </TableCell>
 
                       <TableCell className="text-center">
