@@ -16,7 +16,7 @@ install:
 watch:
 	make -j 2 .api .app
 
-build:
+build: install
 	sed -i "s|http://127.0.0.1:8000||g" app/next.config.mjs
 	cd app && npm run build
 	rm api/resources/views/welcome.blade.php
