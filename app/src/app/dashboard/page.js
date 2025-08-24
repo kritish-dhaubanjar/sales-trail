@@ -12,7 +12,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -40,7 +39,6 @@ import {
 
 import Sidebar from '@/components/layout/sidebar';
 
-import { cn } from '@/lib/utils';
 import { get } from '@/services/dashboard.service';
 import 'nepali-datepicker-reactjs/dist/index.css';
 
@@ -65,7 +63,7 @@ function Dashboard() {
     },
   });
 
-  const { control, watch, handleSubmit } = form;
+  const { control, watch } = form;
 
   const startDate = watch('start_date');
   const endDate = watch('end_date');
@@ -222,7 +220,7 @@ function Dashboard() {
                   <TableCell>
                     {formatter.format(
                       dashboard?.data?.purchases?.data?.reduce(
-                        (total, { grand_total }) => total + grand_total,
+                        (total, { grand_total }) => Number(total) + Number(grand_total),
                         0,
                       ),
                     )}
@@ -240,16 +238,16 @@ function Dashboard() {
             <Table className="border">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Date</TableHead>
+                  <TableHead className="w-[100px]">S.N.</TableHead>
                   <TableHead className="w-[300px]">Name</TableHead>
                   <TableHead>Quantity</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {dashboard?.data?.sales?.items?.map((item) => (
+                {dashboard?.data?.sales?.items?.map((item, index) => (
                   <TableRow key={item.item_id}>
-                    <TableCell className="font-medium">{item.date}</TableCell>
+                    <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell className="font-medium">{formatter.format(item.quantity)}</TableCell>
                   </TableRow>
@@ -271,9 +269,9 @@ function Dashboard() {
               </TableHeader>
 
               <TableBody>
-                {dashboard?.data?.purchases?.items?.map((item) => (
+                {dashboard?.data?.purchases?.items?.map((item, index) => (
                   <TableRow key={item.item_id}>
-                    <TableCell className="font-medium">{item.date}</TableCell>
+                    <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell className="font-medium">{formatter.format(item.quantity)}</TableCell>
                   </TableRow>
