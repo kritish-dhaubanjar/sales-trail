@@ -1,0 +1,30 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - loopstudiocafe.com
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.LOOP_STUDIO_CAFE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H kritishdhaubanjar.com.np >> ~/.ssh/known_hosts
+
+      - name: Makefile
+        run: make web
+
