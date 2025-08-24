@@ -9,6 +9,9 @@ const nextConfig = {
   },
   distDir: 'dist',
   trailingSlash: true,
+  images: {
+    unoptimized: true,
+  }
 };
 
 export default nextConfig;

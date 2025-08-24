@@ -1,5 +1,6 @@
 'use client';
 import { z } from 'zod';
+import Image from 'next/image'
 import DevTool from '@/components/DevTool';
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
@@ -291,6 +292,8 @@ function POS() {
       <div className="min-h-lvh px-4">
         <ScrollArea className="h-[100vh]">
           <div className="relative min-h-lvh max-w-[min-content] border-r pe-3">
+            <Image src="/images/loop.png" width="100" height="100" className="mx-auto mt-5" />
+
             <div className="py-6">
               {categories?.data?.data
                 ?.filter(({ type }) => type === 'income')

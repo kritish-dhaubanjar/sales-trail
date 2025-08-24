@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image'
 import { Button } from '@/components/ui/button';
 
 import {
@@ -103,6 +104,8 @@ export default function Sidebar() {
 
   return (
     <div className="relative min-h-lvh max-w-48 border-r px-3 print:hidden">
+      <Image src="/images/loop.png" width="100" height="100" className="mx-auto mt-5" />
+
       <div className="py-10">
         {items.map(({ name, Icon, href, target = '_self' }) => {
           const className = pathname.includes(href) ? 'bg-accent' : '';
