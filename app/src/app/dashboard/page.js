@@ -153,8 +153,8 @@ function Dashboard() {
           </Form>
         </form>
 
-        <div className="mb-8">
-          <div className="mb-8">
+        <div className="flex gap-5 mb-8">
+          <div className="mb-8 w-full">
             <h2 className="text-l mb-2 font-semibold">Sales</h2>
 
             <Table className="border">
@@ -192,7 +192,7 @@ function Dashboard() {
             </Table>
           </div>
 
-          <div>
+          <div className="mb-8 w-full">
             <h2 className="text-l mb-2 font-semibold">Purchases</h2>
 
             <Table className="border">
@@ -231,8 +231,8 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="mb-8">
-          <div className="mb-8">
+        <div className="mb-8 flex gap-5">
+          <div className="mb-8 w-full">
             <h2 className="text-l mb-2 font-semibold">Sale Items</h2>
 
             <Table className="border">
@@ -256,7 +256,7 @@ function Dashboard() {
             </Table>
           </div>
 
-          <div>
+          <div className="mb-8 w-full">
             <h2 className="text-l mb-2 font-semibold">Purchase Items</h2>
 
             <Table className="border">
