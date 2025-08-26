@@ -120,7 +120,7 @@ export default function Sidebar() {
   const item = items.find((item) => pathname.includes(item.href));
 
   if (!item.roles.has(auth.data.role)) {
-    return redirect('/pos');
+    return redirect('/settings');
   }
 
   return (
