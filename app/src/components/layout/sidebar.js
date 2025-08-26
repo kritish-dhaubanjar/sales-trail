@@ -25,70 +25,83 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useMutation } from 'react-query';
 import { logout } from '@/services/auth.service';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useAuthUser } from '@/hooks/use-is-authenticated';
 
 const items = [
   {
     name: 'Dashboard',
     Icon: BarChartIcon,
     href: '/dashboard',
+    roles: new Set(['admin'])
   },
   {
     name: 'Units',
     Icon: RulerSquareIcon,
     href: '/units',
+    roles: new Set(['admin'])
   },
   {
     name: 'Accounts',
     Icon: IdCardIcon,
     href: '/accounts',
+    roles: new Set(['admin'])
   },
   {
     name: 'Transfers',
     Icon: WidthIcon,
     href: '/transfers',
+    roles: new Set(['admin'])
   },
   {
     name: 'Categories',
     Icon: MixIcon,
     href: '/categories',
+    roles: new Set(['admin'])
   },
   {
     name: 'Items',
     Icon: ArchiveIcon,
     href: '/items',
+    roles: new Set(['admin'])
   },
   {
     name: 'Sales',
     Icon: FilePlusIcon,
     href: '/sales',
+    roles: new Set(['admin'])
   },
   {
     name: 'Purchases',
     Icon: FileTextIcon,
     href: '/purchases',
+    roles: new Set(['admin'])
   },
   {
     name: 'Returns',
     Icon: FileMinusIcon,
     href: '/returns',
+    roles: new Set(['admin'])
   },
   {
     name: 'Tables',
     Icon: AlignTopIcon,
     href: '/tables',
+    roles: new Set(['admin'])
   },
   {
     name: 'Point of Sale',
     Icon: LaptopIcon,
     href: '/pos',
     target: '_blank',
+    roles: new Set(['admin', 'user'])
   },
   {
     name: 'Settings',
     Icon: GearIcon,
     href: '/settings',
+    roles: new Set(['admin', 'user'])
   },
 ];
 
@@ -102,12 +115,20 @@ export default function Sidebar() {
     },
   });
 
+  const { data: auth } = useAuthUser();
+
+  const item = items.find((item) => pathname.includes(item.href));
+
+  if (!item.roles.has(auth.data.role)) {
+    return redirect('/pos');
+  }
+
   return (
     <div className="relative min-h-lvh max-w-48 border-r px-3 print:hidden">
       <Image src="/images/loop.png" width="100" height="100" className="mx-auto mt-5" />
 
       <div className="py-10">
-        {items.map(({ name, Icon, href, target = '_self' }) => {
+        {items.filter((item) => item.roles.has(auth.data.role)).map(({ name, Icon, href, target = '_self' }) => {
           const className = pathname.includes(href) ? 'bg-accent' : '';
 
           return (
