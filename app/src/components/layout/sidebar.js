@@ -20,6 +20,7 @@ import {
   LaptopIcon,
   BarChartIcon,
 } from '@radix-ui/react-icons';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -115,7 +116,17 @@ export default function Sidebar() {
     },
   });
 
-  const { data: auth } = useAuthUser();
+  const { isLoading: isLoadingAuthUser, data: auth } = useAuthUser();
+
+  if (isLoadingAuthUser || !auth) {
+    return (
+      <div className="flex h-lvh items-center justify-center space-x-4">
+        <div className="space-y-2">
+          <Skeleton className="h-4 min-w-96" />
+        </div>
+      </div>
+    );
+  }
 
   const item = items.find((item) => pathname.includes(item.href));
 
