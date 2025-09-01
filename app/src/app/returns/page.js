@@ -100,6 +100,7 @@ function Return() {
   const { isLoading, data: auth } = useAuthUser();
 
   const [deleteRow, setDeleteRow] = useState(null);
+  const [deleteRows, setDeleteRows] = useState(null);
 
   const { data, refetch, isFetching } = useQuery({
     queryKey: ['returns', pagination, debouncedQuery],
@@ -335,6 +336,20 @@ function Return() {
     },
   });
 
+  const destoryRows = () => {
+    const rows = table.getState().rowSelection;
+
+    Object.keys(rows).forEach((key) => {
+      if (table.getState().rowSelection[key]) {
+        const refund = table.getRow(key).original;
+        onDelete(refund);
+      }
+    });
+
+    setDeleteRows(null);
+    table.resetRowSelection();
+  };
+
   if (isLoading || !auth) {
     return (
       <div className="flex h-lvh items-center justify-center space-x-4">
@@ -353,6 +368,13 @@ function Return() {
         open={Boolean(deleteRow)}
         onCancel={() => setDeleteRow(null)}
         onContinue={() => onDelete(deleteRow)}
+        description={`This action cannot be undone. This will permanently delete return from our servers.`}
+      />
+
+      <Alert
+        open={Boolean(deleteRows)}
+        onCancel={() => setDeleteRows(null)}
+        onContinue={destoryRows}
         description={`This action cannot be undone. This will permanently delete return from our servers.`}
       />
 
@@ -435,7 +457,7 @@ function Return() {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setDeleteRows(true)}>
                     <TrashIcon className="mr-2 h-4 w-4" /> Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>

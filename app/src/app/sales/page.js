@@ -100,6 +100,7 @@ function Sale() {
   const { isLoading, data: auth } = useAuthUser();
 
   const [deleteRow, setDeleteRow] = useState(null);
+  const [deleteRows, setDeleteRows] = useState(null);
 
   const { data, refetch, isFetching } = useQuery({
     queryKey: ['sales', pagination, debouncedQuery],
@@ -331,6 +332,20 @@ function Sale() {
     },
   });
 
+  const destoryRows = () => {
+    const rows = table.getState().rowSelection;
+
+    Object.keys(rows).forEach((key) => {
+      if (table.getState().rowSelection[key]) {
+        const sale = table.getRow(key).original;
+        onDelete(sale);
+      }
+    });
+
+    setDeleteRows(null);
+    table.resetRowSelection();
+  };
+
   if (isLoading || !auth) {
     return (
       <div className="flex h-lvh items-center justify-center space-x-4">
@@ -350,6 +365,13 @@ function Sale() {
         onCancel={() => setDeleteRow(null)}
         onContinue={() => onDelete(deleteRow)}
         description={`This action cannot be undone. This will permanently delete sale from our servers.`}
+      />
+
+      <Alert
+        open={Boolean(deleteRows)}
+        onCancel={() => setDeleteRows(null)}
+        onContinue={destoryRows}
+        description={`This action cannot be undone. This will permanently delete return from our servers.`}
       />
 
       <div className="min-h-lvh w-full px-10 py-10">
@@ -431,7 +453,7 @@ function Sale() {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setDeleteRows(true)}>
                     <TrashIcon className="mr-2 h-4 w-4" /> Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
