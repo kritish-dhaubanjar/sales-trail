@@ -27,6 +27,7 @@ class RefundController extends Controller
             ->orWhere('description', 'like', "%$q%")
             ->orWhere('id', 'like', "%$q%")
             ->orWhere('title', 'like', "%$q%")
+            ->orWhere('sequence_no', 'like', "%$q%")
             ->paginate($limit, ['*'], 'page', $page);
     }
 

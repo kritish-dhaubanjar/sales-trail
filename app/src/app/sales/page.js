@@ -46,7 +46,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from "@/components/ui/checkbox"
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -94,7 +94,7 @@ function Sale() {
   const [sorting, setSorting] = useState([]);
   const [rowSelection, setRowSelection] = useState({});
   const [columnFilters, setColumnFilters] = useState([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [columnVisibility, setColumnVisibility] = useState({ id: false });
   const [pagination, setPagination] = useState({ pageIndex: page - 1, pageSize: limit });
 
   const { isLoading, data: auth } = useAuthUser();
@@ -129,10 +129,13 @@ function Sale() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: '#sequence_no',
         header: ({ table }) => (
           <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && 'indeterminate')
+            }
             onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           />
         ),
@@ -150,6 +153,11 @@ function Sale() {
         accessorKey: 'id',
         header: 'ID',
         cell: ({ row }) => <div>{row.getValue('id')}</div>,
+      },
+      {
+        accessorKey: 'sequence_no',
+        header: 'S.N.',
+        cell: ({ row }) => <div>{row.getValue('sequence_no')}</div>,
       },
       {
         accessorKey: 'date',
@@ -391,7 +399,7 @@ function Sale() {
             <div className="flex items-center justify-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="outline" className="ml-2">
                     Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -412,6 +420,20 @@ function Sale() {
                         </DropdownMenuCheckboxItem>
                       );
                     })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="ml-2">
+                    Actions <ChevronDownIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>
+                    <TrashIcon className="mr-2 h-4 w-4" /> Delete
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 

@@ -159,7 +159,7 @@ function Print() {
                   <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right">
                     {index + 1}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-left font-medium max-w-32 overflow-hidden text-ellipsis">
+                  <TableCell className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-left font-medium">
                     {refund.item.name}
                   </TableCell>
                   <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right font-bold">
@@ -246,7 +246,9 @@ function Print() {
               <TableFooter className="text-md">
                 <TableRow>
                   <TableCell className="border border-black text-left" rowSpan={3} colSpan={1}>
-                    <div className="w-[50px] rotate-[270deg] text-right">{data.data.id}</div>
+                    <div className="w-[50px] rotate-[270deg] text-right">
+                      {data.data.sequence_no}
+                    </div>
                   </TableCell>
 
                   <TableCell

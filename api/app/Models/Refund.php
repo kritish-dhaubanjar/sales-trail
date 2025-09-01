@@ -12,7 +12,7 @@ class Refund extends Model
     use HasFactory, SoftDeletes;
 
     protected $with = ['refund_items'];
-    protected $fillable = ["date", "title", "description", "total", "discount", "grand_total"];
+    protected $fillable = ["date", "title", "description", "total", "discount", "grand_total", "sequence_no"];
 
     public function refund_items(): HasMany
     {
@@ -23,5 +23,13 @@ class Refund extends Model
     {
         $this->refund_items()->delete();
         parent::delete();
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($refund) {
+            $max = Refund::whereNull('deleted_at')->max('sequence_no');
+            $refund->sequence_no = $max ? $max + 1 : 1;
+        });
     }
 }
