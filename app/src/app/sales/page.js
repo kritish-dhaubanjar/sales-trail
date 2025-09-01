@@ -46,6 +46,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -127,6 +128,24 @@ function Sale() {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: 'id',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
       {
         accessorKey: 'id',
         header: 'ID',

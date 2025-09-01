@@ -13,6 +13,7 @@ import { deleteReturn, getReturns } from '@/services/return.service';
 
 import Link from 'next/link';
 
+import { Checkbox } from "@/components/ui/checkbox"
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Breadcrumb,
@@ -127,6 +128,25 @@ function Return() {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: 'id',
+        header: ({ table }) => (
+          <Checkbox
+            aria-label="Select all"
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
       {
         accessorKey: 'id',
         header: 'ID',
