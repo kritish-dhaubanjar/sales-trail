@@ -386,13 +386,13 @@ function POS() {
 
                         <SelectContent>
                           <SelectGroup>
-                            {tables?.data?.data?.map((table) => (
+                            {tables?.data?.data?.sort((table) => table.items.length ? -1 : 1).map((table) => (
                               <SelectItem key={table.id} value={String(table.id)}>
                                 <div className="flex items-center justify-between">
                                   {table.items.length > 0 ? (
-                                    <CheckboxIcon />
+                                    <CheckboxIcon className="text-green-800 w-5 h-5"/>
                                   ) : (
-                                    <BoxIcon className="h-3 w-3" />
+                                    <BoxIcon className="h-4 w-4" />
                                   )}{' '}
                                   <span className="ml-2">{table.name}</span>
                                 </div>
