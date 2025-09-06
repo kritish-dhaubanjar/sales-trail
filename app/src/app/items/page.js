@@ -82,7 +82,7 @@ function Item() {
 
   const q = searchParams.get('q') ?? '';
   const page = searchParams.get('page') ?? 1;
-  const limit = searchParams.get('limit') ?? 10;
+  const limit = searchParams.get('limit') ?? 50;
 
   const [query, setQuery] = useState(q);
   const debouncedQuery = useDebounce(query, 250);
