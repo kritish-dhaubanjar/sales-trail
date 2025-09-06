@@ -46,6 +46,28 @@ class DashboardController extends Controller
             AS balance
             FROM accounts");
 
+        $transactions = DB::select("SELECT
+                transactions.account_id,
+                accounts.name,
+                transactions.transaction_type,
+                SUM(transactions.amount)             AS amount,
+                COALESCE(sales.date, purchases.date) AS date
+            FROM
+                transactions
+                INNER JOIN accounts ON accounts.id = transactions.account_id
+                LEFT JOIN sales ON sales.id = transactions.transaction_id AND transactions.transaction_type = 'App\\\\Models\\\\Sale'
+                LEFT JOIN purchases ON purchases.id = transactions.transaction_id AND transactions.transaction_type = 'App\\\\Models\\\\Purchase'
+            WHERE
+                transactions.deleted_at IS NULL AND COALESCE(sales.date, purchases.date) BETWEEN ? AND ?
+            GROUP BY
+                COALESCE(sales.date, purchases.date),
+                transactions.account_id,
+                accounts.name,
+                transactions.transaction_type
+            ORDER BY
+                date ASC
+            ", [$startDate, $endDate]);
+
         $sales = [
             'total' => Sale::whereBetween('date', [$startDate, $endDate])->sum('grand_total'),
             'data' => DB::select("SELECT date, SUM(grand_total) AS grand_total FROM sales WHERE date BETWEEN ? AND ? AND deleted_at IS NULL GROUP BY date ORDER BY date ASC", [$startDate, $endDate]),
@@ -64,6 +86,7 @@ class DashboardController extends Controller
             'purchases' =>  $purchases,
             'start_date' => $startDate,
             'end_date' => $endDate,
+            'transactions' => $transactions
         ]);
     }
 }

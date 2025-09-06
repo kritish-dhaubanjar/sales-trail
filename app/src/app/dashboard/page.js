@@ -281,7 +281,7 @@ function Dashboard() {
           </div>
         </div>
 
-        <div>
+        <div className="mb-8">
           <h2 className="text-l mb-2 font-semibold">Accounts | {NepaliDate.getNepaliDate()}</h2>
 
           <Table className="border">
@@ -315,6 +315,84 @@ function Dashboard() {
               </TableRow>
             </TableFooter>
           </Table>
+        </div>
+
+        <div className="mb-8 flex gap-5">
+          <div className="mb-8 w-full">
+            <h2 className="text-l mb-2 font-semibold">Sale Accounts</h2>
+
+            <Table className="border">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[400px]">Date</TableHead>
+                  <TableHead className="w-[400px]">Name</TableHead>
+                  <TableHead>Net Balance</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Sale').map((transaction) => (
+                  <TableRow key={transaction.date}>
+                    <TableCell className="font-medium">{transaction.date}</TableCell>
+                    <TableCell className="font-medium">{transaction.name}</TableCell>
+                    <TableCell className="font-medium">{formatter.format(transaction.amount)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+
+              <TableFooter className="font-semibold">
+                <TableRow>
+                  <TableCell colspan="2">Total</TableCell>
+                  <TableCell>
+                    {formatter.format(
+                      dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Sale').reduce(
+                        (total, { amount }) => Number(total) + Number(amount),
+                        0,
+                      ),
+                    )}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
+
+          <div className="mb-8 w-full">
+            <h2 className="text-l mb-2 font-semibold">Purchase Accounts</h2>
+
+            <Table className="border">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[400px]">Date</TableHead>
+                  <TableHead className="w-[400px]">Name</TableHead>
+                  <TableHead>Net Balance</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Purchase').map((transaction) => (
+                  <TableRow key={transaction.date}>
+                    <TableCell className="font-medium">{transaction.date}</TableCell>
+                    <TableCell className="font-medium">{transaction.name}</TableCell>
+                    <TableCell className="font-medium">{formatter.format(transaction.amount)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+
+              <TableFooter className="font-semibold">
+                <TableRow>
+                  <TableCell colspan="2">Total</TableCell>
+                  <TableCell>
+                    {formatter.format(
+                      dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Purchase').reduce(
+                        (total, { amount }) => Number(total) + Number(amount),
+                        0,
+                      ),
+                    )}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
         </div>
       </div>
 
