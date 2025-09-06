@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
+import { Badge } from "@/components/ui/badge"
 import { deleteTable, getTables } from '@/services/table.service';
 
 import {
@@ -81,7 +82,7 @@ function POSTable() {
 
   const q = searchParams.get('q') ?? '';
   const page = searchParams.get('page') ?? 1;
-  const limit = searchParams.get('limit') ?? 10;
+  const limit = searchParams.get('limit') ?? 50;
 
   const [query, setQuery] = useState(q);
   const debouncedQuery = useDebounce(query, 250);
@@ -134,6 +135,11 @@ function POSTable() {
         accessorKey: 'name',
         header: 'Name',
         cell: ({ row }) => <div>{row.getValue('name')}</div>,
+      },
+      {
+        accessorKey: 'items',
+        header: 'Tags',
+        cell: ({ row }) => <div>{row.getValue('items').length ? <Badge variant="secondary" className="bg-blue-500 text-white dark:bg-blue-600">Occupied</Badge> : ''}</div>,
       },
       {
         id: 'actions',
