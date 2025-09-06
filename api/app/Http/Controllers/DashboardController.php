@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DashboardRequest;
 use App\Models\Purchase;
 use App\Models\Sale;
+use App\Models\Transfer;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -68,6 +69,8 @@ class DashboardController extends Controller
                 date ASC
             ", [$startDate, $endDate]);
 
+        $transfers = Transfer::whereBetween('date', [$startDate, $endDate])->get();
+
         $sales = [
             'total' => Sale::whereBetween('date', [$startDate, $endDate])->sum('grand_total'),
             'data' => DB::select("SELECT date, SUM(grand_total) AS grand_total FROM sales WHERE date BETWEEN ? AND ? AND deleted_at IS NULL GROUP BY date ORDER BY date ASC", [$startDate, $endDate]),
@@ -86,7 +89,8 @@ class DashboardController extends Controller
             'purchases' =>  $purchases,
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'transactions' => $transactions
+            'transactions' => $transactions,
+            'transfers' => $transfers,
         ]);
     }
 }

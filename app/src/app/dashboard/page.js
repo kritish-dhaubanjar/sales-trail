@@ -317,7 +317,7 @@ function Dashboard() {
           </Table>
         </div>
 
-        <div className="mb-8 flex gap-5 print:hidden">
+        <div className="flex gap-5 print:hidden">
           <div className="mb-8 w-full">
             <h2 className="text-l mb-2 font-semibold">Sale Accounts</h2>
 
@@ -391,6 +391,34 @@ function Dashboard() {
                   </TableCell>
                 </TableRow>
               </TableFooter>
+            </Table>
+          </div>
+        </div>
+
+        <div className="mb-8 flex gap-5 print:hidden">
+          <div className="mb-8 w-full">
+            <h2 className="text-l mb-2 font-semibold">Transfer Accounts</h2>
+
+            <Table className="border">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[400px]">Date</TableHead>
+                  <TableHead>From A/C</TableHead>
+                  <TableHead>To A/C</TableHead>
+                  <TableHead>Amount</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {dashboard?.data?.transfers?.map((transfer) => (
+                  <TableRow key={transfer.id}>
+                    <TableCell className="font-medium whitespace-nowrap">{transfer.date}</TableCell>
+                    <TableCell className="font-medium">{transfer.from_account.name}</TableCell>
+                    <TableCell className="font-medium">{transfer.to_account.name}</TableCell>
+                    <TableCell className="font-medium">{formatter.format(transfer.amount)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
             </Table>
           </div>
         </div>
