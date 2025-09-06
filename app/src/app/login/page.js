@@ -72,7 +72,7 @@ function Login() {
   return (
     <div className="container mx-auto flex h-lvh items-center justify-center pb-20">
       <Form {...form}>
-        <form onSubmit={handleSubmit(mutate)} className="min-w-96 space-y-4">
+        <form onSubmit={handleSubmit(mutate)} className="min-w-96 space-y-4 mx-3">
           <Image src="/images/loop.png" width="100" height="100" className="mx-auto mt-5" />
           <h1 className="mb-1 text-2xl font-bold">Sign In</h1>
           <span className="text-sm text-slate-500">
