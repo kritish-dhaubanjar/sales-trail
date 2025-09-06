@@ -523,7 +523,9 @@ function POS() {
               </Table>
 
               <SheetTrigger className="mt-2 w-full pr-4">
-                <Button className="mt-2 w-full">Checkout</Button>
+                {auth.data.role === 'admin' && (
+                  <Button className="mt-2 w-full">Checkout</Button>
+                )}
               </SheetTrigger>
 
               <SheetContent>
