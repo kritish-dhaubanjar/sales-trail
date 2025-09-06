@@ -262,7 +262,7 @@ function Dashboard() {
             <Table className="border">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Date</TableHead>
+                  <TableHead className="w-[100px]">S.N.</TableHead>
                   <TableHead className="w-[300px]">Name</TableHead>
                   <TableHead>Quantity</TableHead>
                 </TableRow>
@@ -317,7 +317,7 @@ function Dashboard() {
           </Table>
         </div>
 
-        <div className="mb-8 flex gap-5">
+        <div className="mb-8 flex gap-5 print:hidden">
           <div className="mb-8 w-full">
             <h2 className="text-l mb-2 font-semibold">Sale Accounts</h2>
 
@@ -333,7 +333,7 @@ function Dashboard() {
               <TableBody>
                 {dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Sale').map((transaction) => (
                   <TableRow key={transaction.date}>
-                    <TableCell className="font-medium">{transaction.date}</TableCell>
+                    <TableCell className="font-medium whitespace-nowrap">{transaction.date}</TableCell>
                     <TableCell className="font-medium">{transaction.name}</TableCell>
                     <TableCell className="font-medium">{formatter.format(transaction.amount)}</TableCell>
                   </TableRow>
@@ -371,7 +371,7 @@ function Dashboard() {
               <TableBody>
                 {dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Purchase').map((transaction) => (
                   <TableRow key={transaction.date}>
-                    <TableCell className="font-medium">{transaction.date}</TableCell>
+                    <TableCell className="font-medium whitespace-nowrap">{transaction.date}</TableCell>
                     <TableCell className="font-medium">{transaction.name}</TableCell>
                     <TableCell className="font-medium">{formatter.format(transaction.amount)}</TableCell>
                   </TableRow>
