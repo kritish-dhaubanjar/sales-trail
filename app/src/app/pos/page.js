@@ -151,7 +151,10 @@ function POS() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => getCategories({ page: 1, limit: 1024, query: '' }),
-    onSuccess: (data) => setCategory(data?.data?.data?.[0]?.name || null),
+    onSuccess: (data) => {
+      const category = data?.data?.data?.find(({ type }) => type === 'income')
+      setCategory(category?.name || null)
+    }
   });
 
   const { data: products, isFetching: isFetchingProducts } = useQuery({
