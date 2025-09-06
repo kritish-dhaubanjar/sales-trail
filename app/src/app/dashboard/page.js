@@ -168,7 +168,7 @@ function Dashboard() {
               <TableBody>
                 {dashboard?.data?.sales?.data?.map((sale) => (
                   <TableRow key={sale.date}>
-                    <TableCell className="font-medium">{sale.date}</TableCell>
+                    <TableCell className="font-medium whitespace-nowrap">{sale.date}</TableCell>
                     <TableCell className="font-medium">
                       {formatter.format(sale.grand_total)}
                     </TableCell>
@@ -206,7 +206,7 @@ function Dashboard() {
               <TableBody>
                 {dashboard?.data?.purchases?.data?.map((purchase) => (
                   <TableRow key={purchase.date}>
-                    <TableCell className="font-medium">{purchase.date}</TableCell>
+                    <TableCell className="font-medium whitespace-nowrap">{purchase.date}</TableCell>
                     <TableCell className="font-medium">
                       {formatter.format(purchase.grand_total)}
                     </TableCell>
