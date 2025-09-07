@@ -134,12 +134,7 @@ function POSTable() {
       {
         accessorKey: 'name',
         header: 'Name',
-        cell: ({ row }) => <div>{row.getValue('name')}</div>,
-      },
-      {
-        accessorKey: 'items',
-        header: 'Tags',
-        cell: ({ row }) => <div>{row.getValue('items').length ? <Badge variant="secondary" className="bg-blue-500 text-white dark:bg-blue-600">Occupied</Badge> : ''}</div>,
+        cell: ({ row }) => <div>{row.getValue('name')} {row.original?.items?.length ? <Badge variant="secondary" className="bg-blue-500 text-white dark:bg-blue-600">Occupied</Badge> : ''}</div>,
       },
       {
         id: 'actions',
