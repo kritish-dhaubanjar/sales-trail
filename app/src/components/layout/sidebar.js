@@ -34,74 +34,80 @@ const items = [
   {
     name: 'Dashboard',
     Icon: BarChartIcon,
-    href: '/dashboard',
+    href: '/dashboard/',
     roles: new Set(['admin']),
   },
   {
     name: 'Units',
     Icon: RulerSquareIcon,
-    href: '/units',
+    href: '/units/',
     roles: new Set(['admin']),
   },
   {
     name: 'Accounts',
     Icon: IdCardIcon,
-    href: '/accounts',
+    href: '/accounts/',
     roles: new Set(['admin']),
   },
   {
     name: 'Transfers',
     Icon: WidthIcon,
-    href: '/transfers',
+    href: '/transfers/',
     roles: new Set(['admin']),
   },
   {
     name: 'Categories',
     Icon: MixIcon,
-    href: '/categories',
+    href: '/categories/',
     roles: new Set(['admin']),
   },
   {
-    name: 'Items',
+    name: 'Sale Items',
     Icon: ArchiveIcon,
-    href: '/items',
+    href: '/sales/items/',
+    roles: new Set(['admin']),
+  },
+  {
+    name: 'Purchase Items',
+    Icon: ArchiveIcon,
+    href: '/purchases/items/',
     roles: new Set(['admin']),
   },
   {
     name: 'Sales',
     Icon: FilePlusIcon,
-    href: '/sales',
+    href: '/sales/',
     roles: new Set(['admin']),
   },
   {
     name: 'Purchases',
     Icon: FileTextIcon,
-    href: '/purchases',
+    href: '/purchases/',
     roles: new Set(['admin']),
   },
   {
     name: 'Returns',
     Icon: FileMinusIcon,
-    href: '/returns',
+    href: '/returns/',
     roles: new Set(['admin']),
   },
   {
     name: 'Tables',
     Icon: AlignTopIcon,
-    href: '/tables',
+    href: '/tables/',
     roles: new Set(['admin']),
   },
   {
     name: 'Point of Sale',
     Icon: LaptopIcon,
-    href: '/pos',
+    href: '/pos/',
     target: '_blank',
     roles: new Set(['admin', 'user']),
   },
   {
     name: 'Settings',
     Icon: GearIcon,
-    href: '/settings',
+    href: '/settings/',
     roles: new Set(['admin', 'user']),
   },
 ];
@@ -142,7 +148,7 @@ export default function Sidebar() {
         {items
           .filter((item) => item.roles.has(auth.data.role))
           .map(({ name, Icon, href, target = '_self' }) => {
-            const className = pathname.includes(href) ? 'bg-accent' : '';
+            const className = pathname === href ? 'bg-accent' : '';
 
             return (
               <Button

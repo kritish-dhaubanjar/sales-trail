@@ -50,7 +50,13 @@ const schema = z.object({
 
 const DEFAULT_ITEM = { id: '', name: '', unit_id: '', description: '', price: '', category_id: '' };
 
-export function ItemDialog({ open = true, row = null, refetch = () => {}, onClose = () => {} }) {
+export function ItemDialog({
+  categoryType,
+  open = true,
+  row = null,
+  refetch = () => {},
+  onClose = () => {},
+}) {
   const { toast } = useToast();
 
   const form = useForm({
@@ -81,7 +87,13 @@ export function ItemDialog({ open = true, row = null, refetch = () => {}, onClos
     enabled: true,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
-    queryFn: () => getCategories({ page: 1, limit: 1024, query: '' }),
+    queryFn: () =>
+      getCategories({
+        page: 1,
+        limit: 1024,
+        query: '',
+        ...(categoryType && { category_type: categoryType }),
+      }),
   });
 
   const { mutate, isLoading } = useMutation(

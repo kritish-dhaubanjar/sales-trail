@@ -112,7 +112,7 @@ function Item() {
       const limit = pagination.pageSize;
       const page = pagination.pageIndex + 1;
 
-      return getItems({ page, limit, query: debouncedQuery, category_type: 'income' });
+      return getItems({ page, limit, query: debouncedQuery, category_type: 'expense' });
     },
   });
 
@@ -264,6 +264,7 @@ function Item() {
       />
 
       <ItemDialog
+        categoryType="expense"
         open={open || Boolean(editRow)}
         row={editRow}
         refetch={refetch}

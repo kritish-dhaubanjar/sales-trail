@@ -264,6 +264,7 @@ function Item() {
       />
 
       <ItemDialog
+        categoryType="income"
         open={open || Boolean(editRow)}
         row={editRow}
         refetch={refetch}

@@ -1,7 +1,7 @@
 import axios from '@/lib/axios';
 
-export async function getCategories({ page, limit, query }) {
-  const data = await axios.get('/categories', { params: { page, limit, q: query } });
+export async function getCategories({ page, limit, query, category_type }) {
+  const data = await axios.get('/categories', { params: { page, limit, q: query, category_type } });
 
   return data;
 }

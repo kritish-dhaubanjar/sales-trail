@@ -7,7 +7,6 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Exception;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -21,10 +20,21 @@ class CategoryController extends Controller
         $q = $data['q'] ?? "";
         $page = $data['page'] ?? 1;
         $limit = $data['limit'] ?? 10;
+        $categoryType = $data['category_type'] ?? null;
 
-        return Category::orderBy('created_at', 'desc')
-            ->orWhere('id', 'like', "%$q%")
-            ->orWhere('name', 'like', "%$q%")
+        $query = Category::query();
+
+        if ($q) {
+            $query->where(function ($query) use ($q) {
+                $query->where('id', 'like', "%$q%")->orWhere('name', 'like', "%$q%");
+            });
+        }
+
+        if ($categoryType) {
+            $query->where('type', $categoryType);
+        }
+
+        return $query->orderBy('created_at', 'desc')
             ->paginate($limit, ['*'], 'page', $page);
     }
 
