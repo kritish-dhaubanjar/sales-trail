@@ -70,6 +70,11 @@ import {
 
 import Alert from '@/components/layout/alert';
 import Sidebar from '@/components/layout/sidebar';
+
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+} from '@radix-ui/react-icons';
 import { PlusIcon } from 'lucide-react';
 import { CategoryDialog } from '@/components/categories/dialog';
 
@@ -328,10 +333,14 @@ function Category() {
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
+                          <div className="flex">
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(header.column.columnDef.header, header.getContext())}
+
+                            {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[header.column.getIsSorted()] ?? null}
+                          </div>
                         </TableHead>
                       );
                     })}

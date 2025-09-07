@@ -34,6 +34,8 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
   Cross2Icon,
+  ArrowUpIcon,
+  ArrowDownIcon,
 } from '@radix-ui/react-icons';
 import { EyeIcon, PlusIcon, PrinterIcon } from 'lucide-react';
 
@@ -420,10 +422,14 @@ function Purchase() {
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
+                          <div className="flex">
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(header.column.columnDef.header, header.getContext())}
+
+                            {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[header.column.getIsSorted()] ?? null}
+                          </div>
                         </TableHead>
                       );
                     })}
