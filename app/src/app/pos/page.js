@@ -727,7 +727,12 @@ function POS() {
                             <TableCell>Tender</TableCell>
                             <TableCell colSpan={5}>
                               <FormControl>
-                                <Input className="shadow-none" type="text" placeholder="Tendered Amt." onChange={(e) => setTender(e.target.value)} />
+                                <Input
+                                  className="shadow-none"
+                                  type="text"
+                                  placeholder="Tendered Amt."
+                                  onChange={(e) => setTender(e.target.value)}
+                                />
                               </FormControl>
                             </TableCell>
 

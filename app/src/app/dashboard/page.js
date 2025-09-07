@@ -22,6 +22,8 @@ import {
   TableFooter,
 } from '@/components/ui/table';
 
+import { ArrowUpIcon, ArrowDownIcon } from '@radix-ui/react-icons';
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -38,6 +40,13 @@ import 'nepali-datepicker-reactjs/dist/index.css';
 
 import { NepaliDate } from '@/lib/date';
 import { NepaliDatePicker } from 'nepali-datepicker-reactjs';
+
+import {
+  flexRender,
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+} from '@tanstack/react-table';
 
 const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -68,6 +77,42 @@ function Dashboard() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => get({ start_date: startDate, end_date: endDate }),
+  });
+
+  const columns = [
+    {
+      header: 'S.N.',
+      accessorFn: (_, index) => index + 1,
+      enableSorting: false,
+    },
+    {
+      accessorKey: 'name',
+      header: 'Name',
+    },
+    {
+      accessorKey: 'quantity',
+      header: 'Quantity',
+      cell: ({ row }) => formatter.format(row.original.quantity),
+    },
+    {
+      accessorKey: 'total',
+      header: 'Total',
+      cell: ({ row }) => formatter.format(row.original.total),
+    },
+  ];
+
+  const saleItemsTable = useReactTable({
+    data: dashboard?.data?.sales?.items || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const purchaseItemsTable = useReactTable({
+    data: dashboard?.data?.purchases?.items || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   if (isLoading || !auth || isFetchingDashboard) {
@@ -231,19 +276,36 @@ function Dashboard() {
 
             <Table className="border">
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">S.N.</TableHead>
-                  <TableHead className="w-[300px]">Name</TableHead>
-                  <TableHead>Quantity</TableHead>
-                </TableRow>
+                {saleItemsTable.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        onClick={header.column.getToggleSortingHandler()}
+                        className={header.column.getCanSort() ? 'cursor-pointer select-none' : ''}
+                      >
+                        <div className="flex">
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                          {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[
+                            header.column.getIsSorted()
+                          ] ?? null}
+                        </div>
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
               </TableHeader>
 
               <TableBody>
-                {dashboard?.data?.sales?.items?.map((item, index) => (
-                  <TableRow key={item.item_id}>
-                    <TableCell className="font-medium">{index + 1}</TableCell>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell className="font-medium">{formatter.format(item.quantity)}</TableCell>
+                {saleItemsTable.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>
@@ -255,19 +317,36 @@ function Dashboard() {
 
             <Table className="border">
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">S.N.</TableHead>
-                  <TableHead className="w-[300px]">Name</TableHead>
-                  <TableHead>Quantity</TableHead>
-                </TableRow>
+                {purchaseItemsTable.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        onClick={header.column.getToggleSortingHandler()}
+                        className={header.column.getCanSort() ? 'cursor-pointer select-none' : ''}
+                      >
+                        <div className="flex">
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                          {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[
+                            header.column.getIsSorted()
+                          ] ?? null}
+                        </div>
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
               </TableHeader>
 
               <TableBody>
-                {dashboard?.data?.purchases?.items?.map((item, index) => (
-                  <TableRow key={item.item_id}>
-                    <TableCell className="font-medium">{index + 1}</TableCell>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell className="font-medium">{formatter.format(item.quantity)}</TableCell>
+                {purchaseItemsTable.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>
