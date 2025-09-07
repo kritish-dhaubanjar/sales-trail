@@ -158,6 +158,10 @@ class TableController extends Controller
     {
         $table->items()->delete();
 
-        return Table::find($table->id);
+        if ($table->is_delivery) {
+            Table::destroy($table->id);
+        }
+
+        return $table;
     }
 }
