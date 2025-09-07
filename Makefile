@@ -36,4 +36,4 @@ web: build
 
 	cd api && zip -r source.zip . -x ".env" "vendor/*" "database/database.sqlite"
 	scp -r api/source.zip $(SSH_USER)@$(SSH_HOST):$(SSH_API_PATH)
-	ssh $(SSH_USER)@$(SSH_HOST) 'cd $(SSH_API_PATH) && unzip -o source.zip && rm source.zip && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache'
+	ssh $(SSH_USER)@$(SSH_HOST) 'cd $(SSH_API_PATH) && unzip -o source.zip && rm source.zip && php artisan migrate --force && php artisan config:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache'
