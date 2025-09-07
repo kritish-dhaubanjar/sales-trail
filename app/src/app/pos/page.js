@@ -97,6 +97,7 @@ function POS() {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [tender, setTender] = useState(0);
   const [category, setCategory] = useState(null);
 
   const form = useForm({
@@ -719,6 +720,19 @@ function POS() {
                                   </FormItem>
                                 )}
                               />
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell>Tender</TableCell>
+                            <TableCell colSpan={5}>
+                              <FormControl>
+                                <Input className="shadow-none" type="text" placeholder="Tendered Amt." onChange={(e) => setTender(e.target.value)} />
+                              </FormControl>
+                            </TableCell>
+
+                            <TableCell colSpan={2}>
+                              {formatter.format(Number(tender) - (total - discount))}
                             </TableCell>
                           </TableRow>
 
