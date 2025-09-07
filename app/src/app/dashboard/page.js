@@ -10,13 +10,7 @@ import { useAuthUser } from '@/hooks/use-is-authenticated';
 
 import { Skeleton } from '@/components/ui/skeleton';
 
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 import {
   Table,
@@ -153,7 +147,7 @@ function Dashboard() {
           </Form>
         </form>
 
-        <div className="flex gap-5 mb-8">
+        <div className="mb-8 flex gap-5">
           <div className="mb-8 w-full">
             <h2 className="text-l mb-2 font-semibold">Sales</h2>
 
@@ -168,7 +162,7 @@ function Dashboard() {
               <TableBody>
                 {dashboard?.data?.sales?.data?.map((sale) => (
                   <TableRow key={sale.date}>
-                    <TableCell className="font-medium whitespace-nowrap">{sale.date}</TableCell>
+                    <TableCell className="whitespace-nowrap font-medium">{sale.date}</TableCell>
                     <TableCell className="font-medium">
                       {formatter.format(sale.grand_total)}
                     </TableCell>
@@ -206,7 +200,7 @@ function Dashboard() {
               <TableBody>
                 {dashboard?.data?.purchases?.data?.map((purchase) => (
                   <TableRow key={purchase.date}>
-                    <TableCell className="font-medium whitespace-nowrap">{purchase.date}</TableCell>
+                    <TableCell className="whitespace-nowrap font-medium">{purchase.date}</TableCell>
                     <TableCell className="font-medium">
                       {formatter.format(purchase.grand_total)}
                     </TableCell>
@@ -331,13 +325,19 @@ function Dashboard() {
               </TableHeader>
 
               <TableBody>
-                {dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Sale').map((transaction) => (
-                  <TableRow key={transaction.date}>
-                    <TableCell className="font-medium whitespace-nowrap">{transaction.date}</TableCell>
-                    <TableCell className="font-medium">{transaction.name}</TableCell>
-                    <TableCell className="font-medium">{formatter.format(transaction.amount)}</TableCell>
-                  </TableRow>
-                ))}
+                {dashboard?.data?.transactions
+                  ?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Sale')
+                  .map((transaction) => (
+                    <TableRow key={transaction.date}>
+                      <TableCell className="whitespace-nowrap font-medium">
+                        {transaction.date}
+                      </TableCell>
+                      <TableCell className="font-medium">{transaction.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {formatter.format(transaction.amount)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
 
               <TableFooter className="font-semibold">
@@ -345,10 +345,11 @@ function Dashboard() {
                   <TableCell colspan="2">Total</TableCell>
                   <TableCell>
                     {formatter.format(
-                      dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Sale').reduce(
-                        (total, { amount }) => Number(total) + Number(amount),
-                        0,
-                      ),
+                      dashboard?.data?.transactions
+                        ?.filter(
+                          (transaction) => transaction.transaction_type === 'App\\Models\\Sale',
+                        )
+                        .reduce((total, { amount }) => Number(total) + Number(amount), 0),
                     )}
                   </TableCell>
                 </TableRow>
@@ -369,13 +370,21 @@ function Dashboard() {
               </TableHeader>
 
               <TableBody>
-                {dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Purchase').map((transaction) => (
-                  <TableRow key={transaction.date}>
-                    <TableCell className="font-medium whitespace-nowrap">{transaction.date}</TableCell>
-                    <TableCell className="font-medium">{transaction.name}</TableCell>
-                    <TableCell className="font-medium">{formatter.format(transaction.amount)}</TableCell>
-                  </TableRow>
-                ))}
+                {dashboard?.data?.transactions
+                  ?.filter(
+                    (transaction) => transaction.transaction_type === 'App\\Models\\Purchase',
+                  )
+                  .map((transaction) => (
+                    <TableRow key={transaction.date}>
+                      <TableCell className="whitespace-nowrap font-medium">
+                        {transaction.date}
+                      </TableCell>
+                      <TableCell className="font-medium">{transaction.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {formatter.format(transaction.amount)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
 
               <TableFooter className="font-semibold">
@@ -383,10 +392,11 @@ function Dashboard() {
                   <TableCell colspan="2">Total</TableCell>
                   <TableCell>
                     {formatter.format(
-                      dashboard?.data?.transactions?.filter((transaction) => transaction.transaction_type === 'App\\Models\\Purchase').reduce(
-                        (total, { amount }) => Number(total) + Number(amount),
-                        0,
-                      ),
+                      dashboard?.data?.transactions
+                        ?.filter(
+                          (transaction) => transaction.transaction_type === 'App\\Models\\Purchase',
+                        )
+                        .reduce((total, { amount }) => Number(total) + Number(amount), 0),
                     )}
                   </TableCell>
                 </TableRow>
@@ -412,10 +422,12 @@ function Dashboard() {
               <TableBody>
                 {dashboard?.data?.transfers?.map((transfer) => (
                   <TableRow key={transfer.id}>
-                    <TableCell className="font-medium whitespace-nowrap">{transfer.date}</TableCell>
+                    <TableCell className="whitespace-nowrap font-medium">{transfer.date}</TableCell>
                     <TableCell className="font-medium">{transfer.from_account.name}</TableCell>
                     <TableCell className="font-medium">{transfer.to_account.name}</TableCell>
-                    <TableCell className="font-medium">{formatter.format(transfer.amount)}</TableCell>
+                    <TableCell className="font-medium">
+                      {formatter.format(transfer.amount)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

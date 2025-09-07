@@ -1,6 +1,6 @@
 'use client';
 import { z } from 'zod';
-import Image from 'next/image'
+import Image from 'next/image';
 import DevTool from '@/components/DevTool';
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
@@ -152,9 +152,9 @@ function POS() {
     refetchOnWindowFocus: false,
     queryFn: () => getCategories({ page: 1, limit: 1024, query: '' }),
     onSuccess: (data) => {
-      const category = data?.data?.data?.find(({ type }) => type === 'income')
-      setCategory(category?.name || null)
-    }
+      const category = data?.data?.data?.find(({ type }) => type === 'income');
+      setCategory(category?.name || null);
+    },
   });
 
   const { data: products, isFetching: isFetchingProducts } = useQuery({
@@ -389,18 +389,20 @@ function POS() {
 
                         <SelectContent>
                           <SelectGroup>
-                            {tables?.data?.data?.sort((table) => table.items.length ? -1 : 1).map((table) => (
-                              <SelectItem key={table.id} value={String(table.id)}>
-                                <div className="flex items-center justify-between">
-                                  {table.items.length > 0 ? (
-                                    <CheckboxIcon className="text-green-800 w-5 h-5"/>
-                                  ) : (
-                                    <BoxIcon className="h-4 w-4" />
-                                  )}{' '}
-                                  <span className="ml-2">{table.name}</span>
-                                </div>
-                              </SelectItem>
-                            ))}
+                            {tables?.data?.data
+                              ?.sort((table) => (table.items.length ? -1 : 1))
+                              .map((table) => (
+                                <SelectItem key={table.id} value={String(table.id)}>
+                                  <div className="flex items-center justify-between">
+                                    {table.items.length > 0 ? (
+                                      <CheckboxIcon className="h-5 w-5 text-green-800" />
+                                    ) : (
+                                      <BoxIcon className="h-4 w-4" />
+                                    )}{' '}
+                                    <span className="ml-2">{table.name}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -523,9 +525,7 @@ function POS() {
               </Table>
 
               <SheetTrigger className="mt-2 w-full pr-4">
-                {auth.data.role === 'admin' && (
-                  <Button className="mt-2 w-full">Checkout</Button>
-                )}
+                {auth.data.role === 'admin' && <Button className="mt-2 w-full">Checkout</Button>}
               </SheetTrigger>
 
               <SheetContent>

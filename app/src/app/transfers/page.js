@@ -352,13 +352,18 @@ function Transfer() {
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
+                        <TableHead
+                          key={header.id}
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
                           <div className="flex">
                             {header.isPlaceholder
                               ? null
                               : flexRender(header.column.columnDef.header, header.getContext())}
 
-                            {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[header.column.getIsSorted()] ?? null}
+                            {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[
+                              header.column.getIsSorted()
+                            ] ?? null}
                           </div>
                         </TableHead>
                       );

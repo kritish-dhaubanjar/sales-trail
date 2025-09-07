@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from '@/components/ui/badge';
 import { deleteTable, getTables } from '@/services/table.service';
 
 import {
@@ -136,7 +136,18 @@ function POSTable() {
       {
         accessorKey: 'name',
         header: 'Name',
-        cell: ({ row }) => <div>{row.getValue('name')} {row.original?.items?.length ? <Badge variant="secondary" className="bg-blue-500 text-white dark:bg-blue-600">Occupied</Badge> : ''}</div>,
+        cell: ({ row }) => (
+          <div>
+            {row.getValue('name')}{' '}
+            {row.original?.items?.length ? (
+              <Badge variant="secondary" className="bg-blue-500 text-white dark:bg-blue-600">
+                Occupied
+              </Badge>
+            ) : (
+              ''
+            )}
+          </div>
+        ),
       },
       {
         id: 'actions',
@@ -326,13 +337,18 @@ function POSTable() {
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
+                        <TableHead
+                          key={header.id}
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
                           <div className="flex">
                             {header.isPlaceholder
                               ? null
                               : flexRender(header.column.columnDef.header, header.getContext())}
 
-                            {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[header.column.getIsSorted()] ?? null}
+                            {{ asc: <ArrowUpIcon />, desc: <ArrowDownIcon /> }[
+                              header.column.getIsSorted()
+                            ] ?? null}
                           </div>
                         </TableHead>
                       );
