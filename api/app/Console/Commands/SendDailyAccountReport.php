@@ -58,18 +58,18 @@ class SendDailyAccountReport extends Command
 
         // Format message
         $message = "**Account Report:**\n```";
-        $message .= str_pad("Name", 40) . str_pad("Net Balance", 15) . "\n";
-        $message .= str_repeat("-", 60) . "\n";
+        $message .= str_pad("Name", 30) . str_pad("Net Balance", 15) . "\n";
+        $message .= str_repeat("-", 45) . "\n";
 
         $totalBalance = 0;
 
         foreach ($accounts as $acc) {
-            $message .= str_pad($acc->name, 40) . str_pad(number_format($acc->balance, 2), 15) . "\n";
+            $message .= str_pad($acc->name, 30) . str_pad(number_format($acc->balance, 2), 15) . "\n";
             $totalBalance += $acc->balance;
         }
 
-        $message .= str_repeat("-", 60) . "\n";
-        $message .= str_pad('Total', 40) . str_pad(number_format($totalBalance, 2), 15) . "\n";
+        $message .= str_repeat("-", 45) . "\n";
+        $message .= str_pad('Total', 30) . str_pad(number_format($totalBalance, 2), 15) . "\n";
         $message = rtrim($message) . "```";
 
         $response = Http::post($webhook, ['content' => $message]);
