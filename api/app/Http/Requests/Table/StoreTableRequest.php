@@ -23,6 +23,7 @@ class StoreTableRequest extends FormRequest
     {
         return [
             'name' => 'required|string|unique:tables,name',
+            'is_delivery' => 'sometimes|boolean',
         ];
     }
 }

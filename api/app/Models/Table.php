@@ -11,7 +11,7 @@ class Table extends Model
     use HasFactory;
 
     protected $with = ["items"];
-    protected $fillable = ["name"];
+    protected $fillable = ["name", "is_delivery"];
 
     public function items(): HasMany
     {

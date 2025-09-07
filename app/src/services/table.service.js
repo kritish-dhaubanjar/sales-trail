@@ -18,8 +18,8 @@ export async function deleteTable({ id }) {
   return data;
 }
 
-export async function createTable({ name }) {
-  const data = await axios.post('/tables', { name });
+export async function createTable({ name, is_delivery }) {
+  const data = await axios.post('/tables', { name, is_delivery });
 
   return data;
 }

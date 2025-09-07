@@ -8,6 +8,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { TableDialog } from '@/components/tables/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
@@ -99,6 +100,7 @@ function POS() {
   const [query, setQuery] = useState('');
   const [tender, setTender] = useState(0);
   const [category, setCategory] = useState(null);
+  const [tableOpen, setTableOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -293,6 +295,13 @@ function POS() {
     <div className="flex">
       {/* <Sidebar /> */}
 
+      <TableDialog
+        isDelivery={true}
+        open={tableOpen}
+        refetch={refetchTables}
+        onClose={() => setTableOpen(false)}
+      />
+
       <div className="min-h-lvh px-4">
         <ScrollArea className="h-[100vh]">
           <div className="relative min-h-lvh max-w-[min-content] border-r pe-3">
@@ -370,48 +379,54 @@ function POS() {
               render={(field) => <input type="hidden" {...field} />}
             />
 
-            <div className="mr-4">
-              <FormField
-                name="table_id"
-                control={control}
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Select
-                        className="w-full"
-                        value={String(field.value)}
-                        onValueChange={(value) => value && field.onChange(value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={<span className="text-gray-500">Select Table</span>}
-                          />
-                        </SelectTrigger>
+            <div className="flex">
+              <div className="mr-2 w-full">
+                <FormField
+                  name="table_id"
+                  control={control}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Select
+                          className="w-full"
+                          value={String(field.value)}
+                          onValueChange={(value) => value && field.onChange(value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={<span className="text-gray-500">Select Table</span>}
+                            />
+                          </SelectTrigger>
 
-                        <SelectContent>
-                          <SelectGroup>
-                            {tables?.data?.data
-                              ?.sort((table) => (table.items.length ? -1 : 1))
-                              .map((table) => (
-                                <SelectItem key={table.id} value={String(table.id)}>
-                                  <div className="flex items-center justify-between">
-                                    {table.items.length > 0 ? (
-                                      <CheckboxIcon className="h-5 w-5 text-green-800" />
-                                    ) : (
-                                      <BoxIcon className="h-4 w-4" />
-                                    )}{' '}
-                                    <span className="ml-2">{table.name}</span>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                          <SelectContent>
+                            <SelectGroup>
+                              {tables?.data?.data
+                                ?.sort((table) => (table.items.length ? -1 : 1))
+                                .map((table) => (
+                                  <SelectItem key={table.id} value={String(table.id)}>
+                                    <div className="flex items-center justify-between">
+                                      {table.items.length > 0 ? (
+                                        <CheckboxIcon className="h-5 w-5 text-green-800" />
+                                      ) : (
+                                        <BoxIcon className="h-4 w-4" />
+                                      )}{' '}
+                                      <span className="ml-2">{table.name}</span>
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button className="mr-4" onClick={() => setTableOpen(true)}>
+                <PlusIcon className="h-4 w-4" />
+              </Button>
             </div>
 
             <ScrollArea className="mt-4 h-[calc(100vh-200px)]">

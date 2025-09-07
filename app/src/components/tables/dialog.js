@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -23,12 +23,19 @@ import { createTable, updateTable } from '@/services/table.service';
 
 const schema = z.object({
   id: z.coerce.number(),
+  is_delivery: z.boolean().or(z.number()),
   name: z.string().min(1, { message: 'Table name is required' }),
 });
 
-const DEFAULT_TABLE = { id: '', name: '' };
+export function TableDialog({
+  isDelivery = false,
+  open = true,
+  row = null,
+  refetch = () => {},
+  onClose = () => {},
+}) {
+  const DEFAULT_TABLE = { id: '', is_delivery: isDelivery, name: '' };
 
-export function TableDialog({ open = true, row = null, refetch = () => {}, onClose = () => {} }) {
   const { toast } = useToast();
 
   const form = useForm({
@@ -84,6 +91,13 @@ export function TableDialog({ open = true, row = null, refetch = () => {}, onClo
                   name="id"
                   control={control}
                   render={({ field }) => <input type="hidden" {...field} />}
+                />
+
+                <Controller
+                  control={control}
+                  name="is_delivery"
+                  defaultValue={isDelivery}
+                  render={(field) => <input type="hidden" {...field} />}
                 />
 
                 <FormField
