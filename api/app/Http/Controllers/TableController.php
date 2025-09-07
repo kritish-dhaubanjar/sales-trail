@@ -147,7 +147,11 @@ class TableController extends Controller
 
         DB::commit();
 
-        return Table::find($table->id);
+        if ($table->is_delivery) {
+            Table::destroy($table->id);
+        }
+
+        return $table;
     }
 
     public function destroyItems(Table $table)
