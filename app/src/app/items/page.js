@@ -131,31 +131,37 @@ function Item() {
       {
         accessorKey: 'id',
         header: 'ID',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.getValue('id')}</div>,
       },
       {
         accessorKey: 'name',
         header: 'Name',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.getValue('name')}</div>,
       },
       {
         accessorKey: 'category.name',
         header: 'Category',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.original.category.name}</div>,
       },
       {
         accessorKey: 'description',
         header: 'Description',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.getValue('description')}</div>,
       },
       {
         accessorKey: 'unit',
         header: 'Unit',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.original.unit.name}</div>,
       },
       {
         accessorKey: 'price',
         header: 'Rate',
+        enableSorting: true,
         cell: ({ row }) => <div>{formatter.format(row.getValue('price'))}</div>,
       },
       {
