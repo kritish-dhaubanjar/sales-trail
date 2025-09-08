@@ -95,6 +95,11 @@ function Dashboard() {
       cell: ({ row }) => formatter.format(row.original.quantity),
     },
     {
+      accessorKey: 'unit',
+      header: 'Unit',
+      cell: ({ row }) => row.original.unit,
+    },
+    {
       accessorKey: 'total',
       header: 'Total',
       cell: ({ row }) => formatter.format(row.original.total),

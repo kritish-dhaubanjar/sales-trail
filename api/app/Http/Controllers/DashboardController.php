@@ -74,13 +74,56 @@ class DashboardController extends Controller
         $sales = [
             'total' => Sale::whereBetween('date', [$startDate, $endDate])->sum('grand_total'),
             'data' => DB::select("SELECT date, SUM(grand_total) AS grand_total FROM sales WHERE date BETWEEN ? AND ? AND deleted_at IS NULL GROUP BY date ORDER BY date ASC", [$startDate, $endDate]),
-            'items' => DB::select("SELECT sale_items.item_id, items.name, SUM(sale_items.quantity) AS quantity, SUM(sale_items.total) AS total FROM sale_items INNER JOIN sales ON sales.id = sale_items.sale_id INNER JOIN items ON sale_items.item_id = items.id WHERE sales.date BETWEEN ? AND ? AND sales.deleted_at IS NULL GROUP BY items.name, sale_items.item_id ORDER BY quantity DESC", [$startDate, $endDate])
+            'items' => DB::select("
+                SELECT
+                    sale_items.item_id,
+                    items.name,
+                    units.name AS unit,
+                    SUM(sale_items.quantity) AS quantity,
+                    SUM(sale_items.total)    AS total
+                FROM
+                    sale_items
+                    INNER JOIN sales ON sales.id = sale_items.sale_id
+                    INNER JOIN items ON sale_items.item_id = items.id
+                    LEFT JOIN units ON items.unit_id = units.id
+                WHERE
+                    sales.date BETWEEN ? AND ?
+                    AND sales.deleted_at IS NULL
+                GROUP BY
+                    items.name,
+                    units.name,
+                    sale_items.item_id
+                ORDER BY
+                    quantity DESC
+                ", [$startDate, $endDate])
         ];
 
         $purchases = [
             'total' => Purchase::whereBetween('date', [$startDate, $endDate])->sum('grand_total'),
             'data' => DB::select("SELECT date, SUM(grand_total) AS grand_total FROM purchases WHERE date BETWEEN ? AND ? AND purchases.deleted_at IS NULL GROUP BY date ORDER BY date ASC", [$startDate, $endDate]),
-            'items' => DB::select("SELECT purchase_items.item_id, items.name, SUM(purchase_items.quantity) AS quantity, SUM(purchase_items.total) AS total  FROM purchase_items INNER JOIN purchases ON purchases.id = purchase_items.purchase_id INNER JOIN items ON purchase_items.item_id = items.id WHERE purchases.date BETWEEN ? AND ? AND purchases.deleted_at IS NULL GROUP BY items.name, purchase_items.item_id ORDER BY quantity DESC", [$startDate, $endDate])
+
+            'items' => DB::select("
+                SELECT
+                    purchase_items.item_id,
+                    items.name,
+                    units.name AS unit,
+                    SUM(purchase_items.quantity) AS quantity,
+                    SUM(purchase_items.total)    AS total
+                FROM
+                    purchase_items
+                    INNER JOIN purchases ON purchases.id = purchase_items.purchase_id
+                    INNER JOIN items ON purchase_items.item_id = items.id
+                    LEFT JOIN units ON items.unit_id = units.id
+                WHERE
+                    purchases.date BETWEEN ? AND ?
+                    AND purchases.deleted_at IS NULL
+                GROUP BY
+                    items.name,
+                    units.name,
+                    purchase_items.item_id
+                ORDER BY
+                    quantity DESC
+                ", [$startDate, $endDate])
         ];
 
         return response()->json([
