@@ -36,6 +36,7 @@ import {
   Cross2Icon,
   ArrowUpIcon,
   ArrowDownIcon,
+  BellIcon
 } from '@radix-ui/react-icons';
 import { EyeIcon, PlusIcon, PrinterIcon } from 'lucide-react';
 
@@ -231,6 +232,16 @@ function Sale() {
         cell: ({ row }) => (
           <div>{row.original.transactions.map(({ account: { name } }) => name).join(', ')}</div>
         ),
+      },
+      {
+        id: 'discrepancy',
+        enableHiding: false,
+        cell: ({ row }) => {
+          const totalSale = Number(row.original.grand_total);
+          const totalTransaction = row.original.transactions.reduce((acc, { amount }) => acc + Number(amount), 0);
+
+          return (totalSale === totalTransaction) ? <></> : <BellIcon className="text-red-500" />
+        },
       },
       {
         id: 'actions',
