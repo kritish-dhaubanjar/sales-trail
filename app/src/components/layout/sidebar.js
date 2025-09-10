@@ -125,13 +125,7 @@ export default function Sidebar() {
   const { isLoading: isLoadingAuthUser, data: auth } = useAuthUser();
 
   if (isLoadingAuthUser || !auth) {
-    return (
-      <div className="flex h-lvh items-center justify-center space-x-4">
-        <div className="space-y-2">
-          <Skeleton className="h-4 min-w-96" />
-        </div>
-      </div>
-    );
+    return <></>
   }
 
   const item = items.find((item) => pathname.includes(item.href));
