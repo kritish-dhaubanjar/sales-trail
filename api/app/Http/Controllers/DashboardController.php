@@ -94,7 +94,7 @@ class DashboardController extends Controller
                     units.name,
                     sale_items.item_id
                 ORDER BY
-                    quantity DESC
+                    total DESC
                 ", [$startDate, $endDate])
         ];
 
@@ -122,7 +122,7 @@ class DashboardController extends Controller
                     units.name,
                     purchase_items.item_id
                 ORDER BY
-                    quantity DESC
+                    total DESC
                 ", [$startDate, $endDate])
         ];
 
