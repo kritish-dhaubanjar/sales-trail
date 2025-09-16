@@ -27,6 +27,10 @@ class SendDailyAccountReport extends Command
      */
     public function handle()
     {
+        if (DB::table('table_items')->count() == 0) {
+            DB::statement("ALTER TABLE table_items AUTO_INCREMENT = 1");
+        }
+
         $webhook = env('DISCORD_WEBHOOK_URL');
 
         $accounts = DB::select("SELECT accounts.*,
