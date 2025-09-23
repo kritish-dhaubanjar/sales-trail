@@ -130,7 +130,7 @@ function Sale() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: '#sequence_no',
+        accessorKey: '#sequence_code',
         header: ({ table }) => (
           <Checkbox
             checked={
@@ -156,9 +156,9 @@ function Sale() {
         cell: ({ row }) => <div>{row.getValue('id')}</div>,
       },
       {
-        accessorKey: 'sequence_no',
+        accessorKey: 'sequence_code',
         header: 'S.N.',
-        cell: ({ row }) => <div>{row.getValue('sequence_no')}</div>,
+        cell: ({ row }) => <div>{row.getValue('sequence_code')}</div>,
       },
       {
         accessorKey: 'date',

@@ -228,7 +228,7 @@ function Print() {
               <TableFooter>
                 <TableRow>
                   <TableCell className="border border-black text-left" colSpan={1}>
-                    <div className="w-[50px] text-right">{data.data.id}</div>
+                    <div className="w-[50px] text-right">{data.data.sequence_code}</div>
                   </TableCell>
 
                   <TableCell className="border border-black text-right" colSpan={3}>
@@ -248,7 +248,7 @@ function Print() {
                 <TableRow>
                   <TableCell className="border border-black text-left" rowSpan={3} colSpan={1}>
                     <div className="w-[50px] rotate-[270deg] text-right">
-                      {data.data.sequence_no}
+                      {data.data.sequence_code}
                     </div>
                   </TableCell>
 

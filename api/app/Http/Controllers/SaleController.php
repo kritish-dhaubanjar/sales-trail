@@ -27,7 +27,7 @@ class SaleController extends Controller
             ->orWhere('description', 'like', "%$q%")
             ->orWhere('id', 'like', "%$q%")
             ->orWhere('title', 'like', "%$q%")
-            ->orWhere('sequence_no', 'like', "%$q%")
+            ->orWhere('sequence_code', 'like', "%$q%")
             ->paginate($limit, ['*'], 'page', $page);
     }
 
