@@ -41,10 +41,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sales', function (Blueprint $table) {
+            $table->dropIndex(['sequence_no']);
             $table->dropColumn('sequence_no');
         });
 
         Schema::table('refunds', function (Blueprint $table) {
+            $table->dropIndex(['sequence_no']);
             $table->dropColumn('sequence_no');
         });
     }
