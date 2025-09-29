@@ -26,5 +26,9 @@ jobs:
           ssh-keyscan -H kritishdhaubanjar.com.np >> ~/.ssh/known_hosts
 
       - name: Makefile
-        run: make web
+        run: |
+          make web \
+            PUSHER_APP_KEY="${{ secrets.PUSHER_KEY }}"
+        env:
+          PUSHER_APP_KEY: ${{ secrets.LOOP_STUDIO_CAFE_PUSHER_KEY }}
 
