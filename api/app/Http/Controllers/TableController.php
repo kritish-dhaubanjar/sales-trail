@@ -126,7 +126,7 @@ class TableController extends Controller
             // delta == 0 → unchanged, ignore
         }
 
-        event(new POSEvent($table, $added, $removed, $request->user()->id));
+        event(new POSEvent($table, $added, $removed));
 
         $table->items()->delete();
         $table->items()->saveMany($items);
@@ -187,7 +187,7 @@ class TableController extends Controller
             Table::destroy($table->id);
         }
 
-        event(new POSEvent($table, [], [], $request->user()->id));
+        event(new POSEvent($table, [], []));
 
         return $table;
     }
@@ -200,7 +200,7 @@ class TableController extends Controller
             Table::destroy($table->id);
         }
 
-        event(new POSEvent($table, [], [], $request->user()->id));
+        event(new POSEvent($table, [], []));
 
         return $table;
     }

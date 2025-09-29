@@ -61,7 +61,7 @@ function Kitchen() {
       return;
     }
 
-    Echo.private(`pos.${auth.data.id}`).listen('.pos.created', (data) => {
+    Echo.private('pos').listen('.pos.created', (data) => {
       refetch();
       data.added.map(({ item_id, quantity_added }) => {
         const item = items?.data?.data.find(i => i.id === item_id);

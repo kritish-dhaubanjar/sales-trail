@@ -25,7 +25,6 @@ class POSEvent implements ShouldBroadcastNow
         public Table $table,
         public array $added,
         public array $removed,
-        public int $userId
     ) {
         //
     }
@@ -43,7 +42,7 @@ class POSEvent implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('pos.' . $this->userId),
+            new PrivateChannel('pos'),
         ];
     }
 }
