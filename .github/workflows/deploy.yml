@@ -27,8 +27,7 @@ jobs:
 
       - name: Makefile
         run: |
-          make web \
-            PUSHER_APP_KEY="${{ secrets.PUSHER_KEY }}"
+          make web
         env:
           PUSHER_APP_KEY: ${{ secrets.LOOP_STUDIO_CAFE_PUSHER_KEY }}
 
