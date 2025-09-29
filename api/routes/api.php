@@ -12,11 +12,14 @@ use App\Http\Controllers\RefundController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\TransferController;
+use Illuminate\Support\Facades\Broadcast;
 
 Route::post('/v1/login', [AuthController::class, 'login']);
 
 Route::prefix('/v1')->middleware('auth:sanctum')->group(
     function () {
+        Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
         Route::controller(AuthController::class)->group(function () {
             Route::post('/logout', 'logout');
             Route::get('/user', 'user');

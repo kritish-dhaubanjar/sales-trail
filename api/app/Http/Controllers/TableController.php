@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\POSEvent;
 use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\Table\CheckoutTableRequest;
 use Exception;
@@ -92,6 +93,41 @@ class TableController extends Controller
             ]);
         }, $table_items);
 
+        $before = $table->items()
+            ->get(['item_id', 'quantity'])
+            ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity])
+            ->keyBy('item_id');
+
+        $after = collect($table_items)
+            ->map(fn($m) => ['item_id'  => (int)$m['item_id'], 'quantity' => (int)$m['quantity']])
+            ->keyBy('item_id');
+
+        $allKeys = $before->keys()->union($after->keys());
+
+        $added = [];
+        $removed = [];
+
+        foreach ($allKeys as $id) {
+            $prevQty = $before[$id]['quantity'] ?? 0;
+            $nextQty = $after[$id]['quantity'] ?? 0;
+            $delta   = $nextQty - $prevQty;
+
+            if ($delta > 0) {
+                $added[] = [
+                    'item_id'       => $id,
+                    'quantity_added' => $delta,
+                ];
+            } elseif ($delta < 0) {
+                $removed[] = [
+                    'item_id'          => $id,
+                    'quantity_removed' => abs($delta),
+                ];
+            }
+            // delta == 0 → unchanged, ignore
+        }
+
+        event(new POSEvent($table, $added, $removed, $request->user()->id));
+
         $table->items()->delete();
         $table->items()->saveMany($items);
 
@@ -151,16 +187,20 @@ class TableController extends Controller
             Table::destroy($table->id);
         }
 
+        event(new POSEvent($table, [], [], $request->user()->id));
+
         return $table;
     }
 
-    public function destroyItems(Table $table)
+    public function destroyItems(Request $request, Table $table)
     {
         $table->items()->delete();
 
         if ($table->is_delivery) {
             Table::destroy($table->id);
         }
+
+        event(new POSEvent($table, [], [], $request->user()->id));
 
         return $table;
     }
