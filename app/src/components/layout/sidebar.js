@@ -105,6 +105,13 @@ const items = [
     roles: new Set(['admin', 'user']),
   },
   {
+    name: 'Kitchen',
+    Icon: LaptopIcon,
+    href: '/kitchen/',
+    target: '_blank',
+    roles: new Set(['admin', 'user']),
+  },
+  {
     name: 'Settings',
     Icon: GearIcon,
     href: '/settings/',
