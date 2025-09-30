@@ -65,7 +65,7 @@ function Kitchen() {
       refetch();
       data.added.map(({ item_id, quantity_added }) => {
         const item = items?.data?.data.find(i => i.id === item_id);
-        setLogs(prev => [{ id: prev.length + 1, isChecked: false, log: `${quantity_added} ${item.name} added for ${data.table.name}` }, ...prev])
+        setLogs(prev => [{ id: prev.length + 1, qty: quantity_added, item: item, table: data.table, isAdd: true, isChecked: false, log: `${quantity_added} ${item.name} added for ${data.table.name}` }, ...prev])
 
         speak(`${quantity_added} ${item.name} added for ${data.table.name}`)
       })
@@ -73,7 +73,7 @@ function Kitchen() {
       data.removed.map(({ item_id, quantity_removed }) => {
         const item = items?.data?.data.find(i => i.id === item_id);
 
-        setLogs(prev => [{ id: prev.length + 1, isChecked: false, log: `${quantity_removed} ${item.name} removed for ${data.table.name}` }, ...prev])
+        setLogs(prev => [{ id: prev.length + 1, qty: quantity_removed, item: item, table: data.table, isRemoved: true, isChecked: false, log: `${quantity_removed} ${item.name} removed for ${data.table.name}` }, ...prev])
 
         speak(`${quantity_removed} ${item.name} removed for ${data.table.name}`)
       })
@@ -115,15 +115,21 @@ function Kitchen() {
               <TableRow>
                 <TableHead>S.N.</TableHead>
                 <TableHead>KOT</TableHead>
+                <TableHead>Table</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {logs.map(({ log, isChecked, id }) => (
+              {logs.map(({ isChecked, qty, item, table, id, isRemoved }) => (
                 <TableRow key={id}>
                   <TableCell>{id}</TableCell>
-                  <TableCell className={isChecked ? 'line-through' : ''}>{log}</TableCell>
+                  <TableCell className={isChecked ? 'line-through' : ''}>
+                    <span className={isRemoved ? 'text-red-600' : ''}>
+                      {qty} {item.name}
+                    </span>
+                  </TableCell>
+                  <TableCell>{table.name}</TableCell>
                   <TableCell>
                     <Checkbox
                       checked={isChecked}
