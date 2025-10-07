@@ -194,13 +194,17 @@ class TableController extends Controller
 
     public function destroyItems(Request $request, Table $table)
     {
+        $table_items = $table->items()->get(['item_id', 'quantity']);
+
+        $removed = $table_items->map(fn($m) => ['item_id'  => (int)$m['item_id'], 'quantity_removed' => (int)$m['quantity']])->toArray();
+
         $table->items()->delete();
 
         if ($table->is_delivery) {
             Table::destroy($table->id);
         }
 
-        event(new POSEvent($table, [], []));
+        event(new POSEvent($table, [], $removed));
 
         return $table;
     }
