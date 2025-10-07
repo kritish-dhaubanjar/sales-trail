@@ -34,7 +34,7 @@ class Refund extends Model
         });
     }
 
-    public static function generateSequenceNumber(int $id): string
+    public static function generateSequenceCode(int $id): string
     {
         $size = 500;
 
