@@ -30,7 +30,7 @@ return new class extends Migration
         $refunds = DB::table('refunds')->whereNull('deleted_at')->orderBy('created_at')->get();
 
         foreach ($refunds as $refund) {
-            $sequenceCode = self::generateSequenceCode($sale->sequence_no);
+            $sequenceCode = self::generateSequenceCode($refund->sequence_no);
             DB::table('refunds')->where('id', $refund->id)->update(['sequence_code' => $sequenceCode]);
         }
     }
