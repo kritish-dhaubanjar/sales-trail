@@ -194,8 +194,16 @@ function POS() {
     },
   });
 
+
   const { mutate: deleteTableItemsMutation } = useMutation(deleteTableItems, {
-    onSuccess: refetchTables,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['tables'], (oldData) => {
+        return {
+          ...oldData,
+          data: oldData.data.map((table) => table.id === data.data.id ? { ...data.data, items: [] } : table),
+        };
+      });
+    }
   });
 
   const debouncerRef = useRef(new Map());
@@ -259,6 +267,7 @@ function POS() {
     if (data.items.length) {
       getDebouncedUpdater(tableId)?.({ id: tableId, items: data.items });
     } else {
+      getDebouncedUpdater(tableId)?.({ id: tableId, items: [] });
       deleteTableItemsMutation({ id: tableId });
     }
   };
