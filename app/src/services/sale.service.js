@@ -58,3 +58,9 @@ export async function updateSale({
 
   return data;
 }
+
+export async function printSale({ id }) {
+  const data = await axios.post(`/sales/${id}/print`);
+
+  return data;
+}

@@ -60,6 +60,7 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::get('/sales/{sale}', 'show');
             Route::put('/sales/{sale}', 'update');
             Route::delete('/sales/{sale}', 'destroy');
+            Route::post('/sales/{sale}/print', 'print');
         });
 
         Route::controller(RefundController::class)->group(function () {

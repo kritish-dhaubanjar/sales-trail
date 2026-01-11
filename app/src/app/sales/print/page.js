@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic';
 
 import { amountToWordsWithCurrency } from "@/lib/string";
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/hooks/use-is-authenticated';
@@ -19,7 +19,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
-import { getSale } from '@/services/sale.service';
+import { getSale, printSale } from '@/services/sale.service';
 import { PrinterIcon } from 'lucide-react';
 import { startCase } from 'lodash';
 
@@ -43,6 +43,8 @@ function Print() {
     },
   });
 
+  const useSalesPrintMutation = useMutation({ mutationFn: () => printSale({ id: saleId }) })
+
   if (isLoading || isFetching || !auth || !isSuccess) {
     return (
       <div className="flex h-lvh items-center justify-center space-x-4">
@@ -58,7 +60,7 @@ function Print() {
   return (
     <>
       <div className="m-5 mx-auto flex w-[720px] justify-between print:hidden">
-        <Button onClick={window.print}>
+        <Button onClick={useSalesPrintMutation.mutate}>
           <PrinterIcon className="mr-2 h-4 w-4" /> Print
         </Button>
       </div>
@@ -85,7 +87,7 @@ function Print() {
             <TableHeader className="border-none">
               <TableRow>
                 <TableHead className="h-0 w-[50px] py-0 text-black">
-                  S.N.
+                  SN
                 </TableHead>
                 <TableHead className="h-0 w-full py-0 text-left text-black">
                   ITEMS
