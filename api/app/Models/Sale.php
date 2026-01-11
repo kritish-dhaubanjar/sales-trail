@@ -12,7 +12,7 @@ class Sale extends Model
     use HasFactory, SoftDeletes;
 
     protected $with = ['sale_items', 'transactions'];
-    protected $fillable = ["date", "title", "description", "total", "discount", "grand_total"];
+    protected $fillable = ["date", "title", "description", "total", "discount", "vat_amount", "grand_total"];
 
     public function sale_items(): HasMany
     {

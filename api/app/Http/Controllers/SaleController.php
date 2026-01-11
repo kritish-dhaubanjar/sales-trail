@@ -66,13 +66,16 @@ class SaleController extends Controller
                 return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
             }, $sale_transactions);
 
+            $vat_amount = (13 / 100) * ($total - $discount);
+
             $sale = Sale::create([
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => $data['description'],
                 'total' => $total,
                 'discount' => $discount,
-                'grand_total' => $total - $discount,
+                'vat_amount' => $vat_amount,
+                'grand_total' => $total - $discount + $vat_amount,
             ]);
 
             $sale->sale_items()->saveMany($items);
@@ -131,13 +134,16 @@ class SaleController extends Controller
                 return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
             }, $sale_transactions);
 
+            $vat_amount = (13 / 100) * ($total - $discount);
+
             $sale->update([
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => $data['description'],
                 'total' => $total,
                 'discount' => $discount,
-                'grand_total' => $total - $discount,
+                'vat_amount' => $vat_amount,
+                'grand_total' => $total - $discount + $vat_amount,
             ]);
 
             $sale->sale_items()->saveMany($items);
