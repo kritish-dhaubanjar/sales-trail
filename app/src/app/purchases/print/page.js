@@ -94,8 +94,6 @@ function Print() {
 
       <div className="container mx-auto mb-1 w-[720px] p-1 screen:border screen:border-black">
         <div className="text-center">
-          <h5 className="text-md mb-0 text-black">Loop Studio Cafe</h5>
-
           <div className="text-md my-1 flex justify-between">
             <div className="w-full">
               <Textarea

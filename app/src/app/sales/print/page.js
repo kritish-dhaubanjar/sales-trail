@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 
-import { useState } from 'react';
+import { amountToWordsWithCurrency } from "@/lib/string";
 import { useQuery } from 'react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 
@@ -16,22 +16,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
 import { getSale } from '@/services/sale.service';
-import { cn } from '@/lib/utils';
 import { PrinterIcon } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import { startCase } from 'lodash';
 
 function Print() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  const [isQuotation, setQuotation] = useState(false);
-  const [isDiscount, setIsDiscount] = useState(false);
 
   const { isLoading, data: auth } = useAuthUser();
 
@@ -60,245 +54,165 @@ function Print() {
   }
 
   const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const placeholder = data.data.sale_items.length >= 25 ? 0 : 25 - data.data.sale_items.length;
 
   return (
     <>
       <div className="m-5 mx-auto flex w-[720px] justify-between print:hidden">
-        <div className="flex">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="quotation"
-              checked={isQuotation}
-              onCheckedChange={(value) => setQuotation(value)}
-            />
-            <Label htmlFor="quotation">Quotation</Label>
-          </div>
-
-          <div className="ml-5 flex items-center space-x-2">
-            <Switch
-              disabled={isQuotation}
-              id="discount"
-              checked={isDiscount}
-              onCheckedChange={(value) => setIsDiscount(value)}
-            />
-            <Label htmlFor="quotation">Discount</Label>
-          </div>
-        </div>
-
         <Button onClick={window.print}>
           <PrinterIcon className="mr-2 h-4 w-4" /> Print
         </Button>
       </div>
 
-      <div className="container mx-auto mb-1 w-[720px] p-1 screen:border screen:border-black">
-        <div className="text-center">
-          <h5 className="text-md mb-0 text-black">Loop Studio Cafe</h5>
-
-          <div className="text-md my-1 flex justify-between">
-            <div className="w-full">
-              <Textarea
-                rows="1"
-                className="text-md resize-none overflow-y-hidden rounded-none border-0 py-0 font-bold underline shadow-none focus-visible:ring-0"
-              >
-                {data.data.title || '#Cash'}
-              </Textarea>
-            </div>
-
-            <p className="whitespace-nowrap">Date: {data.data.date}</p>
+      <div className="container mx-auto mb-1 w-[400px] p-3 screen:border screen:border-black">
+        <div>
+          <div className="text-center">
+            <h5 className="text-md mb-0 text-black font-bold">Sushi Time - Bhaktapur</h5>
+            <h6 className="text-sm mb-0 text-black">By: Global Institute Of Hotel Management &amp; Tourism Technical Center Pvt. Ltd</h6>
+            <h5 className="mb-0 text-black font-bold">VAT: 302891803</h5>
+            <h5 className="text-md mb-0 font-bold">TAX INVOICE</h5>
           </div>
 
-          <h5 className="text-md mb-1 font-bold text-black">
-            {isQuotation ? 'Challan' : 'Estimate'}
-          </h5>
+          <div className="text-md my-1">
+            <p className="whitespace-nowrap">Bill No: {data.data.id}</p>
+            <p className="whitespace-nowrap">Bill Date: {data.data.date}</p>
+            <p className="whitespace-nowrap">Buyer's Name: LEAPFROG TECHNOLOGY NEPAL PVT. LTD</p>
+            <p className="whitespace-nowrap">Buyer's PAN: 600243227</p>
+            <p className="whitespace-nowrap">Address: DILLBAZAR, KATHMANDU</p>
+            <p className="whitespace-nowrap">Table No: </p>
+          </div>
 
-          <Table className="text-md border">
-            <TableHeader>
+          <Table className="text-md border-none mt-2">
+            <TableHeader className="border-none">
               <TableRow>
-                <TableHead className="h-0 w-[50px] border border-black py-0 text-black">
+                <TableHead className="h-0 w-[50px] py-0 text-black">
                   S.N.
                 </TableHead>
-                <TableHead className="h-0 w-full border border-black py-0 text-left text-black">
-                  Particulars
+                <TableHead className="h-0 w-full py-0 text-left text-black">
+                  ITEMS
                 </TableHead>
-                <TableHead className="h-0 min-w-[60px] border border-black py-0 text-right text-black">
+                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">
                   Qty
                 </TableHead>
-                <TableHead className="h-0 min-w-[60px] border border-black py-0 text-right text-black">
-                  Unit
+                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">
+                  RATE
                 </TableHead>
-                <TableHead
-                  className={cn(
-                    'h-0 min-w-[70px] border border-black py-0 text-right text-black',
-                    isQuotation ? 'hidden' : '',
-                  )}
-                >
-                  Rate
-                </TableHead>
-                <TableHead
-                  className={cn(
-                    'h-0 min-w-[70px] border border-black py-0 text-right text-black',
-                    isQuotation || !isDiscount ? 'hidden' : '',
-                  )}
-                >
-                  Discount
-                </TableHead>
-                <TableHead
-                  className={cn(
-                    'h-0 min-w-[70px] border border-black py-0 text-right text-black',
-                    isQuotation ? 'hidden' : '',
-                  )}
-                >
-                  Amount
+                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">
+                  AMT
                 </TableHead>
               </TableRow>
             </TableHeader>
 
-            <TableBody className="border border-black">
+            <TableBody>
               {data?.data?.sale_items?.map((sale, index) => (
-                <TableRow className="border-b-gray-400" key={index}>
-                  <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right">
+                <TableRow key={index} className="border-0">
+                  <TableCell className="whitespace-nowrap pb-[3px] pt-1 text-right">
                     {index + 1}
                   </TableCell>
-                  <TableCell className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-left font-medium">
+                  <TableCell className="max-w-32 overflow-hidden pb-[3px] pt-1 text-left font-medium">
                     {sale.item.name}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right font-bold">
+                  <TableCell className="whitespace-nowrap pb-[3px] pt-1 text-right">
                     {sale.quantity}
                   </TableCell>
-                  <TableCell className="whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right">
-                    {sale.item.unit.name}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      'whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right',
-                      isQuotation ? 'hidden' : '',
-                    )}
-                  >
+                  <TableCell className="whitespace-nowrap pb-[3px] pt-1 text-right">
                     {formatter.format(sale.price)}
                   </TableCell>
-                  <TableCell
-                    className={cn(
-                      'whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right',
-                      isQuotation || !isDiscount ? 'hidden' : '',
-                    )}
-                  >
-                    {formatter.format(sale.discount)}%
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      'whitespace-nowrap border-x border-y-0 border-x-black pb-[3px] pt-1 text-right',
-                      isQuotation ? 'hidden' : '',
-                    )}
-                  >
+                  <TableCell className='whitespace-nowrap pb-[3px] pt-1 text-right'>
                     {formatter.format(sale.total)}
                   </TableCell>
                 </TableRow>
               ))}
-
-              {new Array(placeholder).fill(null).map((_, index) => (
-                <TableRow key={index} className="border-0">
-                  <TableCell className="h-8 border-x border-y-0 border-x-black py-1 text-right"></TableCell>
-                  <TableCell className="border-x border-y-0 border-x-black py-1 text-left font-medium"></TableCell>
-                  <TableCell className="border-x border-y-0 border-x-black py-1 text-right"></TableCell>
-                  <TableCell className="border-x border-y-0 border-x-black py-1 text-right"></TableCell>
-                  <TableCell
-                    className={cn(
-                      'border-x border-y-0 border-x-black py-1 text-right',
-                      isQuotation ? 'hidden' : '',
-                    )}
-                  ></TableCell>
-                  <TableCell
-                    className={cn(
-                      'border-x border-y-0 border-x-black py-1 text-right',
-                      isQuotation || !isDiscount ? 'hidden' : '',
-                    )}
-                  ></TableCell>
-                  <TableCell
-                    className={cn(
-                      'border-x border-y-0 border-x-black py-1 text-right',
-                      isQuotation ? 'hidden' : '',
-                    )}
-                  ></TableCell>
-                </TableRow>
-              ))}
             </TableBody>
 
-            {isQuotation ? (
-              <TableFooter>
-                <TableRow>
-                  <TableCell className="border border-black text-left" colSpan={1}>
-                    <div className="w-[50px] text-right">{data.data.id}</div>
-                  </TableCell>
+            <TableFooter className="text-md bg-white">
+              <TableRow>
+                <TableCell
+                  className="h-0 py-0 text-right"
+                  colSpan={4}
+                >
+                  Sub Total
+                </TableCell>
+                <TableCell className="h-0 py-0 text-right">
+                  {formatter.format(data.data.total)}
+                </TableCell>
+              </TableRow>
 
-                  <TableCell className="border border-black text-right" colSpan={3}>
-                    <div className="w-full">
-                      <Textarea
-                        rows="1"
-                        className="text-md resize-none overflow-y-hidden rounded-none border-0 p-0 font-normal shadow-none focus-visible:ring-0"
-                      >
-                        {data.data.description || ''}
-                      </Textarea>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
-            ) : (
-              <TableFooter className="text-md">
-                <TableRow>
-                  <TableCell className="border border-black text-left" rowSpan={3} colSpan={1}>
-                    <div className="w-[50px] rotate-[270deg] text-right">{data.data.id}</div>
-                  </TableCell>
+              <TableRow>
+                <TableCell
+                  className="h-0 py-0 text-right"
+                  colSpan={4}
+                >
+                  Adj
+                </TableCell>
+                <TableCell className="h-0 py-0 text-right">
+                  {formatter.format(data.data.discount)}
+                </TableCell>
+              </TableRow>
 
-                  <TableCell
-                    className="h-0 border border-black py-0 text-right"
-                    colSpan={1}
-                    rowSpan={3}
-                  >
-                    <div className="w-full">
-                      <Textarea
-                        rows="1"
-                        className="text-md resize-none overflow-y-hidden rounded-none border-0 p-0 font-normal shadow-none focus-visible:ring-0"
-                      >
-                        {data.data.description || ''}
-                      </Textarea>
-                    </div>
-                  </TableCell>
-                  <TableCell
-                    className="h-0 border border-black py-0 text-right"
-                    colSpan={isDiscount ? 4 : 3}
-                  >
-                    Total
-                  </TableCell>
-                  <TableCell className="h-0 border border-black py-0 text-right">
-                    {formatter.format(data.data.total)}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    className="h-0 border border-black py-0 text-right"
-                    colSpan={isDiscount ? 4 : 3}
-                  >
-                    Adj
-                  </TableCell>
-                  <TableCell className="h-0 border border-black py-0 text-right">
-                    {formatter.format(data.data.discount)}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    className="h-0 border border-black py-0 text-right font-medium"
-                    colSpan={isDiscount ? 4 : 3}
-                  >
-                    Grand Total
-                  </TableCell>
-                  <TableCell className="h-0 border border-black py-0 text-right font-medium">
-                    {formatter.format(data.data.grand_total)}
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
-            )}
+              <TableRow>
+                <TableCell
+                  className="h-0 py-0 text-right"
+                  colSpan={4}
+                >
+                  Taxable Amount
+                </TableCell>
+                <TableCell className="h-0 py-0 text-right">
+                  {formatter.format(data.data.total - data.data.discount)}
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell
+                  className="h-0 py-0 text-right"
+                  colSpan={4}
+                >
+                  13% VAT
+                </TableCell>
+                <TableCell className="h-0 py-0 text-right">
+                  {formatter.format(data.data.vat_amount)}
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell
+                  className="h-0 py-0 text-right font-bold"
+                  colSpan={4}
+                >
+                  Grand Total
+                </TableCell>
+                <TableCell className="h-0 py-0 text-right font-bold">
+                  {formatter.format(data.data.grand_total)}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
+
+          <hr />
+
+          <div className="my-2">
+            In Words: {startCase(amountToWordsWithCurrency(data.data.grand_total, { locale: "en-IN" }))}
+          </div>
+
+          <hr />
+
+          <div className="mt-2">
+            Printed On: {new Date().toString().substring(0, 25)}
+          </div>
+
+          <div className="flex justify-between mt-10">
+            <div>
+              <hr />
+              Cashier
+            </div>
+            <div>
+              <hr />
+              Guest Signature
+            </div>
+          </div>
+
+          <div className="text-center">
+            THANK YOU
+          </div>
         </div>
       </div>
     </>
