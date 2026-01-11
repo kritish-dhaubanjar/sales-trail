@@ -205,6 +205,10 @@ function Sale() {
     return (acc += Number(amount));
   }, 0);
 
+  const taxableAmount = total - discount;
+  const vat = 0.13 * taxableAmount;
+  const grandTotal = taxableAmount + vat;
+
   if (isLoadingAuth || !auth || isFetching || isFetchingItems || isFetchingAccounts) {
     return (
       <div className="flex h-lvh items-center justify-center space-x-4">
@@ -485,9 +489,25 @@ function Sale() {
 
                 <TableRow className="bg-gray-50">
                   <TableCell className="h-11 text-right" colSpan={6}>
+                    Taxable Amount
+                  </TableCell>
+                  <TableCell className="text-right">{formatter.format(taxableAmount)}</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+
+                <TableRow className="bg-gray-50">
+                  <TableCell className="h-11 text-right" colSpan={6}>
+                    13 % VAT
+                  </TableCell>
+                  <TableCell className="text-right">{formatter.format(vat)}</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+
+                <TableRow className="bg-gray-50">
+                  <TableCell className="h-11 text-right" colSpan={6}>
                     Grand Total
                   </TableCell>
-                  <TableCell className="text-right">{formatter.format(total - discount)}</TableCell>
+                  <TableCell className="text-right">{formatter.format(grandTotal)}</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
 

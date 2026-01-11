@@ -315,6 +315,10 @@ function POS() {
     checkoutTableMutation({ id: tableId, ...data });
   };
 
+  const taxableAmount = total - discount;
+  const vat = 0.13 * taxableAmount;
+  const grandTotal = taxableAmount + vat;
+
   if (isLoading || isFetchingProducts || isFetchingCategories || isFetchingAccounts || !auth) {
     return (
       <div className="flex h-lvh items-center justify-center space-x-4">
@@ -637,10 +641,30 @@ function POS() {
 
                           <TableRow className="bg-gray-50">
                             <TableCell className="h-11 text-right" colSpan={6}>
+                              Taxable Amount
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <span className="mr-2">{formatter.format(taxableAmount)}</span>
+                            </TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+
+                          <TableRow className="bg-gray-50">
+                            <TableCell className="h-11 text-right" colSpan={6}>
+                              13 % VAT
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <span className="mr-2">{formatter.format(vat)}</span>
+                            </TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+
+                          <TableRow className="bg-gray-50">
+                            <TableCell className="h-11 text-right" colSpan={6}>
                               Grand Total
                             </TableCell>
                             <TableCell className="text-right">
-                              <span className="mr-2">{formatter.format(total - discount)}</span>
+                              <span className="mr-2">{formatter.format(grandTotal)}</span>
                             </TableCell>
                             <TableCell></TableCell>
                           </TableRow>
@@ -786,7 +810,7 @@ function POS() {
                             </TableCell>
 
                             <TableCell colSpan={2}>
-                              {formatter.format(Number(tender) - (total - discount))}
+                              {formatter.format(Number(tender) - (grandTotal))}
                             </TableCell>
                           </TableRow>
 

@@ -189,6 +189,15 @@ function Sale() {
                   <TableFooter>
                     <TableRow>
                       <TableCell className="text-right" colSpan={6}>
+                        Total
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatter.format(row?.original?.total)}
+                      </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                      <TableCell className="text-right" colSpan={6}>
                         Adj.
                       </TableCell>
                       <TableCell className="text-right">
@@ -198,10 +207,28 @@ function Sale() {
 
                     <TableRow>
                       <TableCell className="text-right" colSpan={6}>
-                        Total
+                        Taxable Amount
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatter.format(row?.original?.total)}
+                        {formatter.format(row?.original?.total - row?.original?.discount)}
+                      </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                      <TableCell className="text-right" colSpan={6}>
+                        13% VAT
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatter.format(row?.original?.vat_amount)}
+                      </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                      <TableCell className="text-right" colSpan={6}>
+                        Grand Total
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatter.format(row?.original?.total - row?.original?.discount + row?.original?.vat_amount)}
                       </TableCell>
                     </TableRow>
                   </TableFooter>
