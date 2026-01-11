@@ -67,30 +67,30 @@ const items = [
     href: '/sales/items/',
     roles: new Set(['admin']),
   },
-  {
-    name: 'Purchase Items',
-    Icon: ArchiveIcon,
-    href: '/purchases/items/',
-    roles: new Set(['admin']),
-  },
+  // {
+  //   name: 'Purchase Items',
+  //   Icon: ArchiveIcon,
+  //   href: '/purchases/items/',
+  //   roles: new Set(['admin']),
+  // },
   {
     name: 'Sales',
     Icon: FilePlusIcon,
     href: '/sales/',
     roles: new Set(['admin']),
   },
-  {
-    name: 'Purchases',
-    Icon: FileTextIcon,
-    href: '/purchases/',
-    roles: new Set(['admin']),
-  },
-  {
-    name: 'Returns',
-    Icon: FileMinusIcon,
-    href: '/returns/',
-    roles: new Set(['admin']),
-  },
+  // {
+  //   name: 'Purchases',
+  //   Icon: FileTextIcon,
+  //   href: '/purchases/',
+  //   roles: new Set(['admin']),
+  // },
+  // {
+  //   name: 'Returns',
+  //   Icon: FileMinusIcon,
+  //   href: '/returns/',
+  //   roles: new Set(['admin']),
+  // },
   {
     name: 'Tables',
     Icon: AlignTopIcon,

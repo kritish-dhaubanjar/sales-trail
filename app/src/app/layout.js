@@ -7,8 +7,8 @@ import QueryClientProvider from '@/components/provider/QueryClientProvider';
 import { ThemeProvider } from '@/components/provider/ThemeProvider';
 
 export const metadata = {
-  title: 'Loop Studio Cafe',
-  description: 'Loop Studio Cafe',
+  title: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
+  description: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
 };
 
 export default function RootLayout({ children }) {
