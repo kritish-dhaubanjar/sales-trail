@@ -17,6 +17,7 @@ use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\PaginationRequest;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
+use Pusher\Pusher;
 
 class SaleController extends Controller
 {
@@ -176,6 +177,17 @@ class SaleController extends Controller
 
     public function print(Sale $sale)
     {
+        $pusher = new Pusher(
+            config('broadcasting.connections.pusher.key'),
+            config('broadcasting.connections.pusher.secret'),
+            config('broadcasting.connections.pusher.app_id'),
+            config('broadcasting.connections.pusher.options')
+        );
+
+        $pusher->trigger('print-channel', 'print', ['data' => $sale]);
+
+        return $sale;
+
         try {
             // 1. Connect to printer (replace with your printer name)
             // $connector = new WindowsPrintConnector("POS-58"); // For Windows

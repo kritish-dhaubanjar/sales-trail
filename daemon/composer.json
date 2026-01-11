@@ -1,0 +1,7 @@
+{
+    "require": {
+        "mike42/escpos-php": "^4.0",
+        "pusher/pusher-php-server": "^7.2",
+        "textalk/websocket": "^1.5"
+    }
+}
