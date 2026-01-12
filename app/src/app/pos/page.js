@@ -588,11 +588,11 @@ function POS() {
               </Table>
 
               <SheetTrigger className="mt-2 w-full pr-4">
-                {auth.data.role === 'admin' && <Button className="mt-2 w-full">Checkout</Button>}
+                <Button disabled={!tableId || !total} className="mt-2 w-full">Checkout</Button>
               </SheetTrigger>
 
               <div className="pr-4">
-                <Button className="mt-2 w-full bg-black" onClick={useTablePrintMutation.mutate}>
+                <Button disabled={!tableId || !total} className="mt-2 w-full bg-black" onClick={useTablePrintMutation.mutate}>
                   <PrinterIcon className="mr-2 h-4 w-4" /> Print Estimate
                 </Button>
               </div>
