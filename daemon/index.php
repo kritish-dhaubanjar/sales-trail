@@ -77,7 +77,7 @@ while (true) {
     $printer->text("By: Global Institute Of Hotel Management & Tourism Technical Center Pvt. Ltd\n");
     $printer->setEmphasis(true);
     $printer->text("VAT: 302891803\n");
-    $printer->text("TAX INVOICE\n");
+    $printer->text("INVOICE\n");
     $printer->setEmphasis(false);
     $printer->feed();
 

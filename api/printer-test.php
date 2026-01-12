@@ -38,7 +38,7 @@ $printer->text("VAT: 302891803\n");
 $printer->text("------------------------------------------\n");
 
 $printer->setEmphasis(true);
-$printer->text("TAX INVOICE\n");
+$printer->text("INVOICE\n");
 $printer->setEmphasis(false);
 $printer->text("------------------------------------------\n");
 

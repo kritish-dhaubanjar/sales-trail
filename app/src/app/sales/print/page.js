@@ -71,15 +71,12 @@ function Print() {
             <h5 className="text-md mb-0 text-black font-bold">Sushi Time - Bhaktapur</h5>
             <h6 className="text-sm mb-0 text-black">By: Global Institute Of Hotel Management &amp; Tourism Technical Center Pvt. Ltd</h6>
             <h5 className="mb-0 text-black font-bold">VAT: 302891803</h5>
-            <h5 className="text-md mb-0 font-bold">TAX INVOICE</h5>
+            <h5 className="text-md mb-0 font-bold">INVOICE</h5>
           </div>
 
           <div className="text-md my-1">
             <p className="whitespace-nowrap">Bill No: {data.data.id}</p>
             <p className="whitespace-nowrap">Bill Date: {data.data.date}</p>
-            <p className="whitespace-nowrap">Buyer's Name: LEAPFROG TECHNOLOGY NEPAL PVT. LTD</p>
-            <p className="whitespace-nowrap">Buyer's PAN: 600243227</p>
-            <p className="whitespace-nowrap">Address: DILLBAZAR, KATHMANDU</p>
             <p className="whitespace-nowrap">Table No: </p>
           </div>
 
@@ -215,6 +212,10 @@ function Print() {
           <div className="text-center">
             THANK YOU
           </div>
+
+          <p className="italic mt-2">
+            * This is an estimated bill only and is not a tax invoice.
+          </p>
         </div>
       </div>
     </>
