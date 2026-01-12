@@ -315,9 +315,11 @@ function POS() {
     checkoutTableMutation({ id: tableId, ...data });
   };
 
-  const taxableAmount = total - discount;
-  const vat = 0.13 * taxableAmount;
-  const grandTotal = taxableAmount + vat;
+  const grandTotal = total - discount;
+
+  const taxableAmount = grandTotal * 100 / 113
+
+  const vat = grandTotal * 13 / 113
 
   if (isLoading || isFetchingProducts || isFetchingCategories || isFetchingAccounts || !auth) {
     return (
