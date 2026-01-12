@@ -51,6 +51,14 @@ while (true) {
 
   $message = json_decode($raw, true);
 
+  if (($message['event'] ?? '') === 'pusher:ping') {
+    $ws->send(json_encode([
+      'event' => 'pusher:pong',
+      'data' => new stdClass()
+    ]));
+    continue;
+  }
+
   if (!$message) {
     continue;
   }
@@ -63,12 +71,12 @@ while (true) {
 
   $sale = $data['data'];
 
-  $connector = new NetworkPrintConnector("192.168.0.241", 9100);
-  $printer = new Printer($connector);
-
   echo "Printing " . $sale['id'] . "\n";
 
   try {
+    $connector = new NetworkPrintConnector("192.168.0.241", 9100);
+    $printer = new Printer($connector);
+
     // 2. Print header
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer->setEmphasis(true);
@@ -161,7 +169,6 @@ while (true) {
     $printer->cut();
     $printer->close();
   } catch (Exception $e) {
-    $printer->close();
     echo "Print error: {$e->getMessage()}\n";
   }
 }
