@@ -85,9 +85,6 @@ while (true) {
     $printer->setJustification(Printer::JUSTIFY_LEFT);
     $printer->text("Bill No: " . $sale["id"] . "\n");
     $printer->text("Bill Date: " . $sale["date"] . "\n");
-    $printer->text("Buyer's Name: LEAPFROG TECHNOLOGY NEPAL PVT. LTD\n");
-    $printer->text("Buyer's PAN: 600243227\n");
-    $printer->text("Address: DILLBAZAR, KATHMANDU\n");
     $printer->text("Table No: \n");
     $printer->feed();
 
@@ -127,9 +124,9 @@ while (true) {
     $totals = [
       'Sub Total' => $sale['total'],
       'Adj' => $sale['discount'],
-      'Taxable Amount' => $sale['total'] - $sale['discount'],
+      'Taxable Amount' => $sale['taxable_amount'],
       '13% VAT' => $sale['vat_amount'],
-      'Grand Total' => $sale['total'] - $sale['discount'] + $sale['vat_amount'],
+      'Grand Total' => $sale['grand_total'],
     ];
 
     foreach ($totals as $key => $value) {
@@ -156,6 +153,11 @@ while (true) {
     $printer->text("Cashier                          Guest Signature\n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer->text("THANK YOU\n");
+
+    $printer->setJustification(Printer::JUSTIFY_LEFT);
+    $printer->text("\x1B\x34");
+    $printer->text("* This is an estimated bill only and is not a tax invoice.");
+    $printer->text("\x1B\x35");
     $printer->feed(3);
 
     $printer->cut();
@@ -165,4 +167,3 @@ while (true) {
     echo "Print error: {$e->getMessage()}\n";
   }
 }
-
