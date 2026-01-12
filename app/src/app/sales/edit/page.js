@@ -206,9 +206,9 @@ function Sale() {
 
   const grandTotal = total - discount;
 
-  const taxableAmount = grandTotal * 100 / 113
+  const taxableAmount = (grandTotal * 100) / 113;
 
-  const vat = grandTotal * 13 / 113
+  const vat = (grandTotal * 13) / 113;
 
   if (isLoadingAuth || !auth || isFetching || isFetchingItems || isFetchingAccounts) {
     return (
@@ -390,12 +390,12 @@ function Sale() {
                       </TableCell>
 
                       <TableCell className="text-right">
-                        {[
-                          watchedItems[index]?.price,
-                          watchedItems[index]?.quantity,
-                        ].some(isNaN)
+                        {[watchedItems[index]?.price, watchedItems[index]?.quantity].some(isNaN)
                           ? '0.00'
-                          : formatter.format(Number(watchedItems[index].price) * Number(watchedItems[index].quantity))}
+                          : formatter.format(
+                              Number(watchedItems[index].price) *
+                                Number(watchedItems[index].quantity),
+                            )}
                       </TableCell>
 
                       <TableCell className="text-center">

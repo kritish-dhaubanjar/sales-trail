@@ -195,16 +195,17 @@ function POS() {
     },
   });
 
-
   const { mutate: deleteTableItemsMutation } = useMutation(deleteTableItems, {
     onSuccess: (data) => {
       queryClient.invalidateQueries(['tables'], (oldData) => {
         return {
           ...oldData,
-          data: oldData.data.map((table) => table.id === data.data.id ? { ...data.data, items: [] } : table),
+          data: oldData.data.map((table) =>
+            table.id === data.data.id ? { ...data.data, items: [] } : table,
+          ),
         };
       });
-    }
+    },
   });
 
   const debouncerRef = useRef(new Map());
@@ -214,27 +215,35 @@ function POS() {
       queryClient.invalidateQueries(['tables'], (oldData) => {
         return {
           ...oldData,
-          data: oldData.data.map((table) => table.id === data.data.id ? data.data : table),
+          data: oldData.data.map((table) => (table.id === data.data.id ? data.data : table)),
         };
       });
-    }
+    },
   });
 
-  const getDebouncedUpdater = useCallback((id) => {
-    if (!id) {
-      return null;
-    }
+  const getDebouncedUpdater = useCallback(
+    (id) => {
+      if (!id) {
+        return null;
+      }
 
-    const debouncedFn = debouncerRef.current.get(id) || debounce((data) => updateTableItemsMutation(data), 1000, { leading: false, trailing: true });
+      const debouncedFn =
+        debouncerRef.current.get(id) ||
+        debounce((data) => updateTableItemsMutation(data), 1000, {
+          leading: false,
+          trailing: true,
+        });
 
-    debouncerRef.current.set(id, debouncedFn);
+      debouncerRef.current.set(id, debouncedFn);
 
-    return debouncerRef.current.get(id);
-  }, [updateTableItemsMutation]);
+      return debouncerRef.current.get(id);
+    },
+    [updateTableItemsMutation],
+  );
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
     onSuccess: (response) => {
-      const saleId = response.data?.id
+      const saleId = response.data?.id;
 
       window.open(`/sales/print/?id=${saleId}`, '_blank');
 
@@ -320,13 +329,13 @@ function POS() {
     checkoutTableMutation({ id: tableId, ...data });
   };
 
-  const useTablePrintMutation = useMutation({ mutationFn: () => printTable({ id: tableId }) })
+  const useTablePrintMutation = useMutation({ mutationFn: () => printTable({ id: tableId }) });
 
   const grandTotal = total - discount;
 
-  const taxableAmount = grandTotal * 100 / 113
+  const taxableAmount = (grandTotal * 100) / 113;
 
-  const vat = grandTotal * 13 / 113
+  const vat = (grandTotal * 13) / 113;
 
   if (isLoading || isFetchingProducts || isFetchingCategories || isFetchingAccounts || !auth) {
     return (
@@ -588,11 +597,17 @@ function POS() {
               </Table>
 
               <SheetTrigger className="mt-2 w-full pr-4">
-                <Button disabled={!tableId || !total} className="mt-2 w-full">Checkout</Button>
+                <Button disabled={!tableId || !total} className="mt-2 w-full">
+                  Checkout
+                </Button>
               </SheetTrigger>
 
               <div className="pr-4">
-                <Button disabled={!tableId || !total} className="mt-2 w-full bg-black" onClick={useTablePrintMutation.mutate}>
+                <Button
+                  disabled={!tableId || !total}
+                  className="mt-2 w-full bg-black"
+                  onClick={useTablePrintMutation.mutate}
+                >
                   <PrinterIcon className="mr-2 h-4 w-4" /> Print Estimate
                 </Button>
               </div>
@@ -825,7 +840,7 @@ function POS() {
                             </TableCell>
 
                             <TableCell colSpan={2}>
-                              {formatter.format(Number(tender) - (grandTotal))}
+                              {formatter.format(Number(tender) - grandTotal)}
                             </TableCell>
                           </TableRow>
 

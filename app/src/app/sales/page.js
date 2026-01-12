@@ -36,7 +36,7 @@ import {
   Cross2Icon,
   ArrowUpIcon,
   ArrowDownIcon,
-  BellIcon
+  BellIcon,
 } from '@radix-ui/react-icons';
 import { EyeIcon, PlusIcon, PrinterIcon } from 'lucide-react';
 
@@ -210,7 +210,7 @@ function Sale() {
                         Taxable Amount
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatter.format((row?.original?.taxable_amount))}
+                        {formatter.format(row?.original?.taxable_amount)}
                       </TableCell>
                     </TableRow>
 
@@ -265,9 +265,12 @@ function Sale() {
         enableHiding: false,
         cell: ({ row }) => {
           const totalSale = Number(row.original.grand_total);
-          const totalTransaction = row.original.transactions.reduce((acc, { amount }) => acc + Number(amount), 0);
+          const totalTransaction = row.original.transactions.reduce(
+            (acc, { amount }) => acc + Number(amount),
+            0,
+          );
 
-          return (totalSale === totalTransaction) ? <></> : <BellIcon className="text-red-500" />
+          return totalSale === totalTransaction ? <></> : <BellIcon className="text-red-500" />;
         },
       },
       {

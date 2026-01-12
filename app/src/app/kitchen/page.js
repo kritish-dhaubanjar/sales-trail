@@ -1,6 +1,6 @@
 'use client';
 
-import Echo from '@/lib/echo'
+import Echo from '@/lib/echo';
 import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 
@@ -14,8 +14,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { SpeakerLoudIcon, SpeakerOffIcon } from '@radix-ui/react-icons'
+} from '@/components/ui/table';
+import { SpeakerLoudIcon, SpeakerOffIcon } from '@radix-ui/react-icons';
 import { useQuery } from 'react-query';
 import { getTables } from '@/services/table.service';
 import { getItems } from '@/services/item.service';
@@ -28,20 +28,24 @@ function Kitchen() {
   const { speak, ready, isUnlocked } = useTTS();
   const { isLoading, data: auth } = useAuthUser();
 
-  const { data: tables, refetch, isFetching: isFetchingTables } = useQuery({
+  const {
+    data: tables,
+    refetch,
+    isFetching: isFetchingTables,
+  } = useQuery({
     queryKey: ['tables'],
     enabled: true,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => {
-      const limit = 10240
-      const page = 1
+      const limit = 10240;
+      const page = 1;
 
-      return getTables({ page, limit, });
+      return getTables({ page, limit });
     },
   });
 
-  const [logs, setLogs] = useState([])
+  const [logs, setLogs] = useState([]);
 
   const { data: items, isFetching: isFetchingItems } = useQuery({
     queryKey: ['items'],
@@ -49,8 +53,8 @@ function Kitchen() {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
     queryFn: () => {
-      const limit = 10240
-      const page = 1
+      const limit = 10240;
+      const page = 1;
 
       return getItems({ page, limit, category_type: 'income' });
     },
@@ -64,27 +68,49 @@ function Kitchen() {
     Echo.private('pos').listen('.pos.created', (data) => {
       refetch();
       data.added.map(({ item_id, quantity_added }) => {
-        const item = items?.data?.data.find(i => i.id === item_id);
-        setLogs(prev => [{ id: prev.length + 1, qty: quantity_added, item: item, table: data.table, isAdd: true, isChecked: false, log: `${quantity_added} ${item.name} added for ${data.table.name}` }, ...prev])
+        const item = items?.data?.data.find((i) => i.id === item_id);
+        setLogs((prev) => [
+          {
+            id: prev.length + 1,
+            qty: quantity_added,
+            item: item,
+            table: data.table,
+            isAdd: true,
+            isChecked: false,
+            log: `${quantity_added} ${item.name} added for ${data.table.name}`,
+          },
+          ...prev,
+        ]);
 
-        speak(`${quantity_added} ${item.name} added for ${data.table.name}`)
-      })
+        speak(`${quantity_added} ${item.name} added for ${data.table.name}`);
+      });
 
       data.removed.map(({ item_id, quantity_removed }) => {
-        const item = items?.data?.data.find(i => i.id === item_id);
+        const item = items?.data?.data.find((i) => i.id === item_id);
 
-        setLogs(prev => [{ id: prev.length + 1, qty: quantity_removed, item: item, table: data.table, isRemoved: true, isChecked: false, log: `${quantity_removed} ${item.name} removed for ${data.table.name}` }, ...prev])
+        setLogs((prev) => [
+          {
+            id: prev.length + 1,
+            qty: quantity_removed,
+            item: item,
+            table: data.table,
+            isRemoved: true,
+            isChecked: false,
+            log: `${quantity_removed} ${item.name} removed for ${data.table.name}`,
+          },
+          ...prev,
+        ]);
 
-        speak(`${quantity_removed} ${item.name} removed for ${data.table.name}`)
-      })
+        speak(`${quantity_removed} ${item.name} removed for ${data.table.name}`);
+      });
     });
 
     return () => {
       if (auth?.data?.id) {
         Echo.leave(`pos.${auth.data.id}`);
       }
-    }
-  }, [items?.data?.data, auth?.data?.id])
+    };
+  }, [items?.data?.data, auth?.data?.id]);
 
   if (isLoading || !auth || isFetchingTables || isFetchingItems || !ready) {
     return (
@@ -99,17 +125,13 @@ function Kitchen() {
   return (
     <>
       <div className="m-4">
-        <Button
-          variant="outline"
-          disabled={isUnlocked}
-          size="icon"
-        >
+        <Button variant="outline" disabled={isUnlocked} size="icon">
           {!isUnlocked ? <SpeakerOffIcon /> : <SpeakerLoudIcon />}
         </Button>
       </div>
 
-      <div className="mx-auto p-6 flex">
-        <div className="w-[512px] m-4">
+      <div className="mx-auto flex p-6">
+        <div className="m-4 w-[512px]">
           <Table>
             <TableHeader>
               <TableRow>
@@ -133,13 +155,15 @@ function Kitchen() {
                   <TableCell>
                     <Checkbox
                       checked={isChecked}
-                      onCheckedChange={(value) => setLogs((logs) => {
-                        const newLogs = [...logs];
+                      onCheckedChange={(value) =>
+                        setLogs((logs) => {
+                          const newLogs = [...logs];
 
-                        const log = newLogs.find(l => l.id === id);
-                        log.isChecked = value;
-                        return newLogs;
-                      })}
+                          const log = newLogs.find((l) => l.id === id);
+                          log.isChecked = value;
+                          return newLogs;
+                        })
+                      }
                     />
                   </TableCell>
                 </TableRow>
@@ -148,14 +172,12 @@ function Kitchen() {
           </Table>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
-          {
-            tables?.data?.data?.filter(table => table.items.length).map(table => {
+        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {tables?.data?.data
+            ?.filter((table) => table.items.length)
+            .map((table) => {
               return (
-                <div
-                  key={table.id}
-                  className="rounded-2xl border shadow-sm p-4 bg-white"
-                >
+                <div key={table.id} className="rounded-2xl border bg-white p-4 shadow-sm">
                   <h2 className="mb-4 text-xl font-bold">{table.name}</h2>
                   <Table>
                     <TableHeader>
@@ -176,12 +198,12 @@ function Kitchen() {
                     </TableBody>
                   </Table>
                 </div>
-              )
+              );
             })}
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default dynamic(() => Promise.resolve(Kitchen), { ssr: false });

@@ -132,7 +132,7 @@ export default function Sidebar() {
   const { isLoading: isLoadingAuthUser, data: auth } = useAuthUser();
 
   if (isLoadingAuthUser || !auth) {
-    return <></>
+    return <></>;
   }
 
   const item = items.find((item) => pathname.includes(item.href));

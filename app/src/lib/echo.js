@@ -10,9 +10,10 @@ export default new Echo({
   Pusher: Pusher,
   authorizer: (channel, options) => ({
     authorize: (socketId, callback) => {
-      axios.post('/broadcasting/auth', { socket_id: socketId, channel_name: channel.name })
-        .then(response => callback(false, response.data))
-        .catch(error => callback(true, error))
+      axios
+        .post('/broadcasting/auth', { socket_id: socketId, channel_name: channel.name })
+        .then((response) => callback(false, response.data))
+        .catch((error) => callback(true, error));
     },
-  })
+  }),
 });

@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 
-import { amountToWordsWithCurrency } from "@/lib/string";
+import { amountToWordsWithCurrency } from '@/lib/string';
 import { useMutation, useQuery } from 'react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
 
@@ -43,7 +43,7 @@ function Print() {
     },
   });
 
-  const useSalesPrintMutation = useMutation({ mutationFn: () => printSale({ id: saleId }) })
+  const useSalesPrintMutation = useMutation({ mutationFn: () => printSale({ id: saleId }) });
 
   if (isLoading || isFetching || !auth || !isSuccess) {
     return (
@@ -68,9 +68,11 @@ function Print() {
       <div className="container mx-auto mb-1 w-[400px] p-3 screen:border screen:border-black">
         <div>
           <div className="text-center">
-            <h5 className="text-md mb-0 text-black font-bold">Sushi Time - Bhaktapur</h5>
-            <h6 className="text-sm mb-0 text-black">By: Global Institute Of Hotel Management &amp; Tourism Technical Center Pvt. Ltd</h6>
-            <h5 className="mb-0 text-black font-bold">VAT: 302891803</h5>
+            <h5 className="text-md mb-0 font-bold text-black">Sushi Time - Bhaktapur</h5>
+            <h6 className="mb-0 text-sm text-black">
+              By: Global Institute Of Hotel Management &amp; Tourism Technical Center Pvt. Ltd
+            </h6>
+            <h5 className="mb-0 font-bold text-black">VAT: 302891803</h5>
             <h5 className="text-md mb-0 font-bold">INVOICE</h5>
           </div>
 
@@ -80,24 +82,14 @@ function Print() {
             <p className="whitespace-nowrap">Table No: </p>
           </div>
 
-          <Table className="text-md border-none mt-2">
+          <Table className="text-md mt-2 border-none">
             <TableHeader className="border-none">
               <TableRow>
-                <TableHead className="h-0 w-[50px] py-0 text-black">
-                  SN
-                </TableHead>
-                <TableHead className="h-0 w-full py-0 text-left text-black">
-                  ITEMS
-                </TableHead>
-                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">
-                  Qty
-                </TableHead>
-                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">
-                  RATE
-                </TableHead>
-                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">
-                  AMT
-                </TableHead>
+                <TableHead className="h-0 w-[50px] py-0 text-black">SN</TableHead>
+                <TableHead className="h-0 w-full py-0 text-left text-black">ITEMS</TableHead>
+                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">Qty</TableHead>
+                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">RATE</TableHead>
+                <TableHead className="h-0 min-w-[60px] py-0 text-right text-black">AMT</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -116,7 +108,7 @@ function Print() {
                   <TableCell className="whitespace-nowrap pb-[3px] pt-1 text-right">
                     {formatter.format(sale.price)}
                   </TableCell>
-                  <TableCell className='whitespace-nowrap pb-[3px] pt-1 text-right'>
+                  <TableCell className="whitespace-nowrap pb-[3px] pt-1 text-right">
                     {formatter.format(sale.total)}
                   </TableCell>
                 </TableRow>
@@ -125,10 +117,7 @@ function Print() {
 
             <TableFooter className="text-md bg-white">
               <TableRow>
-                <TableCell
-                  className="h-0 py-0 text-right"
-                  colSpan={4}
-                >
+                <TableCell className="h-0 py-0 text-right" colSpan={4}>
                   Sub Total (Incl. VAT)
                 </TableCell>
                 <TableCell className="h-0 py-0 text-right">
@@ -137,10 +126,7 @@ function Print() {
               </TableRow>
 
               <TableRow>
-                <TableCell
-                  className="h-0 py-0 text-right"
-                  colSpan={4}
-                >
+                <TableCell className="h-0 py-0 text-right" colSpan={4}>
                   Adj
                 </TableCell>
                 <TableCell className="h-0 py-0 text-right">
@@ -149,10 +135,7 @@ function Print() {
               </TableRow>
 
               <TableRow>
-                <TableCell
-                  className="h-0 py-0 text-right"
-                  colSpan={4}
-                >
+                <TableCell className="h-0 py-0 text-right" colSpan={4}>
                   Taxable Amount
                 </TableCell>
                 <TableCell className="h-0 py-0 text-right">
@@ -161,10 +144,7 @@ function Print() {
               </TableRow>
 
               <TableRow>
-                <TableCell
-                  className="h-0 py-0 text-right"
-                  colSpan={4}
-                >
+                <TableCell className="h-0 py-0 text-right" colSpan={4}>
                   13% VAT
                 </TableCell>
                 <TableCell className="h-0 py-0 text-right">
@@ -173,10 +153,7 @@ function Print() {
               </TableRow>
 
               <TableRow>
-                <TableCell
-                  className="h-0 py-0 text-right font-bold"
-                  colSpan={4}
-                >
+                <TableCell className="h-0 py-0 text-right font-bold" colSpan={4}>
                   Grand Total
                 </TableCell>
                 <TableCell className="h-0 py-0 text-right font-bold">
@@ -189,16 +166,15 @@ function Print() {
           <hr />
 
           <div className="my-2">
-            In Words: {startCase(amountToWordsWithCurrency(data.data.grand_total, { locale: "en-IN" }))}
+            In Words:{' '}
+            {startCase(amountToWordsWithCurrency(data.data.grand_total, { locale: 'en-IN' }))}
           </div>
 
           <hr />
 
-          <div className="mt-2">
-            Printed On: {new Date().toString().substring(0, 25)}
-          </div>
+          <div className="mt-2">Printed On: {new Date().toString().substring(0, 25)}</div>
 
-          <div className="flex justify-between mt-10">
+          <div className="mt-10 flex justify-between">
             <div>
               <hr />
               Cashier
@@ -209,13 +185,9 @@ function Print() {
             </div>
           </div>
 
-          <div className="text-center">
-            THANK YOU
-          </div>
+          <div className="text-center">THANK YOU</div>
 
-          <p className="italic mt-2">
-            * This is an estimated bill only and is not a tax invoice.
-          </p>
+          <p className="mt-2 italic">* This is an estimated bill only and is not a tax invoice.</p>
         </div>
       </div>
     </>

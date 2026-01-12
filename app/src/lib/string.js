@@ -1,4 +1,4 @@
-import { toWords } from "number-to-words";
+import { toWords } from 'number-to-words';
 
 export function amountToWordsWithCurrency(amount) {
   const integerPart = Math.floor(amount);
@@ -10,5 +10,5 @@ export function amountToWordsWithCurrency(amount) {
     words += ` and ${toWords(decimalPart)} paisa`;
   }
 
-  return words + " only";
+  return words + ' only';
 }
