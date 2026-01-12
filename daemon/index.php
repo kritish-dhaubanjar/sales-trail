@@ -115,13 +115,13 @@ while (true) {
       foreach ($items as $index => $item) {
         $sn = str_pad($index + 1, 3, " ", STR_PAD_LEFT);
 
-        $name = str_pad(substr($item['name'], 0, 20), 20, " ", STR_PAD_RIGHT);
+        $name = str_pad(substr($item['name'], 0, 16), 16, " ", STR_PAD_RIGHT);
 
         $qty = str_pad($item['quantity'], 3, " ", STR_PAD_LEFT);
 
-        $rate = str_pad(number_format($item['price'], 2), 6, " ", STR_PAD_LEFT);
+        $rate = str_pad(number_format($item['price'], 2), 8, " ", STR_PAD_LEFT);
 
-        $total = str_pad(number_format($item['total'], 2), 6, " ", STR_PAD_LEFT);
+        $total = str_pad(number_format($item['total'], 2), 8, " ", STR_PAD_LEFT);
 
         $printer->text("$sn    $name  $qty  $rate  $total\n");
       }
@@ -131,7 +131,7 @@ while (true) {
       // 5. Print totals
       $totals = [
         'Sub Total' => $sale['total'],
-        'Adj' => $sale['discount'],
+        'Discount' => $sale['discount'],
         'Taxable Amount' => $sale['taxable_amount'],
         '13% VAT' => $sale['vat_amount'],
         'Grand Total' => $sale['grand_total'],
@@ -215,16 +215,26 @@ while (true) {
         ];
       }, $sale_items);
 
+      // 5. Print totals
+      $totals = [
+        'Sub Total' => 0,
+        'Discount' => 0,
+        'Grand Total' => 0,
+      ];
+
       foreach ($items as $index => $item) {
         $sn = str_pad($index + 1, 3, " ", STR_PAD_LEFT);
 
-        $name = str_pad(substr($item['name'], 0, 20), 20, " ", STR_PAD_RIGHT);
+        $name = str_pad(substr($item['name'], 0, 16), 16, " ", STR_PAD_RIGHT);
 
         $qty = str_pad($item['quantity'], 3, " ", STR_PAD_LEFT);
 
-        $rate = str_pad(number_format($item['price'], 2), 6, " ", STR_PAD_LEFT);
+        $rate = str_pad(number_format($item['price'], 2), 8, " ", STR_PAD_LEFT);
 
-        $total = str_pad(number_format($item['total'], 2), 6, " ", STR_PAD_LEFT);
+        $total = str_pad(number_format($item['total'], 2), 8, " ", STR_PAD_LEFT);
+
+        $totals['Sub Total'] += $item['total'];
+        $totals['Grand Total'] += $item['total'];
 
         $printer->text("$sn    $name  $qty  $rate  $total\n");
       }
@@ -232,12 +242,6 @@ while (true) {
       $printer->text("------------------------------------------------\n");
 
       // 5. Print totals
-      $totals = [
-        'Sub Total' => $sale['total'],
-        'Adj' => $sale['discount'],
-        'Grand Total' => $sale['grand_total'],
-      ];
-
       foreach ($totals as $key => $value) {
         $printer->setJustification(Printer::JUSTIFY_RIGHT);
         $printer->text(str_pad($key, 20, " ", STR_PAD_LEFT) . "  " . str_pad(number_format($value, 2), 12, " ", STR_PAD_LEFT) . "\n");
