@@ -64,113 +64,199 @@ while (true) {
     continue;
   }
 
-  if (($message['event'] ?? '') !== 'print') {
-    continue;
+  if (($message['event'] ?? '') == 'print-reciept') {
+
+    $data = json_decode($message['data'], true);
+
+    $sale = $data['data'];
+
+    echo "Printing Reciept" . $sale['id'] . "\n";
+
+    try {
+      // $connector = new NetworkPrintConnector("192.168.0.241", 9100);
+      $connector = new WindowsPrintConnector("LPT2");
+      $printer = new Printer($connector);
+
+      // 2. Print header
+      $printer->setJustification(Printer::JUSTIFY_CENTER);
+      $printer->setEmphasis(true);
+      $printer->text("Sushi Time - Bhaktapur\n");
+      $printer->setEmphasis(false);
+      $printer->text("By: Global Institute Of Hotel Management & Tourism Technical Center Pvt. Ltd\n");
+      $printer->setEmphasis(true);
+      $printer->text("VAT: 302891803\n");
+      $printer->text("INVOICE\n");
+      $printer->setEmphasis(false);
+      $printer->feed();
+
+      // 3. Print bill info
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->text("Bill No: " . $sale["id"] . "\n");
+      $printer->text("Bill Date: " . $sale["date"] . "\n");
+      $printer->text("Table No: \n");
+      $printer->feed();
+
+      // 4. Print items table
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->text("SN  ITEM                     QTY   RATE    AMT\n");
+      $printer->text("------------------------------------------------\n");
+
+      $sale_items = $sale['sale_items'];
+
+      $items = array_map(function ($item) {
+        return [
+          'name' => $item['item']['name'],
+          'price' => $item['price'],
+          'quantity' => $item['quantity'],
+          'total' => $item['price'] * $item['quantity'],
+        ];
+      }, $sale_items);
+
+      foreach ($items as $index => $item) {
+        $sn = str_pad($index + 1, 3, " ", STR_PAD_LEFT);
+
+        $name = str_pad(substr($item['name'], 0, 20), 20, " ", STR_PAD_RIGHT);
+
+        $qty = str_pad($item['quantity'], 3, " ", STR_PAD_LEFT);
+
+        $rate = str_pad(number_format($item['price'], 2), 6, " ", STR_PAD_LEFT);
+
+        $total = str_pad(number_format($item['total'], 2), 6, " ", STR_PAD_LEFT);
+
+        $printer->text("$sn    $name  $qty  $rate  $total\n");
+      }
+
+      $printer->text("------------------------------------------------\n");
+
+      // 5. Print totals
+      $totals = [
+        'Sub Total' => $sale['total'],
+        'Adj' => $sale['discount'],
+        'Taxable Amount' => $sale['taxable_amount'],
+        '13% VAT' => $sale['vat_amount'],
+        'Grand Total' => $sale['grand_total'],
+      ];
+
+      foreach ($totals as $key => $value) {
+        $printer->setJustification(Printer::JUSTIFY_RIGHT);
+        $printer->text(str_pad($key, 20, " ", STR_PAD_LEFT) . "  " . str_pad(number_format($value, 2), 12, " ", STR_PAD_LEFT) . "\n");
+      }
+
+      $printer->feed();
+
+      // 6. Print amount in words
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+
+      $inWords = amountInWords($totals['Grand Total']);
+
+      $printer->text("In Words: $inWords\n");
+      $printer->feed();
+
+      // 7. Footer
+      $nepalTime = new DateTime('now', new DateTimeZone('Asia/Kathmandu'));
+
+      $printer->text("Printed On: " . $nepalTime->format('D M d Y H:i:s') . "\n\n");
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->text("----------------                ----------------\n");
+      $printer->text("Cashier                          Guest Signature\n");
+      $printer->setJustification(Printer::JUSTIFY_CENTER);
+      $printer->text("THANK YOU\n");
+
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->text("* This is an estimated bill only and is not a tax invoice.");
+      $printer->feed(3);
+
+      $printer->cut();
+      $printer->close();
+    } catch (Exception $e) {
+      echo "Print error: {$e->getMessage()}\n";
+    }
   }
 
-  $data = json_decode($message['data'], true);
+  if (($message['event'] ?? '') == 'print-estimate') {
 
-  $sale = $data['data'];
+    $data = json_decode($message['data'], true);
 
-  echo "Printing " . $sale['id'] . "\n";
+    $table = $data['data'];
 
-  try {
-    // $connector = new NetworkPrintConnector("192.168.0.241", 9100);
-    $connector = new WindowsPrintConnector("LPT2");
-    $printer = new Printer($connector);
+    echo "Printing Estimate" . $table['id'] . "\n";
 
-    // 2. Print header
-    $printer->setJustification(Printer::JUSTIFY_CENTER);
-    $printer->setEmphasis(true);
-    $printer->text("Sushi Time - Bhaktapur\n");
-    $printer->setEmphasis(false);
-    $printer->text("By: Global Institute Of Hotel Management & Tourism Technical Center Pvt. Ltd\n");
-    $printer->setEmphasis(true);
-    $printer->text("VAT: 302891803\n");
-    $printer->text("INVOICE\n");
-    $printer->setEmphasis(false);
-    $printer->feed();
+    try {
+      // $connector = new NetworkPrintConnector("192.168.0.241", 9100);
+      $connector = new WindowsPrintConnector("LPT2");
+      $printer = new Printer($connector);
 
-    // 3. Print bill info
-    $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer->text("Bill No: " . $sale["id"] . "\n");
-    $printer->text("Bill Date: " . $sale["date"] . "\n");
-    $printer->text("Table No: \n");
-    $printer->feed();
+      // 2. Print header
+      $printer->setJustification(Printer::JUSTIFY_CENTER);
+      $printer->setEmphasis(true);
+      $printer->text("Estimate\n");
+      $printer->setEmphasis(false);
+      $printer->feed();
 
-    // 4. Print items table
-    $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer->text("SN  ITEM                     QTY   RATE    AMT\n");
-    $printer->text("------------------------------------------------\n");
+      // 3. Print bill info
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->text("Bill Date: " . new DateTime($table["created_at"])->setTimezone(new DateTimeZone('Asia/Kathmandu'))->format('Y-m-d H:i:s') . "\n");
+      $printer->text("Table No: " . $table["name"] . "\n");
+      $printer->feed();
 
-    $sale_items = $sale['sale_items'];
+      // 4. Print items table
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->text("SN  ITEM                     QTY   RATE    AMT\n");
+      $printer->text("------------------------------------------------\n");
 
-    $items = array_map(function ($item) {
-      return [
-        'name' => $item['item']['name'],
-        'price' => $item['price'],
-        'quantity' => $item['quantity'],
-        'total' => $item['price'] * $item['quantity'],
+      $sale_items = $table['items'];
+
+      $items = array_map(function ($item) {
+        return [
+          'name' => $item['item']['name'],
+          'price' => $item['price'],
+          'quantity' => $item['quantity'],
+          'total' => $item['price'] * $item['quantity'],
+        ];
+      }, $sale_items);
+
+      foreach ($items as $index => $item) {
+        $sn = str_pad($index + 1, 3, " ", STR_PAD_LEFT);
+
+        $name = str_pad(substr($item['name'], 0, 20), 20, " ", STR_PAD_RIGHT);
+
+        $qty = str_pad($item['quantity'], 3, " ", STR_PAD_LEFT);
+
+        $rate = str_pad(number_format($item['price'], 2), 6, " ", STR_PAD_LEFT);
+
+        $total = str_pad(number_format($item['total'], 2), 6, " ", STR_PAD_LEFT);
+
+        $printer->text("$sn    $name  $qty  $rate  $total\n");
+      }
+
+      $printer->text("------------------------------------------------\n");
+
+      // 5. Print totals
+      $totals = [
+        'Sub Total' => $sale['total'],
+        'Adj' => $sale['discount'],
+        'Grand Total' => $sale['grand_total'],
       ];
-    }, $sale_items);
 
-    foreach ($items as $index => $item) {
-      $sn = str_pad($index + 1, 3, " ", STR_PAD_LEFT);
+      foreach ($totals as $key => $value) {
+        $printer->setJustification(Printer::JUSTIFY_RIGHT);
+        $printer->text(str_pad($key, 20, " ", STR_PAD_LEFT) . "  " . str_pad(number_format($value, 2), 12, " ", STR_PAD_LEFT) . "\n");
+      }
 
-      $name = str_pad(substr($item['name'], 0, 20), 20, " ", STR_PAD_RIGHT);
+      $printer->feed();
 
-      $qty = str_pad($item['quantity'], 3, " ", STR_PAD_LEFT);
+      // 7. Footer
+      $nepalTime = new DateTime('now', new DateTimeZone('Asia/Kathmandu'));
 
-      $rate = str_pad(number_format($item['price'], 2), 6, " ", STR_PAD_LEFT);
+      $printer->text("Printed On: " . $nepalTime->format('D M d Y H:i:s') . "\n\n");
+      $printer->text("THANK YOU\n");
 
-      $total = str_pad(number_format($item['total'], 2), 6, " ", STR_PAD_LEFT);
+      $printer->feed(2);
 
-      $printer->text("$sn    $name  $qty  $rate  $total\n");
+      $printer->cut();
+      $printer->close();
+    } catch (Exception $e) {
+      echo "Print error: {$e->getMessage()}\n";
     }
-
-    $printer->text("------------------------------------------------\n");
-
-    // 5. Print totals
-    $totals = [
-      'Sub Total' => $sale['total'],
-      'Adj' => $sale['discount'],
-      'Taxable Amount' => $sale['taxable_amount'],
-      '13% VAT' => $sale['vat_amount'],
-      'Grand Total' => $sale['grand_total'],
-    ];
-
-    foreach ($totals as $key => $value) {
-      $printer->setJustification(Printer::JUSTIFY_RIGHT);
-      $printer->text(str_pad($key, 20, " ", STR_PAD_LEFT) . "  " . str_pad(number_format($value, 2), 12, " ", STR_PAD_LEFT) . "\n");
-    }
-
-    $printer->feed();
-
-    // 6. Print amount in words
-    $printer->setJustification(Printer::JUSTIFY_LEFT);
-
-    $inWords = amountInWords($totals['Grand Total']);
-
-    $printer->text("In Words: $inWords\n");
-    $printer->feed();
-
-    // 7. Footer
-    $nepalTime = new DateTime('now', new DateTimeZone('Asia/Kathmandu'));
-
-    $printer->text("Printed On: " . $nepalTime->format('D M d Y H:i:s') . "\n\n");
-    $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer->text("----------------                ----------------\n");
-    $printer->text("Cashier                          Guest Signature\n");
-    $printer->setJustification(Printer::JUSTIFY_CENTER);
-    $printer->text("THANK YOU\n");
-
-    $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer->text("* This is an estimated bill only and is not a tax invoice.");
-    $printer->feed(3);
-
-    $printer->cut();
-    $printer->close();
-  } catch (Exception $e) {
-    echo "Print error: {$e->getMessage()}\n";
   }
 }

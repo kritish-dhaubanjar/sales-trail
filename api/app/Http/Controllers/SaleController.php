@@ -198,7 +198,7 @@ class SaleController extends Controller
             config('broadcasting.connections.pusher.options')
         );
 
-        $pusher->trigger('print-channel', 'print', ['data' => $sale]);
+        $pusher->trigger('print-channel', 'print-reciept', ['data' => $sale]);
 
         return $sale;
 

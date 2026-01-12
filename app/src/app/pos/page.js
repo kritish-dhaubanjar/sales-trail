@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 
-import { Trash2Icon } from 'lucide-react';
+import { Trash2Icon, PrinterIcon } from 'lucide-react';
 import {
   CheckboxIcon,
   BoxIcon,
@@ -60,6 +60,7 @@ import { getAccounts } from '@/services/account.service';
 import {
   getTables,
   getTable,
+  printTable,
   updateTableItems,
   deleteTableItems,
   checkoutTable,
@@ -318,6 +319,8 @@ function POS() {
 
     checkoutTableMutation({ id: tableId, ...data });
   };
+
+  const useTablePrintMutation = useMutation({ mutationFn: () => printTable({ id: tableId }) })
 
   const grandTotal = total - discount;
 
@@ -587,6 +590,12 @@ function POS() {
               <SheetTrigger className="mt-2 w-full pr-4">
                 {auth.data.role === 'admin' && <Button className="mt-2 w-full">Checkout</Button>}
               </SheetTrigger>
+
+              <div className="pr-4">
+                <Button className="mt-2 w-full bg-black" onClick={useTablePrintMutation.mutate}>
+                  <PrinterIcon className="mr-2 h-4 w-4" /> Print Estimate
+                </Button>
+              </div>
 
               <SheetContent>
                 <SheetHeader>

@@ -24,6 +24,12 @@ export async function createTable({ name, is_delivery }) {
   return data;
 }
 
+export async function printTable({ id }) {
+  const data = await axios.post(`/tables/${id}/print`);
+
+  return data;
+}
+
 export async function updateTable({ name, id }) {
   const data = await axios.put(`/tables/${id}`, { name });
 

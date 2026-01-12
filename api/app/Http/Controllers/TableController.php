@@ -17,6 +17,8 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Pusher\Pusher;
+
 class TableController extends Controller
 {
     /**
@@ -216,6 +218,20 @@ class TableController extends Controller
         }
 
         event(new POSEvent($table, [], $removed));
+
+        return $table;
+    }
+
+    public function print(Request $request, Table $table)
+    {
+        $pusher = new Pusher(
+            config('broadcasting.connections.pusher.key'),
+            config('broadcasting.connections.pusher.secret'),
+            config('broadcasting.connections.pusher.app_id'),
+            config('broadcasting.connections.pusher.options')
+        );
+
+        $pusher->trigger('print-channel', 'print-estimate', ['data' => $table]);
 
         return $table;
     }

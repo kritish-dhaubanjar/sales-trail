@@ -41,6 +41,7 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
             Route::put('/tables/{table}', 'update');
             Route::delete('/tables/{table}', 'destroy');
             Route::put('/tables/{table}/checkout', 'checkout');
+            Route::post('/tables/{table}/print', 'print');
 
             Route::put('/tables/{table}/items', 'updateItems');
             Route::delete('/tables/{table}/items', 'destroyItems');
