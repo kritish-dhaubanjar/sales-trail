@@ -597,7 +597,7 @@ function POS() {
                 </Button>
               </div>
 
-              <SheetContent>
+              <SheetContent className="min-w-[420px]">
                 <SheetHeader>
                   <SheetTitle>Are you absolutely sure?</SheetTitle>
                   <SheetDescription>
