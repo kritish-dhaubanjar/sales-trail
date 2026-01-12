@@ -1,7 +1,7 @@
 SSH_USER=kritish3
 SSH_HOST=kritishdhaubanjar.com.np
-SSH_APP_PATH=/home/kritish3/loopstudiocafe/sales-trail.loopstudiocafe.com
-SSH_API_PATH=/home/kritish3/loopstudiocafe/sales-trail.loopstudiocafe.com/api
+SSH_APP_PATH=/home/kritish3/kritishdhaubanjar/sales-trail.kritishdhaubanjar.com.np
+SSH_API_PATH=/home/kritish3/kritishdhaubanjar/sales-trail.kritishdhaubanjar.com.np/api
 
 install:
 	cd app && npm install
