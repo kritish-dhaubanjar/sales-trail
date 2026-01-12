@@ -79,7 +79,7 @@ function Print() {
           <div className="text-md my-1">
             <p className="whitespace-nowrap">Bill No: {data.data.id}</p>
             <p className="whitespace-nowrap">Bill Date: {data.data.date}</p>
-            <p className="whitespace-nowrap">Table No: </p>
+            <p className="whitespace-nowrap">Table No: {data.data.title}</p>
           </div>
 
           <Table className="text-md mt-2 border-none">
