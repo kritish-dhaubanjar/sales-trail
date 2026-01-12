@@ -210,7 +210,7 @@ function Sale() {
                         Taxable Amount
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatter.format(row?.original?.total - row?.original?.discount)}
+                        {formatter.format((row?.original?.taxable_amount))}
                       </TableCell>
                     </TableRow>
 
@@ -228,7 +228,7 @@ function Sale() {
                         Grand Total
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatter.format(row?.original?.total - row?.original?.discount + row?.original?.vat_amount)}
+                        {formatter.format(row?.original?.grand_total)}
                       </TableCell>
                     </TableRow>
                   </TableFooter>

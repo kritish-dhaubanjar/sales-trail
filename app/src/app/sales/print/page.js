@@ -129,7 +129,7 @@ function Print() {
                   className="h-0 py-0 text-right"
                   colSpan={4}
                 >
-                  Sub Total
+                  Sub Total (Incl. VAT)
                 </TableCell>
                 <TableCell className="h-0 py-0 text-right">
                   {formatter.format(data.data.total)}
@@ -156,7 +156,7 @@ function Print() {
                   Taxable Amount
                 </TableCell>
                 <TableCell className="h-0 py-0 text-right">
-                  {formatter.format(data.data.total - data.data.discount)}
+                  {formatter.format(data.data.taxable_amount)}
                 </TableCell>
               </TableRow>
 

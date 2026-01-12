@@ -195,19 +195,20 @@ function Sale() {
     },
   });
 
-  const total = watchedItems.reduce((acc, { quantity = 0, price = 0, discount = 0 }) => {
+  const total = watchedItems.reduce((acc, { quantity = 0, price = 0 }) => {
     const amt = Number(quantity) * Number(price);
-    const adj = (Number(discount) / 100) * amt;
-    return (acc += amt - adj);
+    return (acc += amt);
   }, 0);
 
   const paymentTotal = watchedTransactions.reduce((acc, { amount = 0 }) => {
     return (acc += Number(amount));
   }, 0);
 
-  const taxableAmount = total - discount;
-  const vat = 0.13 * taxableAmount;
-  const grandTotal = taxableAmount + vat;
+  const grandTotal = total - discount;
+
+  const taxableAmount = grandTotal * 100 / 113
+
+  const vat = grandTotal * 13 / 113
 
   if (isLoadingAuth || !auth || isFetching || isFetchingItems || isFetchingAccounts) {
     return (
@@ -309,7 +310,6 @@ function Sale() {
                   <TableHead className="w-[100px] text-black">Qty</TableHead>
                   <TableHead className="w-[100px] text-black">Unit</TableHead>
                   <TableHead className="w-[100px] text-black">Rate</TableHead>
-                  <TableHead className="w-[100px] text-black">Discount %</TableHead>
                   <TableHead className="w-[100px] text-right text-black">Amount</TableHead>
                   <TableHead className="w-[100px] text-right text-black"></TableHead>
                 </TableRow>
@@ -389,41 +389,13 @@ function Sale() {
                         />
                       </TableCell>
 
-                      <TableCell>
-                        <FormField
-                          name={`items[${index}].discount`}
-                          control={control}
-                          render={({ field }) => (
-                            <FormItem className="w-full">
-                              <FormControl>
-                                <Input
-                                  className="shadow-none"
-                                  type="text"
-                                  placeholder=""
-                                  {...field}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </TableCell>
-
                       <TableCell className="text-right">
                         {[
                           watchedItems[index]?.price,
                           watchedItems[index]?.quantity,
-                          watchedItems[index]?.discount,
                         ].some(isNaN)
                           ? '0.00'
-                          : formatter.format(
-                              Number(watchedItems[index].price) *
-                                Number(watchedItems[index].quantity) -
-                                ((Number(watchedItems[index].discount) || 0) / 100) *
-                                  Number(
-                                    watchedItems[index].price *
-                                      Number(watchedItems[index].quantity),
-                                  ),
-                            )}
+                          : formatter.format(Number(watchedItems[index].price) * Number(watchedItems[index].quantity))}
                       </TableCell>
 
                       <TableCell className="text-center">
@@ -441,7 +413,7 @@ function Sale() {
                 })}
 
                 <TableRow className="bg-gray-50">
-                  <TableCell className="h-11 text-right" colSpan={6}>
+                  <TableCell className="h-11 text-right" colSpan={5}>
                     Subtotal
                   </TableCell>
                   <TableCell className="text-right">{formatter.format(total)}</TableCell>
@@ -449,7 +421,7 @@ function Sale() {
                 </TableRow>
 
                 <TableRow>
-                  <TableCell className="h-11 text-right" colSpan={6}>
+                  <TableCell className="h-11 text-right" colSpan={5}>
                     Adj
                   </TableCell>
                   <TableCell className="text-right">
@@ -488,7 +460,7 @@ function Sale() {
                 </TableRow>
 
                 <TableRow className="bg-gray-50">
-                  <TableCell className="h-11 text-right" colSpan={6}>
+                  <TableCell className="h-11 text-right" colSpan={5}>
                     Taxable Amount
                   </TableCell>
                   <TableCell className="text-right">{formatter.format(taxableAmount)}</TableCell>
@@ -496,7 +468,7 @@ function Sale() {
                 </TableRow>
 
                 <TableRow className="bg-gray-50">
-                  <TableCell className="h-11 text-right" colSpan={6}>
+                  <TableCell className="h-11 text-right" colSpan={5}>
                     13 % VAT
                   </TableCell>
                   <TableCell className="text-right">{formatter.format(vat)}</TableCell>
@@ -504,7 +476,7 @@ function Sale() {
                 </TableRow>
 
                 <TableRow className="bg-gray-50">
-                  <TableCell className="h-11 text-right" colSpan={6}>
+                  <TableCell className="h-11 text-right" colSpan={5}>
                     Grand Total
                   </TableCell>
                   <TableCell className="text-right">{formatter.format(grandTotal)}</TableCell>
@@ -514,7 +486,7 @@ function Sale() {
                 {transactions.fields.map((transaction, index) => {
                   return (
                     <TableRow key={transaction.id}>
-                      <TableCell className="h-11 text-right" colSpan={5}></TableCell>
+                      <TableCell className="h-11 text-right" colSpan={4}></TableCell>
 
                       <TableCell className="text-right">
                         <FormField
@@ -589,7 +561,7 @@ function Sale() {
                 })}
 
                 <TableRow className="bg-gray-50">
-                  <TableCell className="h-11 text-right" colSpan={6}>
+                  <TableCell className="h-11 text-right" colSpan={5}>
                     Payment Total
                   </TableCell>
                   <TableCell className="text-right">{formatter.format(paymentTotal)}</TableCell>
@@ -597,7 +569,7 @@ function Sale() {
                 </TableRow>
 
                 <TableRow>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={5} />
 
                   <TableCell colSpan={2}>
                     <Button
