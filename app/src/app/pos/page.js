@@ -120,7 +120,6 @@ function POS() {
   const { control, setValue, watch, reset, getValues } = form;
 
   useEffect(() => {
-    setValue('title', '');
     setValue('discount', 0);
     setValue('transactions', [DEFAULT_TRANSACTION]);
   }, [open]);
@@ -190,6 +189,7 @@ function POS() {
 
       reset({
         table_id: String(table.id) || '',
+        title: table.name,
         items: table.items || [],
       });
     },
