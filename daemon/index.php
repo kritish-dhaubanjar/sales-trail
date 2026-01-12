@@ -18,12 +18,12 @@ $ws = new Client(
   ]
 );
 
+sleep(2);
+
 $ws->send(json_encode([
   'event' => 'pusher:subscribe',
   'data' => ['channel' => 'print-channel']
 ]));
-
-echo "Listening for JSON print jobs\n";
 
 function amountInWords($amount)
 {
@@ -44,6 +44,8 @@ function amountInWords($amount)
 }
 
 while (true) {
+  echo "Listening for JSON print jobs\n";
+
   try {
     $raw = $ws->receive();
   } catch (\WebSocket\TimeoutException $e) {
@@ -51,6 +53,8 @@ while (true) {
   }
 
   $message = json_decode($raw, true);
+
+  echo "Event received: " . $message['event'] ?? '';
 
   if (($message['event'] ?? '') === 'pusher:ping') {
     $ws->send(json_encode([
@@ -70,7 +74,7 @@ while (true) {
 
     $sale = $data['data'];
 
-    echo "Printing Reciept" . $sale['id'] . "\n";
+    echo "Printing Reciept " . $sale['id'] . "\n";
 
     try {
       // $connector = new NetworkPrintConnector("192.168.0.241", 9100);
@@ -179,7 +183,7 @@ while (true) {
 
     $table = $data['data'];
 
-    echo "Printing Estimate" . $table['id'] . "\n";
+    echo "Printing Estimate " . $table['id'] . "\n";
 
     try {
       // $connector = new NetworkPrintConnector("192.168.0.241", 9100);
