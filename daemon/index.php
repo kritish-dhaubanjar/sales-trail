@@ -155,9 +155,7 @@ while (true) {
     $printer->text("THANK YOU\n");
 
     $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer->text("\x1B\x34");
     $printer->text("* This is an estimated bill only and is not a tax invoice.");
-    $printer->text("\x1B\x35");
     $printer->feed(3);
 
     $printer->cut();
