@@ -144,7 +144,7 @@ while (true) {
 
     $inWords = amountInWords($totals['Grand Total']);
 
-    $printer->text("In Words: $inWords Only\n");
+    $printer->text("In Words: $inWords\n");
     $printer->feed();
 
     // 7. Footer
