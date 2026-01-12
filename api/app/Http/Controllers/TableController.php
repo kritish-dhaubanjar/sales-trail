@@ -164,7 +164,14 @@ class TableController extends Controller
                 return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
             }, $sale_transactions);
 
-            $vat_amount = (13 / 100) * ($total - $discount);
+
+            $grand_total = $total - $discount;
+
+            // Extract VAT from inclusive amount
+            $vat_amount = ($grand_total * 13) / 113;
+
+            // Taxable amount (optional but recommended)
+            $taxable_amount = ($grand_total * 100) / 113;
 
             $sale = Sale::create([
                 'date' => $data['date'],
@@ -172,8 +179,9 @@ class TableController extends Controller
                 'description' => "",
                 'total' => $total,
                 'discount' => $discount,
+                'taxable_amount' => $taxable_amount,
                 'vat_amount' => $vat_amount,
-                'grand_total' => $total - $discount + $vat_amount,
+                'grand_total' => $grand_total,
             ]);
 
             $sale->sale_items()->saveMany($items);
