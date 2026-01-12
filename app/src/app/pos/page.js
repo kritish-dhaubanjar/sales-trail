@@ -233,6 +233,10 @@ function POS() {
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
     onSuccess: (response) => {
+      const saleId = response.data?.id
+
+      window.open(`/sales/print/?id=${saleId}`, '_blank');
+
       refetchTables();
       toast({ title: `Sales "${response.data.name}" successfully saved.` });
       reset({

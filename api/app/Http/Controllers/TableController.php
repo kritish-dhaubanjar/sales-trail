@@ -200,7 +200,7 @@ class TableController extends Controller
 
         event(new POSEvent($table, [], []));
 
-        return $table;
+        return $sale;
     }
 
     public function destroyItems(Request $request, Table $table)
