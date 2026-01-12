@@ -250,6 +250,7 @@ while (true) {
       $printer->feed();
 
       // 7. Footer
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
       $nepalTime = new DateTime('now', new DateTimeZone('Asia/Kathmandu'));
 
       $printer->text("Printed On: " . $nepalTime->format('D M d Y H:i:s') . "\n\n");
