@@ -108,7 +108,7 @@ while (true) {
       $printer->setJustification(Printer::JUSTIFY_LEFT);
       $printer->text("Bill No: " . $sale["id"] . "\n");
       $printer->text("Bill Date: " . $sale["date"] . "\n");
-      $printer->text("Table No: \n");
+      $printer->text("Table No: " . $sale["title"] . "\n");
       $printer->feed();
 
       // 4. Print items table
