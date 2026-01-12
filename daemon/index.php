@@ -195,7 +195,7 @@ while (true) {
 
       // 3. Print bill info
       $printer->setJustification(Printer::JUSTIFY_LEFT);
-      $printer->text("Bill Date: " . new DateTime($table["created_at"])->setTimezone(new DateTimeZone('Asia/Kathmandu'))->format('Y-m-d H:i:s') . "\n");
+      $printer->text("Bill Date: " . (new DateTime($table['items'][0]['created_at']))->setTimezone(new DateTimeZone('Asia/Kathmandu'))->format('Y-m-d H:i:s') . "\n");
       $printer->text("Table No: " . $table["name"] . "\n");
       $printer->feed();
 
