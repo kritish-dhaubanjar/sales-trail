@@ -13,7 +13,7 @@ $appKey = '<APP_KEY>';
 $ws = new Client(
   "wss://ws-$cluster.pusher.com/app/$appKey?protocol=7&client=php&version=1.0",
   [
-    'timeout' => 60,
+    'timeout' => 10,
     'fragment_size' => 4096,
   ]
 );
@@ -43,12 +43,23 @@ function amountInWords($amount)
   return $words;
 }
 
+$lastPing = time();
+$pingInterval = 25; // seconds
+
 while (true) {
   echo "Listening for JSON print jobs\n";
 
   try {
     $raw = $ws->receive();
   } catch (\WebSocket\TimeoutException $e) {
+    if (time() - $lastPing > $pingInterval) {
+      $ws->send(json_encode([
+        'event' => 'pusher:ping',
+        'data' => new stdClass()
+      ]));
+      $lastPing = time();
+    }
+
     continue;
   }
 
