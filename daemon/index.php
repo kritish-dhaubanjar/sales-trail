@@ -5,6 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use WebSocket\Client;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 $cluster = 'ap2';
 $appKey = '<APP_KEY>';
@@ -74,7 +75,8 @@ while (true) {
   echo "Printing " . $sale['id'] . "\n";
 
   try {
-    $connector = new NetworkPrintConnector("192.168.0.241", 9100);
+    // $connector = new NetworkPrintConnector("192.168.0.241", 9100);
+    $connector = new WindowsPrintConnector("LPT2");
     $printer = new Printer($connector);
 
     // 2. Print header
