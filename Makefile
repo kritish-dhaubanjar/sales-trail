@@ -1,7 +1,7 @@
-SSH_USER=kritish3
-SSH_HOST=kritishdhaubanjar.com.np
-SSH_APP_PATH=/home/kritish3/kritishdhaubanjar/sales-trail.kritishdhaubanjar.com.np
-SSH_API_PATH=/home/kritish3/kritishdhaubanjar/sales-trail.kritishdhaubanjar.com.np/api
+SSH_USER=gihmcomn
+SSH_HOST=gihm.com.np
+SSH_APP_PATH=/home/gihmcomn/suhitimebkt/sushitimebkt.gihm.com.np
+SSH_API_PATH=/home/gihmcomn/suhitimebkt/sushitimebkt.gihm.com.np/api
 
 install:
 	cd app && npm install
