@@ -2,9 +2,8 @@
 import { z } from 'zod';
 import Image from 'next/image';
 import DevTool from '@/components/DevTool';
-import { debounce } from 'lodash';
 import dynamic from 'next/dynamic';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -97,7 +96,6 @@ const schema = z.object({
 function POS() {
   const { isLoading, data: auth } = useAuthUser();
 
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -195,51 +193,9 @@ function POS() {
     },
   });
 
-  const { mutate: deleteTableItemsMutation } = useMutation(deleteTableItems, {
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(['tables'], (oldData) => {
-        return {
-          ...oldData,
-          data: oldData.data.map((table) =>
-            table.id === data.data.id ? { ...data.data, items: [] } : table,
-          ),
-        };
-      });
-    },
-  });
+  const { mutate: deleteTableItemsMutation } = useMutation(deleteTableItems, { onsuccess: refetchTables });
 
-  const debouncerRef = useRef(new Map());
-
-  const { mutate: updateTableItemsMutation } = useMutation(updateTableItems, {
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(['tables'], (oldData) => {
-        return {
-          ...oldData,
-          data: oldData.data.map((table) => (table.id === data.data.id ? data.data : table)),
-        };
-      });
-    },
-  });
-
-  const getDebouncedUpdater = useCallback(
-    (id) => {
-      if (!id) {
-        return null;
-      }
-
-      const debouncedFn =
-        debouncerRef.current.get(id) ||
-        debounce((data) => updateTableItemsMutation(data), 1000, {
-          leading: false,
-          trailing: true,
-        });
-
-      debouncerRef.current.set(id, debouncedFn);
-
-      return debouncerRef.current.get(id);
-    },
-    [updateTableItemsMutation],
-  );
+  const { mutate: updateTableItemsMutation } = useMutation(updateTableItems, { onSuccess: refetchTables });
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
     onSuccess: (response) => {
@@ -270,7 +226,7 @@ function POS() {
 
     const data = getValues();
 
-    getDebouncedUpdater(tableId)?.({ id: tableId, items: data.items });
+    updateTableItemsMutation({ id: tableId, items: data.items })
   };
 
   const onQuantityClear = (index) => {
@@ -279,9 +235,8 @@ function POS() {
     const data = getValues();
 
     if (data.items.length) {
-      getDebouncedUpdater(tableId)?.({ id: tableId, items: data.items });
+      updateTableItemsMutation({ id: tableId, items: data.items })
     } else {
-      getDebouncedUpdater(tableId)?.({ id: tableId, items: [] });
       deleteTableItemsMutation({ id: tableId });
     }
   };
@@ -293,7 +248,7 @@ function POS() {
 
     const data = getValues();
 
-    getDebouncedUpdater(tableId)?.({ id: tableId, items: data.items });
+    updateTableItemsMutation({ id: tableId, items: data.items })
 
     setTimeout(() => document.getElementById(`items.${index}.quantity`)?.focus(), 0);
   };
@@ -317,7 +272,7 @@ function POS() {
     const data = getValues();
 
     if (data.items.length) {
-      getDebouncedUpdater(tableId)?.({ id: tableId, items: data.items });
+      updateTableItemsMutation({ id: tableId, items: data.items })
     } else {
       deleteTableItemsMutation({ id: tableId });
     }
