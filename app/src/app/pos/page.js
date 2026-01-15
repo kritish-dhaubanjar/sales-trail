@@ -172,7 +172,7 @@ function POS() {
     queryFn: () => getItems({ page: 1, limit: 10240, query: '', category_type: 'income' }),
   });
 
-  const { data: tables, refetch: refetchTables } = useQuery({
+  const { data: tables, refetch: refetchTables, isFetching: isFetchingTables } = useQuery({
     queryKey: ['tables'],
     enabled: true,
     keepPreviousData: true,
@@ -180,7 +180,7 @@ function POS() {
     queryFn: () => getTables({ page: 1, limit: 10240, query: '' }),
   });
 
-  useQuery({
+  const { isFetching: isFetchingTable } = useQuery({
     queryKey: ['tables', tableId],
     enabled: Boolean(tableId),
     keepPreviousData: true,
@@ -197,9 +197,11 @@ function POS() {
     },
   });
 
-  const { mutate: deleteTableItemsMutation } = useMutation(deleteTableItems, { onsuccess: refetchTables });
+  const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(deleteTableItems, { onsuccess: refetchTables });
 
-  const { mutate: updateTableItemsMutation } = useMutation(updateTableItems, { onSuccess: refetchTables });
+  const { mutate: updateTableItemsMutation, isLoading: isLoadingUpdatingTableItems } = useMutation(updateTableItems, { onSuccess: refetchTables });
+
+  const isBusy = isLoadingUpdatingTableItems || isLoadingDeleteTableItems || isFetchingTables || isFetchingTable
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
     onSuccess: (response) => {
@@ -366,7 +368,7 @@ function POS() {
 
                 return (
                   <Button
-                    disabled={!tableId}
+                    disabled={!tableId || isBusy}
                     onClick={() => onSelect(product)}
                     variant="outline"
                     key={product.id}
@@ -404,6 +406,7 @@ function POS() {
                     <FormItem className="w-full">
                       <FormControl>
                         <Select
+                          disabled={isBusy}
                           className="w-full"
                           value={String(field.value)}
                           onValueChange={(value) => value && field.onChange(value)}
@@ -470,6 +473,7 @@ function POS() {
 
                         <CardAction>
                           <Button
+                            disabled={isBusy}
                             type="button"
                             onClick={() => onQuantityClear(index)}
                             variant="ghost"
@@ -482,6 +486,7 @@ function POS() {
                         <CardDescription>
                           <div className="mt-2 flex items-center">
                             <Button
+                              disabled={isBusy}
                               type="button"
                               onClick={() => onQuantityChange(index, -1)}
                               variant="outline"
@@ -498,6 +503,7 @@ function POS() {
                                 <FormItem className="h-7 w-16">
                                   <FormControl>
                                     <Input
+                                      disabled={isBusy}
                                       id={`items.${index}.quantity`}
                                       type="number"
                                       placeholder="1"
@@ -515,6 +521,7 @@ function POS() {
                             />
 
                             <Button
+                              disabled={isBusy}
                               type="button"
                               onClick={() => onQuantityChange(index, 1)}
                               variant="outline"
@@ -557,14 +564,14 @@ function POS() {
               </Table>
 
               <SheetTrigger className="mt-2 w-full pr-4">
-                <Button disabled={!tableId || !total} className="mt-2 w-full">
+                <Button disabled={!tableId || !total || isBusy} className="mt-2 w-full">
                   Checkout
                 </Button>
               </SheetTrigger>
 
               <div className="pr-4">
                 <Button
-                  disabled={!tableId || !total}
+                  disabled={!tableId || !total || isBusy}
                   className="mt-2 w-full bg-black"
                   onClick={useTablePrintMutation.mutate}
                 >
