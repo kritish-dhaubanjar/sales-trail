@@ -4,7 +4,7 @@ import Image from 'next/image';
 import DevTool from '@/components/DevTool';
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -121,6 +121,10 @@ function POS() {
     setValue('discount', 0);
     setValue('transactions', [DEFAULT_TRANSACTION]);
   }, [open]);
+
+  useEffect(() => {
+    setQuery('')
+  }, [category]);
 
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
   const transactions = useFieldArray({ control, name: 'transactions', rules: { minLength: 1 } });
@@ -346,6 +350,7 @@ function POS() {
       <ScrollArea className="me-4 h-[100vh] min-h-[100vh] w-full border-r">
         <div className="me-4 w-full py-6 pe-4">
           <Input
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="mb-4 mt-0"
             placeholder="Search menu"
