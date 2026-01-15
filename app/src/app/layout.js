@@ -7,15 +7,11 @@ import { Toaster } from '@/components/ui/toaster';
 import QueryClientProvider from '@/components/provider/QueryClientProvider';
 import { ThemeProvider } from '@/components/provider/ThemeProvider';
 
-export const metadata = {
-  title: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
-  description: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
-};
-
 export function generateMetadata() {
   return {
     // ... your existing metadata
-    ...metadata,
+    title: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
+    description: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
     other: {
       ...Sentry.getTraceData()
     }
