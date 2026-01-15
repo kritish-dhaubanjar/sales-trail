@@ -8,7 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: sushitimebkt-development
+
+    strategy:
+      matrix:
+        environments:
+          - sushitimebkt-development
+          - sushitimebkt-production
+
+    environment: ${{ matrix.environments }}
 
     steps:
       - name: Checkout Repository
