@@ -6,9 +6,9 @@ const nextConfig = {
     API_URL: 'http://127.0.0.1:8000/api/v1',
     LARAVEL_URL: 'http://127.0.0.1:8000',
     PUSHER_APP_CLUSTER: 'ap2',
-    PUSHER_APP_KEY: 'XXXXXXXXXXXXXXXXXXXX',
+    PUSHER_APP_KEY: '<PUSHER_APP_KEY>',
     SENTRY_ENVIRONMENT: 'development',
-    SENTRY_DSN: 'https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@XXXXXXX.ingest.us.sentry.io/XXXXXXXXXXXXXXXX',
+    SENTRY_DSN: '<SENTRY_DSN>',
   },
   eslint: {
     ignoreDuringBuilds: true,
