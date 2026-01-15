@@ -7,6 +7,8 @@ const nextConfig = {
     LARAVEL_URL: 'http://127.0.0.1:8000',
     PUSHER_APP_CLUSTER: 'ap2',
     PUSHER_APP_KEY: 'XXXXXXXXXXXXXXXXXXXX',
+    SENTRY_ENVIRONMENT: 'development',
+    SENTRY_DSN: 'https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@XXXXXXX.ingest.us.sentry.io/XXXXXXXXXXXXXXXX',
   },
   eslint: {
     ignoreDuringBuilds: true,

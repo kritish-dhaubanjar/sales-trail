@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: sushitimebkt-development
 
     steps:
       - name: Checkout Repository
@@ -23,10 +24,16 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SUSHI_TIME_BKT_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H sushitimebkt.gihm.com.np >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Makefile
         run: |
           make web
         env:
           PUSHER_APP_KEY: ${{ secrets.SUSHI_TIME_BKT_PUSHER_KEY }}
+          SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_APP_PATH: ${{ secrets.SSH_APP_PATH }}
+          SSH_API_PATH: ${{ secrets.SSH_API_PATH }}
