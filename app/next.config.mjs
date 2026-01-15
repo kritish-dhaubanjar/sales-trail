@@ -7,7 +7,7 @@ const nextConfig = {
     LARAVEL_URL: 'http://127.0.0.1:8000',
     PUSHER_APP_CLUSTER: 'ap2',
     PUSHER_APP_KEY: '<PUSHER_APP_KEY>',
-    SENTRY_ENVIRONMENT: 'development',
+    SENTRY_ENVIRONMENT: '<SENTRY_ENVIRONMENT>',
     SENTRY_DSN: '<SENTRY_DSN>',
   },
   eslint: {
