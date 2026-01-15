@@ -30,7 +30,7 @@ jobs:
         run: |
           make web
         env:
-          PUSHER_APP_KEY: ${{ secrets.PUSHER_KEY }}
+          PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
           SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SSH_USER: ${{ secrets.SSH_USER }}
