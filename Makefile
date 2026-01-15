@@ -3,6 +3,10 @@ SSH_HOST ?=
 SSH_APP_PATH ?=
 SSH_API_PATH ?=
 
+SENTRY_DSN ?=
+PUSHER_APP_KEY ?=
+SENTRY_ENVIRONMENT ?=
+
 install:
 	cd app && npm install
 	cd api && composer install
@@ -18,9 +22,9 @@ watch:
 
 build: install
 	sed -i "s|http://127.0.0.1:8000||g" app/next.config.mjs
-	sed -i "s|XXXXXXXXXXXXXXXXXXXX|$$PUSHER_APP_KEY|g" app/next.config.mjs
+	sed -i "s|XXXXXXXXXXXXXXXXXXXX|$(PUSHER_APP_KEY)|g" app/next.config.mjs
 	sed -i "s|development|$$SENTRY_ENVIRONMENT|g" app/next.config.mjs
-	sed -i "s|https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@XXXXXXX.ingest.us.sentry.io/XXXXXXXXXXXXXXXX|$$SENTRY_DSN|g" app/next.config.mjs
+	sed -i "s|https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX@XXXXXXX.ingest.us.sentry.io/XXXXXXXXXXXXXXXX|$(SENTRY_DSN)|g" app/next.config.mjs
 	cd app && npm run build
 	rm api/resources/views/welcome.blade.php
 	cp app/dist/index.html api/resources/views/welcome.blade.php
