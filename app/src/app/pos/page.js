@@ -197,7 +197,7 @@ function POS() {
     },
   });
 
-  const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(deleteTableItems, { onsuccess: refetchTables });
+  const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(deleteTableItems, { onSuccess: refetchTables });
 
   const { mutate: updateTableItemsMutation, isLoading: isLoadingUpdatingTableItems } = useMutation(updateTableItems, { onSuccess: refetchTables });
 
