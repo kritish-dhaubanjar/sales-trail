@@ -128,10 +128,10 @@ class TableController extends Controller
             // delta == 0 → unchanged, ignore
         }
 
-        event(new POSEvent($table, $added, $removed));
-
         $table->items()->delete();
         $table->items()->saveMany($items);
+
+        event(new POSEvent($table, $added, $removed));
 
         return Table::find($table->id);
     }
