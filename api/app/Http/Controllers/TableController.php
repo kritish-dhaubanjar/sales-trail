@@ -8,6 +8,7 @@ use App\Http\Requests\Table\CheckoutTableRequest;
 use Exception;
 use App\Models\Table;
 use App\Http\Requests\Table\StoreTableRequest;
+use App\Http\Requests\Table\TransferTableRequest;
 use App\Http\Requests\Table\UpdateTableRequest;
 use App\Http\Requests\Table\UpdateTableItemRequest;
 use App\Models\Sale;
@@ -234,5 +235,24 @@ class TableController extends Controller
         $pusher->trigger('print-channel', 'print-estimate', ['data' => $table]);
 
         return $table;
+    }
+
+    public function transfer(TransferTableRequest $request, Table $table)
+    {
+        $data = $request->validated();
+
+        $table_id = $data['table_id'];
+
+        $destinationTable = Table::findOrFail($table_id);
+
+        if ($destinationTable->items()->exists()) {
+            return response()->json(['message' => 'Destination table has items.'], 422);
+        }
+
+        DB::transaction(function () use ($table, $destinationTable) {
+            TableItem::where('table_id', $table->id)->update(['table_id' => $destinationTable->id]);
+        });
+
+        return $destinationTable;
     }
 }
