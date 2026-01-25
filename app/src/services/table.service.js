@@ -59,3 +59,9 @@ export async function deleteTableItems({ id }) {
 
   return data;
 }
+
+export async function transferTable({ id, table_id }) {
+  const data = await axios.post(`/tables/${id}/transfer`, { table_id });
+
+  return data;
+}

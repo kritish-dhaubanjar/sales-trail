@@ -9,6 +9,7 @@ import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { TableDialog } from '@/components/tables/dialog';
+import { TableTransferDialog } from '@/components/tables/transfer/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
 
@@ -24,6 +25,7 @@ import {
   ArchiveIcon,
   Cross1Icon,
   PlusIcon,
+  WidthIcon,
   MinusIcon,
 } from '@radix-ui/react-icons';
 
@@ -102,6 +104,7 @@ function POS() {
   const [tender, setTender] = useState(0);
   const [category, setCategory] = useState(null);
   const [tableOpen, setTableOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(schema),
@@ -319,6 +322,15 @@ function POS() {
         onClose={() => setTableOpen(false)}
       />
 
+      <TableTransferDialog
+        tables={tables?.data?.data || []}
+        open={transferOpen}
+        tableId={tableId}
+        setTableId={(tableId) => setValue('table_id', tableId)}
+        refetch={refetchTables}
+        onClose={() => setTransferOpen(false)}
+      />
+
       <div className="min-h-lvh px-4">
         <ScrollArea className="h-[100vh]">
           <div className="relative min-h-lvh max-w-[min-content] border-r pe-3">
@@ -443,7 +455,11 @@ function POS() {
                 />
               </div>
 
-              <Button className="mr-4" onClick={() => setTableOpen(true)}>
+              <Button disabled={!tableId || !items.fields.length} className="mr-4" onClick={() => setTransferOpen(true)}>
+                <WidthIcon className="h-4 w-4" />
+              </Button>
+
+              <Button className="mr-2" onClick={() => setTableOpen(true)}>
                 <PlusIcon className="h-4 w-4" />
               </Button>
             </div>
