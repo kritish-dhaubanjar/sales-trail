@@ -440,7 +440,7 @@ function POS() {
                             />
                           </SelectTrigger>
 
-                          <SelectContent>
+                          <SelectContent position="popper" className="max-h-80 overflow-y-auto">
                             <SelectGroup>
                               {tables?.data?.data
                                 ?.sort((table) => (table.items.length ? -1 : 1))
