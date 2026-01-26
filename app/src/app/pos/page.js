@@ -126,7 +126,7 @@ function POS() {
   }, [open]);
 
   useEffect(() => {
-    setQuery('')
+    setQuery('');
   }, [category]);
 
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
@@ -175,7 +175,11 @@ function POS() {
     queryFn: () => getItems({ page: 1, limit: 10240, query: '', category_type: 'income' }),
   });
 
-  const { data: tables, refetch: refetchTables, isFetching: isFetchingTables } = useQuery({
+  const {
+    data: tables,
+    refetch: refetchTables,
+    isFetching: isFetchingTables,
+  } = useQuery({
     queryKey: ['tables'],
     enabled: true,
     keepPreviousData: true,
@@ -200,11 +204,18 @@ function POS() {
     },
   });
 
-  const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(deleteTableItems, { onSuccess: refetchTables });
+  const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(
+    deleteTableItems,
+    { onSuccess: refetchTables },
+  );
 
-  const { mutate: updateTableItemsMutation, isLoading: isLoadingUpdatingTableItems } = useMutation(updateTableItems, { onSuccess: refetchTables });
+  const { mutate: updateTableItemsMutation, isLoading: isLoadingUpdatingTableItems } = useMutation(
+    updateTableItems,
+    { onSuccess: refetchTables },
+  );
 
-  const isBusy = isLoadingUpdatingTableItems || isLoadingDeleteTableItems || isFetchingTables || isFetchingTable
+  const isBusy =
+    isLoadingUpdatingTableItems || isLoadingDeleteTableItems || isFetchingTables || isFetchingTable;
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
     onSuccess: (response) => {
@@ -235,7 +246,7 @@ function POS() {
 
     const data = getValues();
 
-    updateTableItemsMutation({ id: tableId, items: data.items })
+    updateTableItemsMutation({ id: tableId, items: data.items });
   };
 
   const onQuantityClear = (index) => {
@@ -244,7 +255,7 @@ function POS() {
     const data = getValues();
 
     if (data.items.length) {
-      updateTableItemsMutation({ id: tableId, items: data.items })
+      updateTableItemsMutation({ id: tableId, items: data.items });
     } else {
       deleteTableItemsMutation({ id: tableId });
     }
@@ -257,7 +268,7 @@ function POS() {
 
     const data = getValues();
 
-    updateTableItemsMutation({ id: tableId, items: data.items })
+    updateTableItemsMutation({ id: tableId, items: data.items });
 
     setTimeout(() => document.getElementById(`items.${index}.quantity`)?.focus(), 0);
   };
@@ -281,7 +292,7 @@ function POS() {
     const data = getValues();
 
     if (data.items.length) {
-      updateTableItemsMutation({ id: tableId, items: data.items })
+      updateTableItemsMutation({ id: tableId, items: data.items });
     } else {
       deleteTableItemsMutation({ id: tableId });
     }
@@ -423,7 +434,7 @@ function POS() {
                           value={String(field.value)}
                           onValueChange={(value) => value && field.onChange(value)}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="h-[30px!important] w-full">
                             <SelectValue
                               placeholder={<span className="text-gray-500">Select Table</span>}
                             />
@@ -455,7 +466,11 @@ function POS() {
                 />
               </div>
 
-              <Button disabled={!tableId || !items.fields.length} className="mr-4" onClick={() => setTransferOpen(true)}>
+              <Button
+                disabled={!tableId || !items.fields.length}
+                className="mr-4"
+                onClick={() => setTransferOpen(true)}
+              >
                 <WidthIcon className="h-4 w-4" />
               </Button>
 
@@ -701,7 +716,7 @@ function POS() {
                                               value && field.onChange(value)
                                             }
                                           >
-                                            <SelectTrigger className="w-[100px]">
+                                            <SelectTrigger className="h-[30px!important] w-[100px]">
                                               <SelectValue
                                                 placeholder={
                                                   <span className="text-gray-500">

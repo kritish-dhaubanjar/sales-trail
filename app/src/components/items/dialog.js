@@ -161,7 +161,7 @@ export function ItemDialog({
                           value={String(categoryId)}
                           onValueChange={field.onChange}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="h-[30px!important]">
                             <SelectValue
                               placeholder={<span className="text-gray-500">Select a category</span>}
                             />
@@ -210,7 +210,7 @@ export function ItemDialog({
                             value={String(unitId)}
                             onValueChange={field.onChange}
                           >
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="h-[30px!important] w-[180px]">
                               <SelectValue
                                 placeholder={<span className="text-gray-500">Select a unit</span>}
                               />

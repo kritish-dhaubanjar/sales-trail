@@ -13,8 +13,8 @@ export function generateMetadata() {
     title: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
     description: 'Global Institute of Hotel Management & Tourism Technical Center Pvt. Ltd',
     other: {
-      ...Sentry.getTraceData()
-    }
+      ...Sentry.getTraceData(),
+    },
   };
 }
 

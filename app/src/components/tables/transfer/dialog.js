@@ -1,3 +1,4 @@
+import React from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
@@ -36,9 +37,9 @@ export function TableTransferDialog({
   open = true,
   tableId = null,
   tables = [],
-  setTableId = () => { },
-  refetch = () => { },
-  onClose = () => { },
+  setTableId = () => {},
+  refetch = () => {},
+  onClose = () => {},
 }) {
   const DEFAULT_TABLE = { table_id: '' };
 
@@ -96,11 +97,10 @@ export function TableTransferDialog({
                       <FormItem className="w-full">
                         <FormControl>
                           <Select
-                            className="w-full"
                             value={String(field.value)}
                             onValueChange={(value) => value && field.onChange(value)}
                           >
-                            <SelectTrigger>
+                            <SelectTrigger className="h-[30px!important] w-[180px]">
                               <SelectValue
                                 placeholder={<span className="text-gray-500">Select Table</span>}
                               />
@@ -108,7 +108,8 @@ export function TableTransferDialog({
 
                             <SelectContent>
                               <SelectGroup>
-                                {tables?.filter(({ items }) => !items.length)
+                                {tables
+                                  ?.filter(({ items }) => !items.length)
                                   ?.sort((table) => (table.items.length ? -1 : 1))
                                   .map((table) => (
                                     <SelectItem key={table.id} value={String(table.id)}>

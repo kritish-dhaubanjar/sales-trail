@@ -508,7 +508,7 @@ function Purchase() {
                                   value={String(field.value)}
                                   onValueChange={(value) => value && field.onChange(value)}
                                 >
-                                  <SelectTrigger className="w-[180px]">
+                                  <SelectTrigger className="h-[30px!important] w-[180px]">
                                     <SelectValue
                                       placeholder={
                                         <span className="text-gray-500">Select an account</span>
