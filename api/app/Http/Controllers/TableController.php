@@ -88,14 +88,6 @@ class TableController extends Controller
 
         $table_items = $data['items'] ?? [];
 
-        $items = array_map(function ($item) {
-            return new TableItem([
-                'item_id' => $item['item_id'],
-                'price' => $item['price'],
-                'quantity' => $item['quantity'],
-            ]);
-        }, $table_items);
-
         $before = $table->items()
             ->get(['item_id', 'quantity'])
             ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity])
@@ -129,12 +121,28 @@ class TableController extends Controller
             // delta == 0 → unchanged, ignore
         }
 
+        DB::beginTransaction();
+
         $table->items()->delete();
-        $table->items()->saveMany($items);
+
+        $rows = collect($table_items)->map(function ($item) use ($table) {
+            return [
+                'table_id' => $table->id,
+                'item_id' => $item['item_id'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'updated_at' => now(),
+                'created_at' => now(),
+            ];
+        })->toArray();
+
+        DB::table('table_items')->upsert($rows, ['table_id', 'item_id'], ['price', 'quantity', 'updated_at']);
+
+        DB::commit();
 
         event(new POSEvent($table, $added, $removed));
 
-        return Table::find($table->id);
+        return $table->fresh('items');
     }
 
     public function checkout(CheckoutTableRequest $request, Table $table)
