@@ -124,7 +124,7 @@ export function CategoryDialog({
                       defaultValue="income"
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="col-span-4 w-full">
+                      <SelectTrigger className="col-span-4 h-[30px!important] w-full">
                         <SelectValue placeholder="income" />
                       </SelectTrigger>
                       <SelectContent>

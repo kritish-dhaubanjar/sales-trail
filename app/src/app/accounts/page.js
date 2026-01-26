@@ -416,7 +416,7 @@ function Account() {
                     table.setPageSize(Number(value));
                   }}
                 >
-                  <SelectTrigger className="h-8 w-[70px]">
+                  <SelectTrigger className="h-[30px!important] w-[70px]">
                     <SelectValue placeholder={table.getState().pagination.pageSize} />
                   </SelectTrigger>
                   <SelectContent side="top">

@@ -163,7 +163,7 @@ export function TransferDialog({
                             value={String(field.value)}
                             onValueChange={field.onChange}
                           >
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="h-[30px!important] w-[180px]">
                               <SelectValue
                                 placeholder={<span className="text-gray-500">Select A/C</span>}
                               />
@@ -197,7 +197,7 @@ export function TransferDialog({
                             value={String(field.value)}
                             onValueChange={field.onChange}
                           >
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="h-[30px!important] w-[180px]">
                               <SelectValue
                                 placeholder={<span className="text-gray-500">Select A/C</span>}
                               />
