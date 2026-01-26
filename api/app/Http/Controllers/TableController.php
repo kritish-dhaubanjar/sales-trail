@@ -136,7 +136,7 @@ class TableController extends Controller
             ];
         })->toArray();
 
-        DB::table('table_items')->upsert($rows, ['table_id', 'item_id'], ['price', 'quantity', 'updated_at']);
+        DB::table('table_items')->insert($rows, ['table_id', 'item_id'], ['price', 'quantity', 'updated_at']);
 
         DB::commit();
 
