@@ -429,7 +429,7 @@ function POS() {
                                 .map((table) => (
                                   <SelectItem key={table.id} value={String(table.id)}>
                                     <div className="flex items-center justify-between">
-                                      {table.items.length > 0 ? (
+                                      {(table.items.length || watchedItems.length) > 0 ? (
                                         <CheckboxIcon className="h-5 w-5 text-green-800" />
                                       ) : (
                                         <BoxIcon className="h-4 w-4" />
