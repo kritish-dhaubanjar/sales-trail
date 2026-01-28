@@ -206,12 +206,44 @@ function POS() {
 
   const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(
     deleteTableItems,
-    { onSuccess: refetchTables },
+    {
+      onSuccess: (newTable) => {
+        queryClient.setQueryData(['tables'], (oldData) => {
+          const tables = oldData.data.data.map((table) => {
+            if (table.id !== newTable.data.id) {
+              return table
+            }
+
+            return { ...newTable.data, items: [] }
+          })
+
+          oldData.data.data = tables
+
+          return oldData
+        })
+      }
+    },
   );
 
   const { mutate: updateTableItemsMutation, isLoading: isLoadingUpdatingTableItems } = useMutation(
     updateTableItems,
-    { onSuccess: refetchTables },
+    {
+      onSuccess: (newTable) => {
+        queryClient.setQueryData(['tables'], (oldData) => {
+          const tables = oldData.data.data.map((table) => {
+            if (table.id !== newTable.data.id) {
+              return table
+            }
+
+            return newTable.data
+          })
+
+          oldData.data.data = tables
+
+          return oldData
+        })
+      }
+    },
   );
 
   const isBusy =
