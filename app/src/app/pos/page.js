@@ -4,7 +4,7 @@ import Image from 'next/image';
 import DevTool from '@/components/DevTool';
 import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -97,6 +97,8 @@ const schema = z.object({
 
 function POS() {
   const { isLoading, data: auth } = useAuthUser();
+
+  const queryClient = useQueryClient();
 
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
