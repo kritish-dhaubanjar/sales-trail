@@ -178,7 +178,7 @@ function POS() {
     queryFn: () => getTables({ page: 1, limit: 10240, query: '' }),
   });
 
-  useQuery({
+  const { isFetching: isFetchingTable } = useQuery({
     queryKey: ['tables', tableId],
     enabled: Boolean(tableId),
     keepPreviousData: true,
@@ -374,7 +374,7 @@ function POS() {
 
                 return (
                   <Button
-                    disabled={!tableId}
+                    disabled={!tableId || isFetchingTable}
                     onClick={() => onSelect(product)}
                     variant="outline"
                     key={product.id}
