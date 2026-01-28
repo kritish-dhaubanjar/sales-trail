@@ -12,6 +12,7 @@ import { TableDialog } from '@/components/tables/dialog';
 import { TableTransferDialog } from '@/components/tables/transfer/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthUser } from '@/hooks/use-is-authenticated';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -636,11 +637,11 @@ function POS() {
 
               <div className="pr-4">
                 <Button
-                  disabled={!tableId || !total || isBusy}
+                  disabled={!tableId || !total || isBusy || useTablePrintMutation.isLoading}
                   className="mt-2 w-full bg-black"
                   onClick={useTablePrintMutation.mutate}
                 >
-                  <PrinterIcon className="mr-2 h-4 w-4" /> Print Estimate
+                  {useTablePrintMutation.isLoading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <PrinterIcon className="mr-2 h-4 w-4" />} Print Estimate
                 </Button>
               </div>
 

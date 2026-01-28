@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { ReloadIcon } from '@radix-ui/react-icons';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 
@@ -60,8 +61,8 @@ function Print() {
   return (
     <>
       <div className="m-5 mx-auto flex w-[720px] justify-between print:hidden">
-        <Button onClick={useSalesPrintMutation.mutate}>
-          <PrinterIcon className="mr-2 h-4 w-4" /> Print
+        <Button disabled={useSalesPrintMutation.isLoading} onClick={useSalesPrintMutation.mutate}>
+          {useSalesPrintMutation.isLoading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <PrinterIcon className="mr-2 h-4 w-4" />} Print
         </Button>
       </div>
 
