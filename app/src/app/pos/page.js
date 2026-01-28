@@ -215,7 +215,7 @@ function POS() {
       return null;
     }
 
-    const debouncedFn = debouncerRef.current.get(id) || debounce((data) => updateTableItemsMutation(data), 250, { leading: false, trailing: true });
+    const debouncedFn = debouncerRef.current.get(id) || debounce((data) => updateTableItemsMutation(data), 100, { leading: false, trailing: true });
 
     debouncerRef.current.set(id, debouncedFn);
 
@@ -258,7 +258,6 @@ function POS() {
     if (data.items.length) {
       getDebouncedUpdater(tableId)?.({ id: tableId, items: data.items });
     } else {
-      getDebouncedUpdater(tableId)?.({ id: tableId, items: [] });
       deleteTableItemsMutation({ id: tableId });
     }
   };
