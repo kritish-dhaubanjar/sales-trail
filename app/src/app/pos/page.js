@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import Image from 'next/image';
 import DevTool from '@/components/DevTool';
-import { debounce } from 'lodash';
+import { debounce, find } from 'lodash';
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -208,7 +208,23 @@ function POS() {
 
   const debouncerRef = useRef(new Map());
 
-  const { mutate: updateTableItemsMutation } = useMutation(updateTableItems);
+  const { mutate: updateTableItemsMutation } = useMutation(updateTableItems, {
+    onSuccess: (newTable) => {
+      queryClient.setQueryData(['tables'], (oldData) => {
+        const tables = oldData.data.data.map((table) => {
+          if (table.id !== newTable.data.id) {
+            return table
+          }
+
+          return newTable.data
+        })
+
+        oldData.data.data = tables
+
+        return oldData
+      })
+    }
+  });
 
   const getDebouncedUpdater = useCallback((id) => {
     if (!id) {
@@ -429,7 +445,7 @@ function POS() {
                                 .map((table) => (
                                   <SelectItem key={table.id} value={String(table.id)}>
                                     <div className="flex items-center justify-between">
-                                      {(table.items.length || watchedItems.length) > 0 ? (
+                                      {(table.items.length) > 0 ? (
                                         <CheckboxIcon className="h-5 w-5 text-green-800" />
                                       ) : (
                                         <BoxIcon className="h-4 w-4" />
