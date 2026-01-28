@@ -208,23 +208,14 @@ function POS() {
 
   const debouncerRef = useRef(new Map());
 
-  const { mutate: updateTableItemsMutation } = useMutation(updateTableItems, {
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(['tables'], (oldData) => {
-        return {
-          ...oldData,
-          data: oldData.data.map((table) => table.id === data.data.id ? data.data : table),
-        };
-      });
-    }
-  });
+  const { mutate: updateTableItemsMutation } = useMutation(updateTableItems);
 
   const getDebouncedUpdater = useCallback((id) => {
     if (!id) {
       return null;
     }
 
-    const debouncedFn = debouncerRef.current.get(id) || debounce((data) => updateTableItemsMutation(data), 1000, { leading: false, trailing: true });
+    const debouncedFn = debouncerRef.current.get(id) || debounce((data) => updateTableItemsMutation(data), 250, { leading: false, trailing: true });
 
     debouncerRef.current.set(id, debouncedFn);
 
