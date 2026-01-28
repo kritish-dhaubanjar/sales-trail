@@ -196,13 +196,20 @@ function POS() {
 
 
   const { mutate: deleteTableItemsMutation } = useMutation(deleteTableItems, {
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(['tables'], (oldData) => {
-        return {
-          ...oldData,
-          data: oldData.data.map((table) => table.id === data.data.id ? { ...data.data, items: [] } : table),
-        };
-      });
+    onSuccess: (newTable) => {
+      queryClient.setQueryData(['tables'], (oldData) => {
+        const tables = oldData.data.data.map((table) => {
+          if (table.id !== newTable.data.id) {
+            return table
+          }
+
+          return { ...newTable.data, items: [] }
+        })
+
+        oldData.data.data = tables
+
+        return oldData
+      })
     }
   });
 
