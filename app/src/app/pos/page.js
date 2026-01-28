@@ -234,7 +234,7 @@ function POS() {
   });
 
   const onSelect = (item) => {
-    const index = watchedItems.findIndex((i) => i.item_id === item.id);
+    const index = watchedItems.findIndex((i) => String(i.item_id) === String(item.id));
 
     if (index > -1) {
       const item = items.fields[index];
