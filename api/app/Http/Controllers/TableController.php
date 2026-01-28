@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\POSEvent;
+use App\Events\PrintEstimate;
 use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\Table\CheckoutTableRequest;
 use Exception;
@@ -233,14 +234,7 @@ class TableController extends Controller
 
     public function print(Request $request, Table $table)
     {
-        $pusher = new Pusher(
-            config('broadcasting.connections.pusher.key'),
-            config('broadcasting.connections.pusher.secret'),
-            config('broadcasting.connections.pusher.app_id'),
-            config('broadcasting.connections.pusher.options')
-        );
-
-        $pusher->trigger('print-channel', 'print-estimate', ['data' => $table]);
+        event(new PrintEstimate($table));
 
         return $table;
     }
