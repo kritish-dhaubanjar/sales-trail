@@ -150,7 +150,7 @@ class SaleController extends Controller
             // Taxable amount (optional but recommended)
             $taxable_amount = ($grand_total * 100) / 113;
 
-            $sale = Sale::create([
+            $sale->update([
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => "",
