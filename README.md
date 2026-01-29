@@ -15,7 +15,7 @@ The project is a lightweight system designed to manage business operations relat
 
 <img width="328" height="980" alt="image" src="https://github.com/user-attachments/assets/85f1537c-72b5-404f-af83-de6f8a51150a" />
 
-<img width="2471" height="638" alt="image" src="https://github.com/user-attachments/assets/ff02a6f0-9a88-48ff-aa2b-3ab9bb4cbcba" />
+<img width="1243" height="638" alt="image" src="https://github.com/user-attachments/assets/34af3bd6-b62b-4159-8988-eca37f8cd021" />
 
 ## Entity Relationship (ER) Diagram
 ![sales-trail](https://github.com/user-attachments/assets/8ab48385-d237-4655-8425-7d68f3eecbb2)
