@@ -154,7 +154,7 @@ while (true) {
 
             // 4. Print items table
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("SN  ITEM                     QTY   RATE    AMT\n");
+            $printer->text("SN ITEM                         QTY  RATE   AMT\n");
             $printer->text("------------------------------------------------\n");
 
             $sale_items = $sale['sale_items'];
@@ -169,17 +169,17 @@ while (true) {
             }, $sale_items);
 
             foreach ($items as $index => $item) {
-              $sn = str_pad($index + 1, 3, " ", STR_PAD_LEFT);
+              $sn = str_pad($index + 1, 2, " ", STR_PAD_RIGHT);
 
-              $name = str_pad(substr($item['name'], 0, 16), 16, " ", STR_PAD_RIGHT);
+              $name = str_pad(substr($item['name'], 0, 29), 29, " ", STR_PAD_RIGHT);
 
               $qty = str_pad($item['quantity'], 3, " ", STR_PAD_LEFT);
 
-              $rate = str_pad(number_format($item['price'], 2), 8, " ", STR_PAD_LEFT);
+              $rate = str_pad(number_format($item['price']), 6, " ", STR_PAD_LEFT);
 
-              $total = str_pad(number_format($item['total'], 2), 8, " ", STR_PAD_LEFT);
+              $total = str_pad(number_format($item['total']), 6, " ", STR_PAD_LEFT);
 
-              $printer->text("$sn    $name  $qty  $rate  $total\n");
+              $printer->text("$sn $name$qty$rate$total\n");
             }
 
             $printer->text("------------------------------------------------\n");
@@ -257,7 +257,7 @@ while (true) {
 
             // 4. Print items table
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("SN  ITEM                     QTY   RATE    AMT\n");
+            $printer->text("SN ITEM                         QTY  RATE   AMT\n");
             $printer->text("------------------------------------------------\n");
 
             $sale_items = $table['items'];
@@ -279,20 +279,20 @@ while (true) {
             ];
 
             foreach ($items as $index => $item) {
-              $sn = str_pad($index + 1, 3, " ", STR_PAD_LEFT);
+              $sn = str_pad($index + 1, 2, " ", STR_PAD_RIGHT);
 
-              $name = str_pad(substr($item['name'], 0, 16), 16, " ", STR_PAD_RIGHT);
+              $name = str_pad(substr($item['name'], 0, 29), 29, " ", STR_PAD_RIGHT);
 
               $qty = str_pad($item['quantity'], 3, " ", STR_PAD_LEFT);
 
-              $rate = str_pad(number_format($item['price'], 2), 8, " ", STR_PAD_LEFT);
+              $rate = str_pad(number_format($item['price']), 6, " ", STR_PAD_LEFT);
 
-              $total = str_pad(number_format($item['total'], 2), 8, " ", STR_PAD_LEFT);
+              $total = str_pad(number_format($item['total']), 6, " ", STR_PAD_LEFT);
 
               $totals['Sub Total'] += $item['total'];
               $totals['Grand Total'] += $item['total'];
 
-              $printer->text("$sn    $name  $qty  $rate  $total\n");
+              $printer->text("$sn $name$qty$rate$total\n");
             }
 
             $printer->text("------------------------------------------------\n");
