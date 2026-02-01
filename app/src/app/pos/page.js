@@ -217,8 +217,8 @@ function POS() {
       onSuccess: (newTable) => {
         queryClient.setQueryData(['tables'], (oldData) => {
           const tables = oldData.data.data.map((table) => {
-            if (table.id !== newTable.data.id) {
-              return table;
+            if (String(table.id) !== String(newTable.data.id)) {
+              return table
             }
 
             return { ...newTable.data, items: [] };
@@ -238,8 +238,8 @@ function POS() {
       onSuccess: (newTable) => {
         queryClient.setQueryData(['tables'], (oldData) => {
           const tables = oldData.data.data.map((table) => {
-            if (table.id !== newTable.data.id) {
-              return table;
+            if (String(table.id) !== String(newTable.data.id)) {
+              return table
             }
 
             return newTable.data;
