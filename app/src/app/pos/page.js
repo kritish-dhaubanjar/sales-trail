@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import Image from 'next/image';
 import DevTool from '@/components/DevTool';
-import { debounce, find } from 'lodash';
+import { debounce } from 'lodash';
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -489,7 +489,7 @@ function POS() {
                 );
 
                 return (
-                  <div key={item.id} className="me-4">
+                  <div key={String(item.id)} className="me-4">
                     <Card className="gap-3 border-0 p-0 pt-2 shadow-none">
                       <CardHeader className="px-0">
                         <CardTitle>
