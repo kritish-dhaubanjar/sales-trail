@@ -73,7 +73,7 @@ const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFra
 
 const DEFAULT_TRANSACTION = {
   account_id: 1,
-  amount: 0,
+  amount: null,
 };
 
 const schema = z.object({
@@ -124,11 +124,6 @@ function POS() {
   const { control, setValue, watch, reset, getValues } = form;
 
   useEffect(() => {
-    setValue('discount', 0);
-    setValue('transactions', [DEFAULT_TRANSACTION]);
-  }, [open]);
-
-  useEffect(() => {
     setQuery('');
   }, [category]);
 
@@ -149,6 +144,15 @@ function POS() {
   const paymentTotal = watchedTransactions.reduce((acc, { amount = 0 }) => {
     return (acc += Number(amount));
   }, 0);
+
+  useEffect(() => {
+    setValue('discount', 0);
+    const totalTransaction = {
+      account_id: 1,
+      amount: total,
+    };
+    setValue('transactions', [totalTransaction]);
+  }, [open]);
 
   const { data: accounts, isFetching: isFetchingAccounts } = useQuery({
     queryKey: ['accounts'],
@@ -794,7 +798,7 @@ function POS() {
                                         <FormControl>
                                           <Input
                                             className="shadow-none"
-                                            type="text"
+                                            type="number"
                                             placeholder=""
                                             {...field}
                                           />
