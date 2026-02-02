@@ -214,17 +214,17 @@ function POS() {
         queryClient.setQueryData(['tables'], (oldData) => {
           const tables = oldData.data.data.map((table) => {
             if (table.id !== newTable.data.id) {
-              return table
+              return table;
             }
 
-            return { ...newTable.data, items: [] }
-          })
+            return { ...newTable.data, items: [] };
+          });
 
-          oldData.data.data = tables
+          oldData.data.data = tables;
 
-          return oldData
-        })
-      }
+          return oldData;
+        });
+      },
     },
   );
 
@@ -235,17 +235,17 @@ function POS() {
         queryClient.setQueryData(['tables'], (oldData) => {
           const tables = oldData.data.data.map((table) => {
             if (table.id !== newTable.data.id) {
-              return table
+              return table;
             }
 
-            return newTable.data
-          })
+            return newTable.data;
+          });
 
-          oldData.data.data = tables
+          oldData.data.data = tables;
 
-          return oldData
-        })
-      }
+          return oldData;
+        });
+      },
     },
   );
 
@@ -517,8 +517,8 @@ function POS() {
             <ScrollArea className="mt-4 h-[calc(100vh-200px)]">
               {(!items.fields.length || !tableId) && (
                 <div className="m-auto mr-4 text-sm">
-                  To proceed, please choose a table and then continue to add items to the customer's
-                  order.
+                  To proceed, please choose a table and then continue to add items to the
+                  customer&apos;s order.
                 </div>
               )}
               {items.fields.map((item, index) => {
@@ -641,7 +641,12 @@ function POS() {
                   className="mt-2 w-full bg-black"
                   onClick={useTablePrintMutation.mutate}
                 >
-                  {useTablePrintMutation.isLoading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <PrinterIcon className="mr-2 h-4 w-4" />} Print Estimate
+                  {useTablePrintMutation.isLoading ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <PrinterIcon className="mr-2 h-4 w-4" />
+                  )}{' '}
+                  Print Estimate
                 </Button>
               </div>
 
