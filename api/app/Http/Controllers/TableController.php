@@ -12,14 +12,13 @@ use App\Http\Requests\Table\StoreTableRequest;
 use App\Http\Requests\Table\TransferTableRequest;
 use App\Http\Requests\Table\UpdateTableRequest;
 use App\Http\Requests\Table\UpdateTableItemRequest;
+use App\Models\KOTItem;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\TableItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
-use Pusher\Pusher;
 
 class TableController extends Controller
 {
@@ -253,6 +252,7 @@ class TableController extends Controller
 
         DB::transaction(function () use ($table, $destinationTable) {
             TableItem::where('table_id', $table->id)->update(['table_id' => $destinationTable->id]);
+            KOTItem::where('table_id', $table->id)->update(['table_id' => $destinationTable->id]);
         });
 
         return $destinationTable;
