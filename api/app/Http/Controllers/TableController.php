@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\KOTEvent;
+use App\Events\KOTUpdate;
 use App\Events\POSEvent;
 use App\Events\PrintEstimate;
 use App\Http\Requests\PaginationRequest;
@@ -307,6 +308,7 @@ class TableController extends Controller
         }
 
         $data = [
+            'table_id' => $table->id,
             'table' => $table->name,
             'added' => $added,
             'removed' => $removed
@@ -332,6 +334,8 @@ class TableController extends Controller
             $table->kotItems()->delete();
             $table->kotItems()->saveMany($kotItems);
         });
+
+        event(new KOTUpdate($table));
 
         return $table;
     }
