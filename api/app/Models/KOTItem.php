@@ -10,6 +10,8 @@ class KOTItem extends Model
 {
     use HasFactory;
 
+    protected $table = 'kot_items';
+
     protected $with = ['item'];
     protected $fillable = ["quantity", "item_id"];
 

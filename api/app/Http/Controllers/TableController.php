@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\KOTEvent;
 use App\Events\POSEvent;
 use App\Events\PrintEstimate;
 use App\Http\Requests\PaginationRequest;
@@ -198,6 +199,7 @@ class TableController extends Controller
             $sale->sale_items()->saveMany($items);
             $sale->transactions()->saveMany($transactions);
             $table->items()->delete();
+            $table->kotItems()->delete();
         } catch (Exception $error) {
             DB::rollBack();
             throw $error;
@@ -221,6 +223,7 @@ class TableController extends Controller
         $removed = $table_items->map(fn($m) => ['item_id'  => (int)$m['item_id'], 'quantity_removed' => (int)$m['quantity']])->toArray();
 
         $table->items()->delete();
+        $table->kotItems()->delete();
 
         if ($table->is_delivery) {
             Table::destroy($table->id);
@@ -256,5 +259,80 @@ class TableController extends Controller
         });
 
         return $destinationTable;
+    }
+
+    public function showKOT(Table $table)
+    {
+        $kot_items = $table->kotItems();
+
+        return $kot_items;
+    }
+
+    public function sendKOT(Table $table)
+    {
+        $after = $table->items()
+            ->get(['item_id', 'quantity'])
+            ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name])
+            ->keyBy('item_id');
+
+        $before = $table->kotItems()
+            ->get(['item_id', 'quantity'])
+            ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name])
+            ->keyBy('item_id');
+
+        $allKeys = $before->keys()->union($after->keys());
+
+        $added = [];
+        $removed = [];
+
+        foreach ($allKeys as $id) {
+            $prevQty = $before[$id]['quantity'] ?? 0;
+            $nextQty = $after[$id]['quantity'] ?? 0;
+            $delta   = $nextQty - $prevQty;
+
+            if ($delta > 0) {
+                $added[] = [
+                    'item_id'       => $id,
+                    'quantity_added' => $delta,
+                    'name' => $after[$id]['name'],
+                ];
+            } elseif ($delta < 0) {
+                $removed[] = [
+                    'item_id'          => $id,
+                    'quantity_removed' => $delta,
+                    'name' => $before[$id]['name'],
+                ];
+            }
+            // delta == 0 → unchanged, ignore
+        }
+
+        $data = [
+            'table' => $table->name,
+            'added' => $added,
+            'removed' => $removed
+        ];
+
+        if (count($added) > 0 || count($removed) > 0) {
+            event(new KOTEvent($data));
+        }
+
+        return response()->json($data);
+    }
+
+    public function updateKOT(Table $table)
+    {
+        DB::transaction(function () use ($table) {
+            $kotItems = collect($table->items()->get())->map(function ($item) {
+                return new KOTItem([
+                    'item_id' => $item['item_id'],
+                    'quantity' => $item['quantity'],
+                ]);
+            });
+
+            $table->kotItems()->delete();
+            $table->kotItems()->saveMany($kotItems);
+        });
+
+        return $table;
     }
 }

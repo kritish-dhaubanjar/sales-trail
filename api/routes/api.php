@@ -46,6 +46,10 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
 
             Route::put('/tables/{table}/items', 'updateItems');
             Route::delete('/tables/{table}/items', 'destroyItems');
+
+            Route::get('/tables/{table}/kot', 'showKOT');
+            Route::post('/tables/{table}/kot', 'sendKOT');
+            Route::put('/tables/{table}/kot', 'updateKOT');
         });
 
         Route::controller(ItemController::class)->group(function () {

@@ -17,4 +17,9 @@ class Table extends Model
     {
         return $this->hasMany(TableItem::class);
     }
+
+    public function kotItems(): HasMany
+    {
+        return $this->hasMany(KOTItem::class);
+    }
 }
