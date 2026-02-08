@@ -45,6 +45,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 
 import { Card, CardAction, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+import Echo from '@/lib/echo';
+
 import { Table, TableRow, TableBody, TableCell } from '@/components/ui/table';
 import {
   Sheet,
@@ -350,6 +352,24 @@ function POS() {
 
     checkoutTableMutation({ id: tableId, ...data });
   };
+
+  useEffect(() => {
+    if (!auth?.data?.id) {
+      return;
+    }
+
+    const channel = Echo.channel('print-channel')
+
+    channel.listen('.print-kot-success', (data) => {
+      const tableId = data.data.id;
+
+      queryClient.invalidateQueries(['tables', String(tableId)])
+    });
+
+    return () => {
+      Echo.leave('print-channel')
+    };
+  }, [auth?.data?.id]);
 
   const useTablePrintMutation = useMutation({ mutationFn: () => printTable({ id: tableId }) });
 
