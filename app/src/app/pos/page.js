@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 
-import { Trash2Icon, PrinterIcon } from 'lucide-react';
+import { Trash2Icon, PrinterIcon, CheckCircle2Icon, TriangleAlert } from 'lucide-react';
 import {
   CheckboxIcon,
   BoxIcon,
@@ -66,8 +66,10 @@ import {
   updateTableItems,
   deleteTableItems,
   checkoutTable,
+  updateKOT,
 } from '@/services/table.service';
 import { getCategories } from '@/services/category.service';
+import { find, isEqual, pick } from 'lodash';
 
 const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -194,6 +196,8 @@ function POS() {
     queryFn: () => getTables({ page: 1, limit: 10240, query: '' }),
   });
 
+  const [table, setTable] = useState(null);
+
   const { isFetching: isFetchingTable } = useQuery({
     queryKey: ['tables', tableId],
     enabled: Boolean(tableId),
@@ -202,6 +206,8 @@ function POS() {
     queryFn: () => getTable({ id: tableId }),
     onSuccess: (data) => {
       const table = data.data;
+
+      setTable(table);
 
       reset({
         table_id: String(table.id) || '',
@@ -253,8 +259,10 @@ function POS() {
     },
   );
 
+  const {mutate: updateKOTMutation, isLoading: isLoadingUpdatingKOTItems} = useMutation(updateKOT)
+
   const isBusy =
-    isLoadingUpdatingTableItems || isLoadingDeleteTableItems || isFetchingTables || isFetchingTable;
+    isLoadingUpdatingTableItems || isLoadingDeleteTableItems || isFetchingTables || isFetchingTable || isLoadingUpdatingKOTItems;
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
     onSuccess: (response) => {
@@ -530,12 +538,24 @@ function POS() {
                   (p) => String(p.id) === String(item.item_id),
                 );
 
+                const kotItem = find(table.kot_items, { item_id: item.item_id }) || {}
+
+                const isSynced = isEqual(
+                  pick(item, ['item_id', 'quantity']),
+                  pick(kotItem, ['item_id', 'quantity'])
+                )
+
                 return (
                   <div key={item.id} className="me-4">
                     <Card className="gap-3 border-0 p-0 pt-2 shadow-none">
                       <CardHeader className="px-0">
                         <CardTitle>
-                          <small className="font-semibold">{product?.name}</small>{' '}
+                          <div className="flex items-center justify-between">
+                            <small className="font-semibold ml-1">{product?.name}</small>
+
+                            {isSynced ? <CheckCircle2Icon className="h-4 w-4 text-green-700"/> : <TriangleAlert className="h-4 w-4 text-orange-700"/>}
+                          </div>
+
                           <small>
                             ({product?.price}/{product?.unit?.name})
                           </small>
@@ -639,10 +659,10 @@ function POS() {
                 </Button>
               </SheetTrigger>
 
-              <div className="pr-4">
+              <div className="pr-4 flex">
                 <Button
                   disabled={!tableId || !total || isBusy || useTablePrintMutation.isLoading}
-                  className="mt-2 w-full bg-black"
+                  className="mt-2 mr-1 w-full bg-black"
                   onClick={useTablePrintMutation.mutate}
                 >
                   {useTablePrintMutation.isLoading ? (
@@ -651,6 +671,19 @@ function POS() {
                     <PrinterIcon className="mr-2 h-4 w-4" />
                   )}{' '}
                   Print Estimate
+                </Button>
+
+                <Button
+                  disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
+                  className="mt-2 ml-1 w-full bg-black"
+                  onClick={()=>updateKOTMutation({id: tableId})}
+                >
+                  {useTablePrintMutation.isLoading ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <PrinterIcon className="mr-2 h-4 w-4" />
+                  )}{' '}
+                  Send To Kitchen
                 </Button>
               </div>
 

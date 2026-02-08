@@ -10,7 +10,7 @@ class Table extends Model
 {
     use HasFactory;
 
-    protected $with = ["items"];
+    protected $with = ["items", "kotItems"];
     protected $fillable = ["name", "is_delivery"];
 
     public function items(): HasMany
