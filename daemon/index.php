@@ -9,6 +9,8 @@ use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 $cluster = 'ap2';
 $appKey = '<APP_KEY>';
+$url = "https://sushitimebkt.gihm.com.np/api/v1";
+$token = '<BEARER_TOKEN>';
 
 function logger(string $level, string $message)
 {
@@ -377,6 +379,20 @@ while (true) {
 
             $printer->cut();
             $printer->close();
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+              CURLOPT_URL => "$url/tables/" . $kot["table_id"] . "/kot",
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_CUSTOMREQUEST => "PUT",
+              CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer $token",
+                "Accept: application/json"
+              ],
+            ]);
+
+            $response = curl_exec($curl);
           } catch (Exception $e) {
             logger('error', "KOT print failed | Reason: {$e->getMessage()}");
             continue;
