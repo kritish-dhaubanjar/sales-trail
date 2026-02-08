@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 
-import { Trash2Icon, PrinterIcon, CheckCircle2Icon, TriangleAlert } from 'lucide-react';
+import { Trash2Icon, PrinterIcon } from 'lucide-react';
 import {
   CheckboxIcon,
   BoxIcon,
@@ -566,14 +566,12 @@ function POS() {
                 )
 
                 return (
-                  <div key={item.id} className="me-4">
-                    <Card className="gap-3 border-0 p-0 pt-2 shadow-none">
+                  <div key={item.id} className="me-4 mb-3">
+                    <Card className={cn('gap-3 border-0 p-4 pt-2 shadow-none', isSynced ? 'bg-[#B9FBC0]' : 'bg-[#FFD8A8]')}>
                       <CardHeader className="px-0">
                         <CardTitle>
                           <div className="flex items-center justify-between">
                             <small className="font-semibold ml-1">{product?.name}</small>
-
-                            {isSynced ? <CheckCircle2Icon className="h-4 w-4 text-green-700"/> : <TriangleAlert className="h-4 w-4 text-orange-700"/>}
                           </div>
 
                           <small>
@@ -617,7 +615,7 @@ function POS() {
                                       id={`items.${index}.quantity`}
                                       type="number"
                                       placeholder="1"
-                                      className="h-7 rounded-none"
+                                      className="h-7 rounded-none bg-white"
                                       {...field}
                                       onChange={(e) => {
                                         field.onChange(Number(e.target.value) || 0);
@@ -650,8 +648,6 @@ function POS() {
                           </div>
                         </CardDescription>
                       </CardHeader>
-
-                      <hr />
                     </Card>
                   </div>
                 );
