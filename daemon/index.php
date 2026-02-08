@@ -321,6 +321,67 @@ while (true) {
             continue;
           }
         }
+
+        if ($event == 'print-kot') {
+          $data = json_decode($message['data'], true);
+
+          $kot = $data['data'];
+
+          logger('info', "Printing KOT | Table ID: {$kot['table']}");
+
+          try {
+            // $connector = new NetworkPrintConnector("127.0.0.1", 9100);
+            $connector = new WindowsPrintConnector("LPT2");
+            $printer = new Printer($connector);
+
+            // 2. Print header
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->setEmphasis(true);
+            $printer->text("KOT\n");
+            $printer->setEmphasis(false);
+            $printer->feed();
+
+            // 3. Print bill info
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->text("Table No: " . $kot["table"] . "\n");
+            $printer->text("KOT Date: " . (new DateTime())->setTimezone(new DateTimeZone('Asia/Kathmandu'))->format('Y-m-d H:i:s') . "\n");
+            $printer->feed();
+
+            // 4. Print items table
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->text("QTY ITEM                                       \n");
+            $printer->text("------------------------------------------------\n");
+
+            $items = array_merge($kot['removed'], $kot['added']);
+
+            foreach ($items as $index => $item) {
+              $qty = str_pad($item['quantity'], 4, " ", STR_PAD_LEFT);
+
+              $name = str_pad(substr($item['name'], 0, 45), 45, " ", STR_PAD_RIGHT);
+
+              $printer->text("$qty $name\n");
+            }
+
+            $feed_count = 5 - count($item);
+
+            for ($i = $feed_count; $i > 0; $i--) {
+              $printer->feed();
+            }
+
+            $printer->text("------------------------------------------------\n");
+
+            // 7. Footer
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+
+            $printer->feed(2);
+
+            $printer->cut();
+            $printer->close();
+          } catch (Exception $e) {
+            logger('error', "KOT print failed | Reason: {$e->getMessage()}");
+            continue;
+          }
+        }
       } catch (\WebSocket\TimeoutException $e) {
         try {
           $ws->send(json_encode(['event' => 'pusher:ping', 'data' => new stdClass()]));
