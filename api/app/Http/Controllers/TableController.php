@@ -293,13 +293,13 @@ class TableController extends Controller
             if ($delta > 0) {
                 $added[] = [
                     'item_id'       => $id,
-                    'quantity_added' => $delta,
+                    'quantity' => $delta,
                     'name' => $after[$id]['name'],
                 ];
             } elseif ($delta < 0) {
                 $removed[] = [
                     'item_id'          => $id,
-                    'quantity_removed' => $delta,
+                    'quantity' => $delta,
                     'name' => $before[$id]['name'],
                 ];
             }
