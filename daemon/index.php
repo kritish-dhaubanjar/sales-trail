@@ -386,13 +386,34 @@ while (true) {
               CURLOPT_URL => "$url/tables/" . $kot["table_id"] . "/kot",
               CURLOPT_RETURNTRANSFER => true,
               CURLOPT_CUSTOMREQUEST => "PUT",
+              CURLOPT_ENCODING => "",
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 30,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_POSTFIELDS => "",
               CURLOPT_HTTPHEADER => [
+                "Accept: application/json, text/plain, */*",
+                "Accept-Language: en-US,en;q=0.9,ne;q=0.8",
                 "Authorization: Bearer $token",
-                "Accept: application/json"
+                "Connection: keep-alive",
+                "Origin: https://sushitimebkt.gihm.com.np/",
+                "Referer: https://sushitimebkt.gihm.com.np/",
+                "Sec-Fetch-Dest: empty",
+                "Sec-Fetch-Mode: cors",
+                "Sec-Fetch-Site: cross-site",
+                "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+                'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"',
+                "sec-ch-ua-mobile: ?0",
+                'sec-ch-ua-platform: "Linux"'
               ],
             ]);
 
             $response = curl_exec($curl);
+            $error = curl_error($curl);
+
+            if ($error) {
+              logger('error', "KOT print failed | Reason: $error");
+            }
           } catch (Exception $e) {
             logger('error', "KOT print failed | Reason: {$e->getMessage()}");
             continue;
