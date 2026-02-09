@@ -563,8 +563,11 @@ function POS() {
                   (p) => String(p.id) === String(item.item_id),
                 );
 
-                const isSynced = table.kot_items.find((kotItem)=>{
-                  return String(kotItem.item_id) === String(item.item_id) && String(kotItem.quantity) === String(item.quantity)
+                const isSynced = table.kot_items.find((kotItem) => {
+                  return (
+                    String(kotItem.item_id) === String(item.item_id) &&
+                    String(kotItem.quantity) === String(item.quantity)
+                  );
                 });
 
                 return (
@@ -686,7 +689,7 @@ function POS() {
                 <Button
                   disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
                   className="ml-1 mt-2 w-full bg-black"
-                  onClick={() => updateKOTMutation({ id: tableId, printer_id: 1  })}
+                  onClick={() => updateKOTMutation({ id: tableId, printer_id: 1 })}
                 >
                   {useTablePrintMutation.isLoading ? (
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
