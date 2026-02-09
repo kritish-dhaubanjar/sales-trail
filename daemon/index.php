@@ -11,7 +11,7 @@ $cluster = 'ap2';
 $appKey = '<APP_KEY>';
 $url = "https://sushitimebkt.gihm.com.np/api/v1";
 $token = '<BEARER_TOKEN>';
-$printers[] = [null, "127.0.0.1"];
+$printers = [null, "127.0.0.1"];
 
 function logger(string $level, string $message)
 {
@@ -337,12 +337,11 @@ while (true) {
             $connector;
 
             if ($printer_id == 1) {
-              $connector = new NetworkPrintConnector($printers[1], 9100);
+              $connector = new WindowsPrintConnector("LPT2");
             }
 
             if ($printer_id == 2) {
-              $connector = new WindowsPrintConnector("LPT2");
-              // $connector = new NetworkPrintConnector("127.0.0.1", 9200);
+              $connector = new NetworkPrintConnector($printers[1], 9100);
             }
 
             $printer = new Printer($connector);
@@ -421,6 +420,9 @@ while (true) {
                 'printer_id' => $kot['printer_id']
               ])
             ]);
+
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
 
             $response = curl_exec($curl);
             $error = curl_error($curl);
