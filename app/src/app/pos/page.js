@@ -551,7 +551,7 @@ function POS() {
               </Button>
             </div>
 
-            <ScrollArea className="mt-4 h-[calc(100vh-200px)]">
+            <ScrollArea className="mt-4 h-[calc(100vh-220px)]">
               {(!items.fields.length || !tableId) && (
                 <div className="m-auto mr-4 text-sm">
                   To proceed, please choose a table and then continue to add items to the
@@ -563,12 +563,9 @@ function POS() {
                   (p) => String(p.id) === String(item.item_id),
                 );
 
-                const kotItem = find(table.kot_items, { item_id: item.item_id }) || {};
-
-                const isSynced = isEqual(
-                  { item_id: String(item.item_id), quantity: String(item.quantity) },
-                  { item_id: String(kotItem.item_id), quantity: String(kotItem.quantity) },
-                );
+                const isSynced = table.kot_items.find((kotItem)=>{
+                  return String(kotItem.item_id) === String(item.item_id) && String(kotItem.quantity) === String(item.quantity)
+                });
 
                 return (
                   <div key={item.id} className="mb-3 me-4">
@@ -689,7 +686,7 @@ function POS() {
                 <Button
                   disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
                   className="ml-1 mt-2 w-full bg-black"
-                  onClick={() => updateKOTMutation({ id: tableId })}
+                  onClick={() => updateKOTMutation({ id: tableId, printer_id: 1  })}
                 >
                   {useTablePrintMutation.isLoading ? (
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
@@ -702,7 +699,7 @@ function POS() {
                 <Button
                   disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
                   className="ml-1 mt-2 w-full bg-black"
-                  onClick={() => updateKOTMutation({ id: tableId })}
+                  onClick={() => updateKOTMutation({ id: tableId, printer_id: 2 })}
                 >
                   {useTablePrintMutation.isLoading ? (
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />

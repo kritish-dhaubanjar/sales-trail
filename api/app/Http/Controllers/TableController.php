@@ -7,6 +7,7 @@ use App\Events\KOTUpdate;
 use App\Events\POSEvent;
 use App\Events\PrintEstimate;
 use App\Http\Requests\PaginationRequest;
+use App\Http\Requests\SendKOTRequest;
 use App\Http\Requests\Table\CheckoutTableRequest;
 use Exception;
 use App\Models\Table;
@@ -14,6 +15,7 @@ use App\Http\Requests\Table\StoreTableRequest;
 use App\Http\Requests\Table\TransferTableRequest;
 use App\Http\Requests\Table\UpdateTableRequest;
 use App\Http\Requests\Table\UpdateTableItemRequest;
+use App\Http\Requests\UpdateKOTRequest;
 use App\Models\KOTItem;
 use App\Models\Sale;
 use App\Models\SaleItem;
@@ -269,14 +271,18 @@ class TableController extends Controller
         return $kot_items;
     }
 
-    public function sendKOT(Table $table)
+    public function sendKOT(SendKOTRequest $request, Table $table)
     {
+        $data = $request->validated();
+        $printer_id = $data['printer_id'];
+
         $after = $table->items()
             ->get(['item_id', 'quantity'])
             ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name])
             ->keyBy('item_id');
 
         $before = $table->kotItems()
+            ->where('printer_id', $printer_id)
             ->get(['item_id', 'quantity'])
             ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name])
             ->keyBy('item_id');
@@ -309,6 +315,7 @@ class TableController extends Controller
 
         $data = [
             'table_id' => $table->id,
+            'printer_id' => $printer_id,
             'table' => $table->name,
             'added' => $added,
             'removed' => $removed
@@ -321,19 +328,28 @@ class TableController extends Controller
         return response()->json($data);
     }
 
-    public function updateKOT(Table $table)
+    public function updateKOT(UpdateKOTRequest $request, Table $table)
     {
-        DB::transaction(function () use ($table) {
-            $kotItems = collect($table->items()->get())->map(function ($item) {
+        $data = $request->validated();
+
+        $printer_id = $data['printer_id'];
+
+        DB::transaction(function () use ($table, $printer_id) {
+            $kotItems = collect($table->items()->get())->map(function ($item) use ($printer_id) {
                 return new KOTItem([
                     'item_id' => $item['item_id'],
                     'quantity' => $item['quantity'],
+                    'printer_id' => $printer_id,
                 ]);
             });
 
-            $table->kotItems()->delete();
+            $table->kotItems()->where('printer_id', $printer_id)->delete();
             $table->kotItems()->saveMany($kotItems);
         });
+
+        $table->load([
+            'kotItems' => fn($q) => $q->where('printer_id', $printer_id)
+        ]);
 
         event(new KOTUpdate($table));
 

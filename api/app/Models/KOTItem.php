@@ -13,7 +13,7 @@ class KOTItem extends Model
     protected $table = 'kot_items';
 
     protected $with = ['item'];
-    protected $fillable = ["quantity", "item_id"];
+    protected $fillable = ["quantity", "item_id", "printer_id"];
 
     public function table(): BelongsTo
     {

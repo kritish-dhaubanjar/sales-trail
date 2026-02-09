@@ -328,12 +328,23 @@ while (true) {
           $data = json_decode($message['data'], true);
 
           $kot = $data['data'];
+          $printer_id = $kot['printer_id'];
 
-          logger('info', "Printing KOT | Table ID: {$kot['table_id']}");
+          logger('info', "Printing KOT | Table ID: {$kot['table_id']} | Printer ID: {$kot['printer_id']}");
 
           try {
-            // $connector = new NetworkPrintConnector("127.0.0.1", 9100);
-            $connector = new WindowsPrintConnector("LPT2");
+            $connector;
+
+            if ($printer_id == 1) {
+              // $connector = new WindowsPrintConnector("LPT2");
+              $connector = new NetworkPrintConnector("127.0.0.1", 9100);
+            }
+
+            if ($printer_id == 2) {
+              $connector = new WindowsPrintConnector("LPT2");
+              // $connector = new NetworkPrintConnector("127.0.0.1", 9200);
+            }
+
             $printer = new Printer($connector);
 
             // 2. Print header
@@ -390,7 +401,6 @@ while (true) {
               CURLOPT_MAXREDIRS => 10,
               CURLOPT_TIMEOUT => 30,
               CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_POSTFIELDS => "",
               CURLOPT_HTTPHEADER => [
                 "Accept: application/json, text/plain, */*",
                 "Accept-Language: en-US,en;q=0.9,ne;q=0.8",
@@ -400,12 +410,16 @@ while (true) {
                 "Referer: https://sushitimebkt.gihm.com.np/",
                 "Sec-Fetch-Dest: empty",
                 "Sec-Fetch-Mode: cors",
+                "Content-Type: application/json",
                 "Sec-Fetch-Site: cross-site",
                 "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
                 'sec-ch-ua: "Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"',
                 "sec-ch-ua-mobile: ?0",
                 'sec-ch-ua-platform: "Linux"'
               ],
+              CURLOPT_POSTFIELDS => json_encode([
+                'printer_id' => $kot['printer_id']
+              ])
             ]);
 
             $response = curl_exec($curl);
