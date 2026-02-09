@@ -44,7 +44,18 @@ class PrintEstimate implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return [
-            'data' => $this->table
+            'data' => [
+                'id' => $this->table->id,
+                'name' => $this->table->name,
+                'items' => $this->table->items()->get()->map(fn($item) => [
+                    'created_at' => $item->created_at,
+                    'item' => [
+                        'name' => $item->item->name
+                    ],
+                    'price' => $item->price,
+                    'quantity' => $item->quantity
+                ]),
+            ]
         ];
     }
 }

@@ -43,7 +43,9 @@ class KOTUpdate implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return [
-            'data' => $this->table
+            'data' => [
+                'id' => $this->table->id
+            ]
         ];
     }
 }

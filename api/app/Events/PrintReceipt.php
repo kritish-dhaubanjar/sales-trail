@@ -44,7 +44,23 @@ class PrintReceipt implements ShouldBroadcastNow
     public function broadcastWith()
     {
         return [
-            'data' => $this->sale
+            'data' => [
+                'id' => $this->sale->id,
+                'date' => $this->sale->date,
+                'title' => $this->sale->title,
+                'total' => $this->sale->total,
+                'discount' => $this->sale->discount,
+                'taxable_amount' => $this->sale->taxable_amount,
+                'vat_amount' => $this->sale->vat_amount,
+                'grand_total' => $this->sale->grand_total,
+                'sale_items' => $this->sale->sale_items()->get()->map(fn($item) => [
+                    'item' => [
+                        'name' => $item->item->name
+                    ],
+                    'price' => $item->price,
+                    'quantity' => $item->quantity
+                ])
+            ]
         ];
     }
 }
