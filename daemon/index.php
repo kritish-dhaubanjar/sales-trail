@@ -11,6 +11,7 @@ $cluster = 'ap2';
 $appKey = '<APP_KEY>';
 $url = "https://sushitimebkt.gihm.com.np/api/v1";
 $token = '<BEARER_TOKEN>';
+$printers[] = [null, "127.0.0.1"];
 
 function logger(string $level, string $message)
 {
@@ -336,8 +337,7 @@ while (true) {
             $connector;
 
             if ($printer_id == 1) {
-              // $connector = new WindowsPrintConnector("LPT2");
-              $connector = new NetworkPrintConnector("127.0.0.1", 9100);
+              $connector = new NetworkPrintConnector($printers[1], 9100);
             }
 
             if ($printer_id == 2) {
