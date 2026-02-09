@@ -329,7 +329,7 @@ while (true) {
 
           $kot = $data['data'];
 
-          logger('info', "Printing KOT | Table ID: {$kot['table']}");
+          logger('info', "Printing KOT | Table ID: {$kot['table_id']}");
 
           try {
             // $connector = new NetworkPrintConnector("127.0.0.1", 9100);
