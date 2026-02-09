@@ -561,8 +561,8 @@ function POS() {
                 const kotItem = find(table.kot_items, { item_id: item.item_id }) || {}
 
                 const isSynced = isEqual(
-                  pick(item, ['item_id', 'quantity']),
-                  pick(kotItem, ['item_id', 'quantity'])
+                  { item_id: String(item.item_id), quantity: String(item.quantity) },
+                  { item_id: String(kotItem.item_id), quantity: String(kotItem.quantity) }
                 )
 
                 return (
