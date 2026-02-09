@@ -226,7 +226,7 @@ function POS() {
         queryClient.setQueryData(['tables'], (oldData) => {
           const tables = oldData.data.data.map((table) => {
             if (String(table.id) !== String(newTable.data.id)) {
-              return table
+              return table;
             }
 
             return { ...newTable.data, items: [] };
@@ -247,7 +247,7 @@ function POS() {
         queryClient.setQueryData(['tables'], (oldData) => {
           const tables = oldData.data.data.map((table) => {
             if (String(table.id) !== String(newTable.data.id)) {
-              return table
+              return table;
             }
 
             return newTable.data;
@@ -261,10 +261,15 @@ function POS() {
     },
   );
 
-  const {mutate: updateKOTMutation, isLoading: isLoadingUpdatingKOTItems} = useMutation(updateKOT)
+  const { mutate: updateKOTMutation, isLoading: isLoadingUpdatingKOTItems } =
+    useMutation(updateKOT);
 
   const isBusy =
-    isLoadingUpdatingTableItems || isLoadingDeleteTableItems || isFetchingTables || isFetchingTable || isLoadingUpdatingKOTItems;
+    isLoadingUpdatingTableItems ||
+    isLoadingDeleteTableItems ||
+    isFetchingTables ||
+    isFetchingTable ||
+    isLoadingUpdatingKOTItems;
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
     onSuccess: (response) => {
@@ -358,16 +363,16 @@ function POS() {
       return;
     }
 
-    const channel = Echo.channel('print-channel')
+    const channel = Echo.channel('print-channel');
 
     channel.listen('.print-kot-success', (data) => {
       const tableId = data.data.id;
 
-      queryClient.invalidateQueries(['tables', String(tableId)])
+      queryClient.invalidateQueries(['tables', String(tableId)]);
     });
 
     return () => {
-      Echo.leave('print-channel')
+      Echo.leave('print-channel');
     };
   }, [auth?.data?.id]);
 
@@ -558,20 +563,25 @@ function POS() {
                   (p) => String(p.id) === String(item.item_id),
                 );
 
-                const kotItem = find(table.kot_items, { item_id: item.item_id }) || {}
+                const kotItem = find(table.kot_items, { item_id: item.item_id }) || {};
 
                 const isSynced = isEqual(
                   { item_id: String(item.item_id), quantity: String(item.quantity) },
-                  { item_id: String(kotItem.item_id), quantity: String(kotItem.quantity) }
-                )
+                  { item_id: String(kotItem.item_id), quantity: String(kotItem.quantity) },
+                );
 
                 return (
-                  <div key={item.id} className="me-4 mb-3">
-                    <Card className={cn('gap-3 border-0 p-4 pt-2 shadow-none', isSynced ? 'bg-[#B9FBC0]' : 'bg-[#FFD8A8]')}>
+                  <div key={item.id} className="mb-3 me-4">
+                    <Card
+                      className={cn(
+                        'gap-3 border-0 p-4 pt-2 shadow-none',
+                        isSynced ? 'bg-[#B9FBC0]' : 'bg-[#FFD8A8]',
+                      )}
+                    >
                       <CardHeader className="px-0">
                         <CardTitle>
                           <div className="flex items-center justify-between">
-                            <small className="font-semibold ml-1">{product?.name}</small>
+                            <small className="ml-1 font-semibold">{product?.name}</small>
                           </div>
 
                           <small>
@@ -675,10 +685,38 @@ function POS() {
                 </Button>
               </SheetTrigger>
 
-              <div className="pr-4 flex">
+              <div className="flex pr-4">
+                <Button
+                  disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
+                  className="ml-1 mt-2 w-full bg-black"
+                  onClick={() => updateKOTMutation({ id: tableId })}
+                >
+                  {useTablePrintMutation.isLoading ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <PrinterIcon className="mr-2 h-4 w-4" />
+                  )}{' '}
+                  Send To Bar
+                </Button>
+
+                <Button
+                  disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
+                  className="ml-1 mt-2 w-full bg-black"
+                  onClick={() => updateKOTMutation({ id: tableId })}
+                >
+                  {useTablePrintMutation.isLoading ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <PrinterIcon className="mr-2 h-4 w-4" />
+                  )}{' '}
+                  Send To Kitchen
+                </Button>
+              </div>
+
+              <div className="pr-4">
                 <Button
                   disabled={!tableId || !total || isBusy || useTablePrintMutation.isLoading}
-                  className="mt-2 mr-1 w-full bg-black"
+                  className="mr-1 mt-2 w-full bg-black"
                   onClick={useTablePrintMutation.mutate}
                 >
                   {useTablePrintMutation.isLoading ? (
@@ -687,19 +725,6 @@ function POS() {
                     <PrinterIcon className="mr-2 h-4 w-4" />
                   )}{' '}
                   Print Estimate
-                </Button>
-
-                <Button
-                  disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
-                  className="mt-2 ml-1 w-full bg-black"
-                  onClick={()=>updateKOTMutation({id: tableId})}
-                >
-                  {useTablePrintMutation.isLoading ? (
-                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <PrinterIcon className="mr-2 h-4 w-4" />
-                  )}{' '}
-                  Send To Kitchen
                 </Button>
               </div>
 

@@ -62,7 +62,12 @@ function Print() {
     <>
       <div className="m-5 mx-auto flex w-[720px] justify-between print:hidden">
         <Button disabled={useSalesPrintMutation.isLoading} onClick={useSalesPrintMutation.mutate}>
-          {useSalesPrintMutation.isLoading ? <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> : <PrinterIcon className="mr-2 h-4 w-4" />} Print
+          {useSalesPrintMutation.isLoading ? (
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <PrinterIcon className="mr-2 h-4 w-4" />
+          )}{' '}
+          Print
         </Button>
       </div>
 

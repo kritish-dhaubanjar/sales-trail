@@ -66,7 +66,7 @@ export async function transferTable({ id, table_id }) {
   return data;
 }
 
-export async function updateKOT({ id }){
+export async function updateKOT({ id }) {
   const data = await axios.post(`/tables/${id}/kot`, { id });
 
   return data;
