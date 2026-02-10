@@ -1,4 +1,5 @@
 import axios from '@/lib/axios';
+import { pick } from 'lodash';
 
 export async function getTable({ id }) {
   const data = await axios.get(`/tables/${id}`);
@@ -49,7 +50,9 @@ export async function checkoutTable({ id, date, discount, items, title, transact
 }
 
 export async function updateTableItems({ id, items }) {
-  const data = await axios.put(`/tables/${id}/items`, { items });
+  const formattedItems = items.map((item) => pick(item, ['item_id', 'price', 'quantity']));
+
+  const data = await axios.put(`/tables/${id}/items`, { items: formattedItems });
 
   return data;
 }
