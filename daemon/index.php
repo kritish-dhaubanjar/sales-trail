@@ -355,6 +355,7 @@ while (true) {
 
             // 3. Print bill info
             $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->text("Printer : " . $kot["printer_id"] . "\n");
             $printer->text("Table No: " . $kot["table"] . "\n");
             $printer->text("KOT Date: " . (new DateTime())->setTimezone(new DateTimeZone('Asia/Kathmandu'))->format('Y-m-d H:i:s') . "\n");
             $printer->feed();
