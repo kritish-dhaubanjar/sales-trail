@@ -76,3 +76,9 @@ export async function updateKOT({ id, printer_id }) {
 
   return data;
 }
+
+export async function updateTableDescription({ id, description }) {
+  const data = await axios.patch(`/tables/${id}`, { description });
+
+  return data;
+}

@@ -203,6 +203,7 @@ class TableController extends Controller
             $sale->transactions()->saveMany($transactions);
             $table->items()->delete();
             $table->kotItems()->delete();
+            $table->update(['description' => '']);
         } catch (Exception $error) {
             DB::rollBack();
             throw $error;
@@ -315,6 +316,7 @@ class TableController extends Controller
 
         $data = [
             'table_id' => $table->id,
+            'description' => $table->description,
             'printer_id' => $printer_id,
             'table' => $table->name,
             'added' => $added,
@@ -352,6 +354,17 @@ class TableController extends Controller
         ]);
 
         event(new KOTUpdate($table));
+
+        return $table;
+    }
+
+    public function updateTable(Request $request, Table $table)
+    {
+        if ($request->has('description')) {
+            $description = $request->input('description') ?? '';
+
+            $table->update(['description' => $description]);
+        }
 
         return $table;
     }

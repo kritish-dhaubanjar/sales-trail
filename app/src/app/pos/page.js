@@ -3,7 +3,7 @@ import { z } from 'zod';
 import Image from 'next/image';
 import DevTool from '@/components/DevTool';
 import dynamic from 'next/dynamic';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -65,13 +65,14 @@ import {
   getTables,
   getTable,
   printTable,
+  updateTableDescription,
   updateTableItems,
   deleteTableItems,
   checkoutTable,
   updateKOT,
 } from '@/services/table.service';
 import { getCategories } from '@/services/category.service';
-import { find, isEqual, pick } from 'lodash';
+import { debounce } from 'lodash';
 
 const formatter = Intl.NumberFormat('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -82,6 +83,7 @@ const DEFAULT_TRANSACTION = {
 
 const schema = z.object({
   table_id: z.coerce.number(),
+  description: z.string().min(0).nullable(),
   date: z.string({ required_error: 'A date of sale is required.' }),
   discount: z.coerce.number(),
   title: z.string().min(0).nullable(),
@@ -118,6 +120,7 @@ function POS() {
     defaultValues: {
       table_id: '',
       date: NepaliDate.getNepaliDate(),
+      description: '',
       discount: 0,
       title: '',
       items: [],
@@ -215,9 +218,14 @@ function POS() {
         table_id: String(table.id) || '',
         title: table.name,
         items: table.items || [],
+        description: table.description,
       });
     },
   });
+
+  const { mutate: updateTableDescriptionMutation, isLoading: isLoadingUpdateTableDescription } = useMutation(updateTableDescription)
+
+  const debouncedUpdateTableDescriptionMutation = useCallback(debounce(updateTableDescriptionMutation, 500), [tableId])
 
   const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(
     deleteTableItems,
@@ -269,6 +277,7 @@ function POS() {
     isLoadingDeleteTableItems ||
     isFetchingTables ||
     isFetchingTable ||
+    isLoadingUpdateTableDescription ||
     isLoadingUpdatingKOTItems;
 
   const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
@@ -551,7 +560,7 @@ function POS() {
               </Button>
             </div>
 
-            <ScrollArea className="mt-4 h-[calc(100vh-220px)]">
+            <ScrollArea className="mt-4 h-[calc(100vh-350px)]">
               {(!items.fields.length || !tableId) && (
                 <div className="m-auto mr-4 text-sm">
                   To proceed, please choose a table and then continue to add items to the
@@ -667,6 +676,33 @@ function POS() {
             <Sheet open={open} onOpenChange={setOpen}>
               <Table>
                 <TableBody>
+                  <TableRow>
+                    <TableCell className="h-11 pl-1" colSpan={12}>
+                      <FormField
+                        control={control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Textarea
+                                rows={5}
+                                placeholder="Notes"
+                                className="resize-none"
+                                {...field}
+                                onChange={(e) => {
+                                  debouncedUpdateTableDescriptionMutation({ id: tableId, description: e.target.value })
+                                  field.onChange(e)
+                                }}
+                                disabled={!tableId}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                  </TableRow>
+
                   <TableRow className="bg-gray-50">
                     <TableCell className="h-11 text-right" colSpan={6}>
                       Total
@@ -688,7 +724,7 @@ function POS() {
               <div className="flex pr-4">
                 <Button
                   disabled={!tableId || !total || isBusy || updateKOTMutation.isLoading}
-                  className="ml-1 mt-2 w-full bg-black"
+                  className="ml-0 mt-2 w-full bg-black"
                   onClick={() => updateKOTMutation({ id: tableId, printer_id: 1 })}
                 >
                   {useTablePrintMutation.isLoading ? (
