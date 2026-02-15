@@ -323,7 +323,7 @@ class TableController extends Controller
             'removed' => $removed
         ];
 
-        if (count($added) > 0 || count($removed) > 0) {
+        if (count($added) > 0 || count($removed) > 0 || strlen($table->description) > 0) {
             event(new KOTEvent($data));
         }
 
