@@ -382,7 +382,8 @@ while (true) {
             }
 
             if ($kot["description"]) {
-              $printer->text("Note: " . $kot["description"] . "\n");
+              $printer->text("Note:\n");
+              $printer->text($kot["description"] . "\n");
             }
 
             $printer->text("------------------------------------------------\n");
