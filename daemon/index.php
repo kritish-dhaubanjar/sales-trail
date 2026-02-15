@@ -381,6 +381,10 @@ while (true) {
               $printer->feed();
             }
 
+            if ($kot["description"]) {
+              $printer->text("Note: " . $kot["description"] . "\n");
+            }
+
             $printer->text("------------------------------------------------\n");
 
             // 7. Footer
