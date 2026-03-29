@@ -28,6 +28,12 @@ class UpdateTableRequest extends FormRequest
                 'max:255',
                 Rule::unique('tables')->ignore($this->table->id),
             ],
+            'account_id' => [
+                'present',
+                'integer',
+                'nullable',
+                'exists:accounts,id'
+            ]
         ];
     }
 }

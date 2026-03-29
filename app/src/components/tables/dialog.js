@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,25 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Form, FormField } from '@/components/ui/form';
 import { ReloadIcon } from '@radix-ui/react-icons';
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import { useToast } from '@/hooks/use-toast';
 import { createTable, updateTable } from '@/services/table.service';
@@ -25,16 +42,18 @@ const schema = z.object({
   id: z.coerce.number(),
   is_delivery: z.boolean().or(z.number()),
   name: z.string().min(1, { message: 'Table name is required' }),
+  account_id: z.string().nullable().optional().default(null)
 });
 
 export function TableDialog({
   isDelivery = false,
   open = true,
   row = null,
-  refetch = () => {},
-  onClose = () => {},
+  accounts = [],
+  refetch = () => { },
+  onClose = () => { },
 }) {
-  const DEFAULT_TABLE = { id: '', is_delivery: isDelivery, name: '' };
+  const DEFAULT_TABLE = { id: '', is_delivery: isDelivery, name: '', account_id: null };
 
   const { toast } = useToast();
 
@@ -105,6 +124,47 @@ export function TableDialog({
                   control={control}
                   render={({ field }) => (
                     <Input type="text" placeholder="Table #1" {...field} className="col-span-3" />
+                  )}
+                />
+
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  A/C
+                </Label>
+
+                <FormField
+                  className="col-span-3"
+                  name="account_id"
+                  control={control}
+                  render={({ field }) => (
+                    <FormItem className="mb-3 w-full col-span-3">
+                      <FormControl>
+                        <Select
+                          className="w-full"
+                          value={String(field.value)}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="h-[30px!important] w-full">
+                            <SelectValue
+                              placeholder={<span className="text-gray-500">Select A/C</span>}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Accounts</SelectLabel>
+                              {accounts?.data?.data.map(({ id, name }) => (
+                                <SelectItem key={id} value={String(id)}>
+                                  {name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
               </div>

@@ -152,15 +152,6 @@ function POS() {
     return (acc += Number(amount));
   }, 0);
 
-  useEffect(() => {
-    setValue('discount', 0);
-    const totalTransaction = {
-      account_id: 1,
-      amount: total,
-    };
-    setValue('transactions', [totalTransaction]);
-  }, [open]);
-
   const { data: accounts, isFetching: isFetchingAccounts } = useQuery({
     queryKey: ['accounts'],
     enabled: true,
@@ -202,6 +193,18 @@ function POS() {
   });
 
   const [table, setTable] = useState(null);
+
+  useEffect(() => {
+    setValue('discount', 0);
+
+    const totalTransaction = {
+      account_id: table?.account_id || null,
+      amount: total,
+    };
+
+    setValue('transactions', [totalTransaction]);
+  }, [open]);
+
 
   const { isFetching: isFetchingTable } = useQuery({
     queryKey: ['tables', tableId],
@@ -410,6 +413,7 @@ function POS() {
       {/* <Sidebar /> */}
 
       <TableDialog
+        accounts={accounts}
         isDelivery={true}
         open={tableOpen}
         refetch={refetchTables}

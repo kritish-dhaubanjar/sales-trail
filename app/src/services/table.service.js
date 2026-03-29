@@ -19,8 +19,8 @@ export async function deleteTable({ id }) {
   return data;
 }
 
-export async function createTable({ name, is_delivery }) {
-  const data = await axios.post('/tables', { name, is_delivery });
+export async function createTable({ name, is_delivery, account_id }) {
+  const data = await axios.post('/tables', { name, is_delivery, account_id });
 
   return data;
 }
@@ -31,8 +31,8 @@ export async function printTable({ id }) {
   return data;
 }
 
-export async function updateTable({ name, id }) {
-  const data = await axios.put(`/tables/${id}`, { name });
+export async function updateTable({ name, id, account_id }) {
+  const data = await axios.put(`/tables/${id}`, { name, account_id });
 
   return data;
 }

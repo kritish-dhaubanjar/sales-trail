@@ -75,6 +75,7 @@ import Alert from '@/components/layout/alert';
 import Sidebar from '@/components/layout/sidebar';
 import { PlusIcon } from 'lucide-react';
 import { TableDialog } from '@/components/tables/dialog';
+import { getAccounts } from '@/services/account.service';
 
 function POSTable() {
   const { toast } = useToast();
@@ -103,7 +104,7 @@ function POSTable() {
 
   const deleteRowRef = useRef(null);
 
-  const { data, refetch, isFetching } = useQuery({
+  const { data, refetch, isFetchingTables } = useQuery({
     queryKey: ['tables', pagination, debouncedQuery],
     enabled: true,
     keepPreviousData: true,
@@ -115,6 +116,16 @@ function POSTable() {
       return getTables({ page, limit, query: debouncedQuery });
     },
   });
+
+  const { data: accounts, isFetching: isFetchingAccounts } = useQuery({
+    queryKey: ['accounts'],
+    enabled: true,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
+    queryFn: () => getAccounts({ page: 1, limit: 10240, query: '' }),
+  });
+
+  const isFetching = isFetchingAccounts || isFetchingTables
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -151,7 +162,7 @@ function POSTable() {
       },
       {
         accessorKey: 'account_id',
-        header: 'Account',
+        header: 'A/C',
         cell: ({ row }) => (
           <div>
             {row.original?.account?.name}
@@ -260,6 +271,7 @@ function POSTable() {
         row={editRow}
         refetch={refetch}
         onClose={onClear}
+        accounts={accounts}
       />
 
       <div className="min-h-lvh w-full px-10 py-10">
