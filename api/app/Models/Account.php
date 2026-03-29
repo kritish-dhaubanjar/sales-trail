@@ -33,7 +33,7 @@ class Account extends Model
             throw new Exception('This item cannot be deleted because it is associated with transfers.');
         }
 
-        if ($this->transfers()->exists()) {
+        if ($this->toAccountTransfer()->exists()) {
             throw new Exception('This item cannot be deleted because it is associated with transactions.');
         }
 
