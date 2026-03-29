@@ -150,6 +150,15 @@ function POSTable() {
         ),
       },
       {
+        accessorKey: 'account_id',
+        header: 'Account',
+        cell: ({ row }) => (
+          <div>
+            {row.original?.account?.name}
+          </div>
+        ),
+      },
+      {
         id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {
