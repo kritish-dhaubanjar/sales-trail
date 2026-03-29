@@ -10,7 +10,7 @@ class Table extends Model
 {
     use HasFactory;
 
-    protected $with = ["items", "kotItems"];
+    protected $with = ["items", "kotItems", "account"];
     protected $fillable = ["name", "is_delivery", "description"];
 
     public function items(): HasMany
@@ -21,5 +21,10 @@ class Table extends Model
     public function kotItems(): HasMany
     {
         return $this->hasMany(KOTItem::class);
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 }
