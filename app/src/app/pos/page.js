@@ -310,6 +310,8 @@ function POS() {
     const data = getValues();
 
     updateTableItemsMutation({ id: tableId, items: data.items });
+
+    setQuery('');
   };
 
   const onQuantityClear = (index) => {
