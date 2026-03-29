@@ -1,8 +1,10 @@
 import { z } from 'zod';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import DevTool from '@/components/DevTool';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -42,7 +44,7 @@ const schema = z.object({
   id: z.coerce.number(),
   is_delivery: z.boolean().or(z.number()),
   name: z.string().min(1, { message: 'Table name is required' }),
-  account_id: z.string().nullable().optional().default(null)
+  account_id: z.coerce.string().nullable().optional().default(null)
 });
 
 export function TableDialog({
@@ -98,7 +100,7 @@ export function TableDialog({
           <DialogDescription>Click save when you're done.</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(mutate)}>
+        <form onSubmit={handleSubmit(mutate, (data) => console.log(data))}>
           <Form {...form}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
@@ -182,6 +184,8 @@ export function TableDialog({
           </DialogFooter>
         </form>
       </DialogContent>
+
+      <DevTool control={control} />
     </Dialog>
   );
 }
