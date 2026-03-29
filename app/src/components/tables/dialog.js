@@ -42,7 +42,7 @@ import { createTable, updateTable } from '@/services/table.service';
 
 const schema = z.object({
   id: z.coerce.number(),
-  is_delivery: z.boolean().or(z.number()),
+  is_delivery: z.coerce.boolean(),
   name: z.string().min(1, { message: 'Table name is required' }),
   account_id: z.coerce.string().nullable().optional().default(null)
 });
@@ -100,7 +100,7 @@ export function TableDialog({
           <DialogDescription>Click save when you're done.</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(mutate, (data) => console.log(data))}>
+        <form onSubmit={handleSubmit(mutate)}>
           <Form {...form}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
