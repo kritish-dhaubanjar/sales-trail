@@ -8,6 +8,7 @@ export const useAuthUser = () => {
     refetchOnWindowFocus: false,
     queryFn: getAuthenticatedUser,
     onError: () => (window.location.href = '/login'),
+    staleTime: Infinity
   });
 
   return query;
