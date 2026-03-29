@@ -42,7 +42,13 @@ import { createTable, updateTable } from '@/services/table.service';
 
 const schema = z.object({
   id: z.coerce.number(),
-  is_delivery: z.coerce.boolean(),
+
+  is_delivery: z.preprocess((val) => {
+    if (val === "1" || val === 1) return true
+    if (val === "0" || val === 0) return false
+    return val
+  }, z.boolean()),
+
   name: z.string().min(1, { message: 'Table name is required' }),
   account_id: z.coerce.string().nullable().optional().default(null)
 });
