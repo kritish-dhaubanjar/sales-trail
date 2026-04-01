@@ -283,7 +283,7 @@ function POS() {
     isLoadingUpdateTableDescription ||
     isLoadingUpdatingKOTItems;
 
-  const { mutate: checkoutTableMutation } = useMutation(checkoutTable, {
+  const { mutate: checkoutTableMutation, isLoading: isLoadingCheckoutTable } = useMutation(checkoutTable, {
     onSuccess: (response) => {
       const saleId = response.data?.id;
 
@@ -1006,11 +1006,11 @@ function POS() {
                             <TableCell className="h-11 text-right" colSpan={8}>
                               <Button
                                 type="submit"
-                                disabled={!tableId || !paymentTotal}
+                                disabled={!tableId || !paymentTotal || isLoadingCheckoutTable}
                                 className="w-full"
                                 onClick={onCheckout}
                               >
-                                Confirm Payment
+                                {isLoadingCheckoutTable && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />} Confirm Payment
                               </Button>
                             </TableCell>
                           </TableRow>
