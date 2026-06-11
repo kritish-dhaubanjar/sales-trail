@@ -278,14 +278,16 @@ class TableController extends Controller
         $printer_id = $data['printer_id'];
 
         $after = $table->items()
+            ->with(['item.category'])
             ->get(['item_id', 'quantity'])
-            ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name])
+            ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name, 'category_name' => $m->item->category->name])
             ->keyBy('item_id');
 
         $before = $table->kotItems()
+            ->with(['item.category'])
             ->where('printer_id', $printer_id)
             ->get(['item_id', 'quantity'])
-            ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name])
+            ->map(fn($m) => ['item_id'  => (int)$m->item_id, 'quantity' => (int)$m->quantity, 'name' => $m->item->name, 'category_name' => $m->item->category->name])
             ->keyBy('item_id');
 
         $allKeys = $before->keys()->union($after->keys());
@@ -300,15 +302,17 @@ class TableController extends Controller
 
             if ($delta > 0) {
                 $added[] = [
-                    'item_id'       => $id,
+                    'item_id' => $id,
                     'quantity' => $delta,
                     'name' => $after[$id]['name'],
+                    'category' => $after[$id]['category_name'],
                 ];
             } elseif ($delta < 0) {
                 $removed[] = [
-                    'item_id'          => $id,
+                    'item_id' => $id,
                     'quantity' => $delta,
                     'name' => $before[$id]['name'],
+                    'category' => $after[$id]['category_name'],
                 ];
             }
             // delta == 0 → unchanged, ignore
