@@ -312,7 +312,7 @@ class TableController extends Controller
                     'item_id' => $id,
                     'quantity' => $delta,
                     'name' => $before[$id]['name'],
-                    'category' => $after[$id]['category_name'],
+                    'category' => $before[$id]['category_name'],
                 ];
             }
             // delta == 0 → unchanged, ignore
