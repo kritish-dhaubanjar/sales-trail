@@ -100,6 +100,12 @@ const schema = z.object({
       quantity: z.coerce.number().gt(0),
     }),
   ),
+  user: z
+    .object({
+      name: z.string().max(255).nullable(),
+      phone: z.number().max(20),
+    })
+    .optional(),
 });
 
 function POS() {
@@ -125,6 +131,10 @@ function POS() {
       title: '',
       items: [],
       transactions: [DEFAULT_TRANSACTION],
+      user: {
+        phone: null,
+        name: '',
+      },
     },
   });
 
@@ -204,7 +214,7 @@ function POS() {
 
     setValue('transactions', [totalTransaction]);
   }, [open]);
-
+  
 
   const { isFetching: isFetchingTable } = useQuery({
     queryKey: ['tables', tableId],
@@ -226,9 +236,13 @@ function POS() {
     },
   });
 
-  const { mutate: updateTableDescriptionMutation, isLoading: isLoadingUpdateTableDescription } = useMutation(updateTableDescription)
+  const { mutate: updateTableDescriptionMutation, isLoading: isLoadingUpdateTableDescription } =
+    useMutation(updateTableDescription);
 
-  const debouncedUpdateTableDescriptionMutation = useCallback(debounce(updateTableDescriptionMutation, 500), [tableId])
+  const debouncedUpdateTableDescriptionMutation = useCallback(
+    debounce(updateTableDescriptionMutation, 500),
+    [tableId],
+  );
 
   const { mutate: deleteTableItemsMutation, isLoading: isLoadingDeleteTableItems } = useMutation(
     deleteTableItems,
@@ -283,21 +297,24 @@ function POS() {
     isLoadingUpdateTableDescription ||
     isLoadingUpdatingKOTItems;
 
-  const { mutate: checkoutTableMutation, isLoading: isLoadingCheckoutTable } = useMutation(checkoutTable, {
-    onSuccess: (response) => {
-      const saleId = response.data?.id;
+  const { mutate: checkoutTableMutation, isLoading: isLoadingCheckoutTable } = useMutation(
+    checkoutTable,
+    {
+      onSuccess: (response) => {
+        const saleId = response.data?.id;
 
-      window.open(`/sales/print/?id=${saleId}`, '_blank');
+        window.open(`/sales/print/?id=${saleId}`, '_blank');
 
-      refetchTables();
-      toast({ title: `Sales "${response.data.name}" successfully saved.` });
-      reset({
-        table_id: '',
-        items: [],
-      });
-      setOpen(false);
+        refetchTables();
+        toast({ title: `Sales "${response.data.name}" successfully saved.` });
+        reset({
+          table_id: '',
+          items: [],
+        });
+        setOpen(false);
+      },
     },
-  });
+  );
 
   const onSelect = (item) => {
     const index = watchedItems.findIndex((i) => String(i.item_id) === String(item.id));
@@ -696,8 +713,11 @@ function POS() {
                                 className="resize-none"
                                 {...field}
                                 onChange={(e) => {
-                                  debouncedUpdateTableDescriptionMutation({ id: tableId, description: e.target.value })
-                                  field.onChange(e)
+                                  debouncedUpdateTableDescriptionMutation({
+                                    id: tableId,
+                                    description: e.target.value,
+                                  });
+                                  field.onChange(e);
                                 }}
                                 disabled={!tableId}
                               />
@@ -999,6 +1019,47 @@ function POS() {
 
                             <TableCell colSpan={2}>
                               {formatter.format(Number(tender) - grandTotal)}
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow className="bg-gray-50">
+                            <TableCell>Add Customer</TableCell>
+                            <TableCell colSpan={5}>
+                              <FormField
+                                name="user.phone"
+                                control={control}
+                                render={({ field }) => (
+                                  <FormItem className="w-full">
+                                    <FormControl>
+                                      <Input
+                                        className="shadow-none"
+                                        type="number"
+                                        placeholder="Phone Number"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                            </TableCell>
+
+                            <TableCell colSpan={5}>
+                              <FormField
+                                name="user.name"
+                                control={control}
+                                render={({ field }) => (
+                                  <FormItem className="w-full">
+                                    <FormControl>
+                                      <Input
+                                        className="shadow-none"
+                                        type="text"
+                                        placeholder="Customer Name"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
                             </TableCell>
                           </TableRow>
 
