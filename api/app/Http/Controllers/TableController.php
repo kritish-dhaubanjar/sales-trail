@@ -165,8 +165,7 @@ class TableController extends Controller
             $customerId = null;
             if (!empty($data['user'])) {
                 $customer = Customer::firstOrCreate(
-                    ['phone' => $data['user']['phone']],
-                    ['name' => $data['user']['name']]
+                    ['phone' => $data['user']['phone']]
                 );
                 $customerId = $customer->id;
             }
