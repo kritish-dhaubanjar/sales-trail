@@ -37,7 +37,7 @@ export async function updateTable({ name, id, account_id }) {
   return data;
 }
 
-export async function checkoutTable({ id, date, discount, items, title, transactions }) {
+export async function checkoutTable({ id, date, discount, items, title, transactions, user }) {
   const formattedItems = items.map((item) => pick(item, ['item_id', 'price', 'quantity']));
 
   const data = await axios.put(`/tables/${id}/checkout`, {
@@ -46,6 +46,7 @@ export async function checkoutTable({ id, date, discount, items, title, transact
     items: formattedItems,
     title,
     transactions,
+    user
   });
 
   return data;
