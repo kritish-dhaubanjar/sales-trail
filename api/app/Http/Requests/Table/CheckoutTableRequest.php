@@ -34,6 +34,10 @@ class CheckoutTableRequest extends FormRequest
             'transactions' => 'array|required|min:1',
             'transactions.*.account_id' => 'required|exists:accounts,id',
             'transactions.*.amount' => 'required|numeric',
+
+            'user' => 'sometimes|nullable',
+            'user.name' => 'nullable|string|max:255',
+            'user.phone' => 'required_with:user|string|max:20',
         ];
     }
 }

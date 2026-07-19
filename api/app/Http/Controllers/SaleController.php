@@ -64,7 +64,10 @@ class SaleController extends Controller
             }, $sale_items);
 
             $transactions = array_map(function ($transaction) {
-                return new Transaction(['account_id' => $transaction['account_id'], 'amount' => $transaction['amount']]);
+                return new Transaction([
+                    'account_id' => $transaction['account_id'],
+                    'amount' => $transaction['amount']
+                ]);
             }, $sale_transactions);
 
             $grand_total = $total - $discount;

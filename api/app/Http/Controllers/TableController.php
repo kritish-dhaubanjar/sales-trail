@@ -16,6 +16,7 @@ use App\Http\Requests\Table\TransferTableRequest;
 use App\Http\Requests\Table\UpdateTableRequest;
 use App\Http\Requests\Table\UpdateTableItemRequest;
 use App\Http\Requests\UpdateKOTRequest;
+use App\Models\Customer;
 use App\Models\KOTItem;
 use App\Models\Sale;
 use App\Models\SaleItem;
@@ -161,6 +162,14 @@ class TableController extends Controller
         DB::beginTransaction();
 
         try {
+            $customerId = null;
+            if (!empty($data['user'])) {
+                $customer = Customer::firstOrCreate(
+                    ['phone' => $data['user']['phone']],
+                    ['name' => $data['user']['name']]
+                );
+                $customerId = $customer->id;
+            }
             $items = array_map(function ($item) use (&$total) {
                 $amt = ($item['quantity'] * $item['price']);
                 $item_total = $amt;
@@ -189,6 +198,7 @@ class TableController extends Controller
             $taxable_amount = ($grand_total * 100) / 113;
 
             $sale = Sale::create([
+                'customer_id' => $customerId,
                 'date' => $data['date'],
                 'title' => $data['title'],
                 'description' => "",
