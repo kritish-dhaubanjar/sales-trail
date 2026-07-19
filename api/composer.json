@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "sales-trail/api",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sales trail API",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
