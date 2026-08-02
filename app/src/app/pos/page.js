@@ -201,7 +201,7 @@ function POS() {
     queryKey: ['tables'],
     enabled: true,
     keepPreviousData: true,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     queryFn: () => getTables({ page: 1, limit: 10240, query: '' }),
   });
 
@@ -223,7 +223,8 @@ function POS() {
     queryKey: ['tables', tableId],
     enabled: Boolean(tableId),
     keepPreviousData: true,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    refetchInterval: 60_000,
     queryFn: () => getTable({ id: tableId }),
     onSuccess: (data) => {
       const table = data.data;
@@ -329,7 +330,7 @@ function POS() {
 
   const onSelect = (item) => {
     const index = watchedItems.findIndex((i) => String(i.item_id) === String(item.id));
-    
+
     if (index > -1) {
       const item = items.fields[index];
       item.quantity++;
