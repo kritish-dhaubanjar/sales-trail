@@ -81,6 +81,9 @@ const DEFAULT_TRANSACTION = {
   amount: null,
 };
 
+const CHECKOUT_CHANNEL = 'pos_checkout_channel';
+const CHECKOUT_COMPLETE_EVENT = 'CHECKOUT_COMPLETE';
+
 const schema = z.object({
   table_id: z.coerce.number(),
   description: z.string().min(0).nullable(),
@@ -214,7 +217,7 @@ function POS() {
 
     setValue('transactions', [totalTransaction]);
   }, [open]);
-  
+
 
   const { isFetching: isFetchingTable } = useQuery({
     queryKey: ['tables', tableId],
@@ -302,11 +305,19 @@ function POS() {
     {
       onSuccess: (response) => {
         const saleId = response.data?.id;
+        const checkedOutTableId = getValues('table_id');
+
+        const channel = new BroadcastChannel(CHECKOUT_CHANNEL);
+        channel.postMessage({
+          type: CHECKOUT_COMPLETE_EVENT,
+          tableId: checkedOutTableId,
+        });
+        channel.close();
 
         window.open(`/sales/print/?id=${saleId}`, '_blank');
 
         refetchTables();
-        toast({ title: `Sales "${response.data.name}" successfully saved.` });
+        toast({ title: `Sales "${response.data.grand_total}" successfully saved.` });
         reset({
           table_id: '',
           items: [],
@@ -318,7 +329,7 @@ function POS() {
 
   const onSelect = (item) => {
     const index = watchedItems.findIndex((i) => String(i.item_id) === String(item.id));
-
+    
     if (index > -1) {
       const item = items.fields[index];
       item.quantity++;
@@ -406,6 +417,36 @@ function POS() {
       Echo.leave('print-channel');
     };
   }, [auth?.data?.id]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+  
+    const channel = new BroadcastChannel(CHECKOUT_CHANNEL);
+  
+    channel.onmessage = (event) => {
+      if (event.data?.type === 'CHECKOUT_COMPLETE') {
+        refetchTables();
+        queryClient.invalidateQueries(['tables']);
+  
+        const currentActiveTableId = getValues('table_id');
+        if (String(currentActiveTableId) === String(event.data.tableId)) {
+          reset({
+            table_id: '',
+            items: [],
+          });
+          setOpen(false);
+          toast({
+            title: 'Table already cleared in another tab',
+            variant: 'warning',
+          });
+        }
+      }
+    };
+  
+    return () => {
+      channel.close();
+    };
+  }, [refetchTables, queryClient, getValues, reset, toast]);
 
   const useTablePrintMutation = useMutation({ mutationFn: () => printTable({ id: tableId }) });
 
@@ -1071,7 +1112,10 @@ function POS() {
                                 className="w-full"
                                 onClick={onCheckout}
                               >
-                                {isLoadingCheckoutTable && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />} Confirm Payment
+                                {isLoadingCheckoutTable && (
+                                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                                )}{' '}
+                                Confirm Payment
                               </Button>
                             </TableCell>
                           </TableRow>
