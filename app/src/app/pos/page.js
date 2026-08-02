@@ -103,7 +103,7 @@ const schema = z.object({
   user: z
     .object({
       name: z.string().max(255).nullable(),
-      phone: z.number().max(20),
+      phone: z.number().max(20).nullable(),
     })
     .optional(),
 });
@@ -133,7 +133,7 @@ function POS() {
       transactions: [DEFAULT_TRANSACTION],
       user: {
         phone: null,
-        name: '',
+        name: null,
       },
     },
   });

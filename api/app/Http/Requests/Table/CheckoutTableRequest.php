@@ -37,7 +37,7 @@ class CheckoutTableRequest extends FormRequest
 
             'user' => 'sometimes|nullable',
             'user.name' => 'nullable|string|max:255',
-            'user.phone' => 'required_with:user|string|max:20',
+            'user.phone' => 'sometimes|nullable|string|max:20',
         ];
     }
 }
