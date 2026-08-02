@@ -163,7 +163,7 @@ class TableController extends Controller
 
         try {
             $customerId = null;
-            if (!empty($data['user'])) {
+            if (!empty($data['user']['phone'])) {
                 $customer = Customer::firstOrCreate(
                     ['phone' => $data['user']['phone']]
                 );
