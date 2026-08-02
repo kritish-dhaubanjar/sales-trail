@@ -438,7 +438,7 @@ function POS() {
           setOpen(false);
           toast({
             title: 'Table already cleared in another tab',
-            variant: 'warning',
+            variant: 'destructive',
           });
         }
       }
