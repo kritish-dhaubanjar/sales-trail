@@ -12,7 +12,7 @@
   "license": "ISC",
   "description": "Sales-Trail is a lightweight and intuitive sales tracking app designed for small businesses and individual entrepreneurs who need efficient sales management without the complexities of stock management.",
   "devDependencies": {
-    "electron": "^33.0.0",
+    "electron": "^39.8.10",
     "electron-builder": "^25.1.8"
   }
 }
