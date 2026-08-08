@@ -59,7 +59,11 @@ class PrintReceipt implements ShouldBroadcastNow
                     ],
                     'price' => $item->price,
                     'quantity' => $item->quantity
-                ])
+                ]),
+                'customer' => [
+                    'name' => $this->sale->customer?->name,
+                    'phone' => $this->sale->customer?->phone,
+                ]
             ]
         ];
     }
