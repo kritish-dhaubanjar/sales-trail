@@ -232,8 +232,11 @@ function POS() {
 
       setTable(table);
 
+      const values = getValues();
+
       reset({
-        ...getValues(),
+        ...values,
+        title: values.title || table.name,
         table_id: String(table.id) || '',
         items: table.items || [],
       });
@@ -425,14 +428,14 @@ function POS() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-  
+
     const channel = new BroadcastChannel(CHECKOUT_CHANNEL);
-  
+
     channel.onmessage = (event) => {
       if (event.data?.type === 'CHECKOUT_COMPLETE') {
         refetchTables();
         queryClient.invalidateQueries(['tables']);
-  
+
         const currentActiveTableId = getValues('table_id');
         if (String(currentActiveTableId) === String(event.data.tableId)) {
           reset({
@@ -447,7 +450,7 @@ function POS() {
         }
       }
     };
-  
+
     return () => {
       channel.close();
     };
