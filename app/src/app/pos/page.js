@@ -106,7 +106,7 @@ const schema = z.object({
   user: z
     .object({
       name: z.string().max(255).nullable(),
-      phone: z.number().max(20).nullable(),
+      phone: z.string().regex(/^\d{10}$/, { message: 'Invalid Phone Number' }).nullable()
     })
     .optional(),
 });
@@ -126,6 +126,7 @@ function POS() {
 
   const form = useForm({
     resolver: zodResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       table_id: '',
       date: NepaliDate.getNepaliDate(),
@@ -141,7 +142,7 @@ function POS() {
     },
   });
 
-  const { control, setValue, watch, reset, getValues } = form;
+  const { control, setValue, watch, reset, getValues, trigger } = form;
 
   useEffect(() => {
     setQuery('');
@@ -394,10 +395,14 @@ function POS() {
     }
   };
 
-  const onCheckout = () => {
+  const onCheckout = async () => {
     const data = getValues();
 
-    checkoutTableMutation({ id: tableId, ...data });
+    const isValid = await trigger();
+
+    if (isValid) {
+      checkoutTableMutation({ id: tableId, ...data });
+    }
   };
 
   useEffect(() => {
@@ -1079,6 +1084,7 @@ function POS() {
                                         {...field}
                                       />
                                     </FormControl>
+                                    <FormMessage />
                                   </FormItem>
                                 )}
                               />
@@ -1098,6 +1104,7 @@ function POS() {
                                         {...field}
                                       />
                                     </FormControl>
+                                    <FormMessage />
                                   </FormItem>
                                 )}
                               />
