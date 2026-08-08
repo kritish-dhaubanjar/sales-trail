@@ -164,9 +164,14 @@ class TableController extends Controller
         try {
             $customerId = null;
             if (!empty($data['user']['phone'])) {
-                $customer = Customer::firstOrCreate(
-                    ['phone' => $data['user']['phone']]
-                );
+                $customer = Customer::firstOrNew(['phone' => $data['user']['phone']]);
+
+                if (!empty($data['user']['name'])) {
+                    $customer->name = $data['user']['name'];
+                }
+
+                $customer->save();
+
                 $customerId = $customer->id;
             }
             $items = array_map(function ($item) use (&$total) {
