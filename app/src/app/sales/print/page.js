@@ -86,6 +86,8 @@ function Print() {
             <p className="whitespace-nowrap">Bill No: {data.data.id}</p>
             <p className="whitespace-nowrap">Bill Date: {data.data.date}</p>
             <p className="whitespace-nowrap">Table No: {data.data.title}</p>
+            <p className="whitespace-nowrap">Customer Name: {data.data.customer?.name || '-'}</p>
+            <p className="whitespace-nowrap">Customer Phone Number: {data.data.customer?.phone || '-'}</p>
           </div>
 
           <Table className="text-md mt-2 border-none">
