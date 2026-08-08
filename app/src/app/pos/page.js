@@ -232,10 +232,9 @@ function POS() {
       setTable(table);
 
       reset({
+        ...getValues(),
         table_id: String(table.id) || '',
-        title: table.name,
         items: table.items || [],
-        description: table.description,
       });
     },
   });
