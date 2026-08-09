@@ -236,7 +236,7 @@ function POS() {
 
       reset({
         ...values,
-        title: values.title || table.name,
+        title: table.name || 'N/A',
         table_id: String(table.id) || '',
         items: table.items || [],
       });
