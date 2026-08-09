@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sales', function (Blueprint $table) {
-            $table->string('fiscal_year', 7); // 2083/84
-            $table->integer('invoice_id');
+            $table->string('fiscal_year', 7)->nullable(); // 2083/84
+            $table->integer('invoice_id')->nullable();
             $table->unique(['fiscal_year', 'invoice_id']);
         });
     }
