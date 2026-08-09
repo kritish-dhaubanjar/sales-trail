@@ -83,7 +83,7 @@ function Print() {
           </div>
 
           <div className="text-md my-1">
-            <p className="whitespace-nowrap">Bill No: {data.data.id}</p>
+            <p className="whitespace-nowrap">Bill No: {String(data.data.invoice_id).padStart(5, "0")}-BKT-{data.data.fiscal_year.substring(1)}</p>
             <p className="whitespace-nowrap">Bill Date: {data.data.date}</p>
             <p className="whitespace-nowrap">Table No: {data.data.title}</p>
             <p className="whitespace-nowrap">Customer Name: {data.data.customer?.name || '-'}</p>
