@@ -45,7 +45,7 @@ class PrintReceipt implements ShouldBroadcastNow
     {
         return [
             'data' => [
-                'id' => $this->sale->id,
+                'id' => str_pad($this->sale->invoice_id, 5, "0", STR_PAD_LEFT) . "-BKT-" . substr($this->sale->fiscal_year, 1),
                 'date' => $this->sale->date,
                 'title' => $this->sale->title,
                 'total' => $this->sale->total,
