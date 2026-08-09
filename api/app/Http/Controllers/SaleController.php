@@ -32,6 +32,8 @@ class SaleController extends Controller
             ->orWhere('description', 'like', "%$q%")
             ->orWhere('id', 'like', "%$q%")
             ->orWhere('title', 'like', "%$q%")
+            ->orWhere('fiscal_year', 'like', "%$q%")
+            ->orWhere('invoice_id', 'like', "%$q%")
             ->paginate($limit, ['*'], 'page', $page);
     }
 
