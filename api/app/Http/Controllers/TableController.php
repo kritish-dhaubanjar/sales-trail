@@ -22,6 +22,7 @@ use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\TableItem;
 use App\Models\Transaction;
+use App\Utils\FiscalYear;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -201,6 +202,12 @@ class TableController extends Controller
             // Taxable amount (optional but recommended)
             $taxable_amount = ($grand_total * 100) / 113;
 
+            $fiscal_year = FiscalYear::getFiscalYearFromDate($data['date']);
+
+            $latest_invoice_id = Sale::withTrashed()->where('fiscal_year', $fiscal_year)->max('invoice_id');
+
+            $invoice_id = ($latest_invoice_id ?? 0) + 1;
+
             $sale = Sale::create([
                 'customer_id' => $customerId,
                 'date' => $data['date'],
@@ -211,6 +218,8 @@ class TableController extends Controller
                 'taxable_amount' => $taxable_amount,
                 'vat_amount' => $vat_amount,
                 'grand_total' => $grand_total,
+                'fiscal_year' => $fiscal_year,
+                'invoice_id' => $invoice_id,
             ]);
 
             $sale->sale_items()->saveMany($items);

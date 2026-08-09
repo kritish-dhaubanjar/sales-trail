@@ -13,7 +13,7 @@ class Sale extends Model
     use HasFactory, SoftDeletes;
 
     protected $with = ['sale_items', 'transactions', 'customer'];
-    protected $fillable = ["customer_id","date", "title", "description", "total", "discount", "taxable_amount", "vat_amount", "grand_total"];
+    protected $fillable = ["customer_id", "date", "title", "description", "total", "discount", "taxable_amount", "vat_amount", "grand_total", "fiscal_year", "invoice_id"];
 
     public function customer(): BelongsTo
     {
