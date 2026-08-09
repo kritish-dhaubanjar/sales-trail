@@ -34,7 +34,7 @@ class CategoryController extends Controller
             $query->where('type', $categoryType);
         }
 
-        return $query->orderBy('created_at', 'desc')
+        return $query->orderBy('name', 'asc')
             ->paginate($limit, ['*'], 'page', $page);
     }
 
