@@ -153,8 +153,8 @@ while (true) {
             $printer->text("Bill No: " . $sale["id"] . "\n");
             $printer->text("Bill Date: " . $sale["date"] . "\n");
             $printer->text("Table No: " . $sale["title"] . "\n");
-            $printer->text("Customer Name: " . $sale["customer"]["name"] ?? "N/A" . "\n");
-            $printer->text("Customer Phone: " . $sale["customer"]["phone"] ?? "N/A" . "\n");
+            $printer->text("Customer Name: " . ($sale["customer"]["name"] ?? "N/A") . "\n");
+            $printer->text("Customer Phone: " . ($sale["customer"]["phone"] ?? "N/A") . "\n");
             $printer->feed();
 
             // 4. Print items table
