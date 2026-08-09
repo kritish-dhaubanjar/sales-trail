@@ -136,6 +136,11 @@ function Sale() {
         cell: ({ row }) => <div>{row.getValue('id')}</div>,
       },
       {
+        accessorKey: 'fiscal_year',
+        header: 'Invoice #',
+        cell: ({ row }) => <div>{String(row.original.invoice_id).padStart(5, "0")}-BKT-{row.getValue('fiscal_year').substring(1)}</div>,
+      },
+      {
         accessorKey: 'date',
         header: 'Date',
         cell: ({ row }) => <div>{row.getValue('date')}</div>,
