@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Events\PrintReceipt;
 use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\PaginationRequest;
+use App\Utils\FiscalYear;
 
 class SaleController extends Controller
 {
@@ -78,6 +79,12 @@ class SaleController extends Controller
             // Taxable amount (optional but recommended)
             $taxable_amount = ($grand_total * 100) / 113;
 
+            $fiscal_year = FiscalYear::getFiscalYearFromDate($data['date']);
+
+            $latest_invoice_id = Sale::withTrashed()->where('fiscal_year', $fiscal_year)->max('invoice_id');
+
+            $invoice_id = ($latest_invoice_id ?? 0) + 1;
+
             $sale = Sale::create([
                 'date' => $data['date'],
                 'title' => $data['title'],
@@ -87,6 +94,8 @@ class SaleController extends Controller
                 'taxable_amount' => $taxable_amount,
                 'vat_amount' => $vat_amount,
                 'grand_total' => $grand_total,
+                'fiscal_year' => $fiscal_year,
+                'invoice_id' => $invoice_id,
             ]);
 
             $sale->sale_items()->saveMany($items);
