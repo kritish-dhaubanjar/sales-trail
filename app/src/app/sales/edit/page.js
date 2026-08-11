@@ -64,6 +64,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getSale, updateSale } from '@/services/sale.service';
 import { NepaliDate } from '@/lib/date';
 import { cn } from '@/lib/utils';
+import { searchTitles } from '@/services/return.service';
 
 const DEFAULT_ITEM = {
   item_id: 0,
@@ -117,6 +118,7 @@ function Sale() {
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
 
   const discount = watch('discount', 0);
+  const title = useWatch({ control, name: 'title' })
   const watchedItems = useWatch({ control, name: 'items', defaultValue: [] });
 
   const { data: products, isFetching: isFetchingItems } = useQuery({
@@ -128,6 +130,16 @@ function Sale() {
       return getItems({ page: 1, limit: 10240, query: '' });
     },
   });
+
+  const { data: { data: titles } } = useQuery({
+    queryKey: ['titles'],
+    enabled: Boolean(title.length),
+    keepPreviousData: true,
+    initialData: { data: [] },
+    queryFn: () => {
+      return searchTitles({ query: title })
+    }
+  })
 
   const { data, isFetching, isSuccess } = useQuery({
     enabled: true,
@@ -250,7 +262,7 @@ function Sale() {
               control={control}
               name="title"
               render={({ field }) => {
-                const options = ['Cash', 'Suresh Dhaubanjar'];
+                const options = titles || [];
                 const value = field.value ?? '';
 
                 const filteredOptions = options.filter((option) =>
@@ -264,7 +276,16 @@ function Sale() {
                     <FormLabel>Title</FormLabel>
 
                     <FormControl>
-                      <div className="relative">
+                      <div
+                        className="relative"
+                        onBlur={(e) => {
+                          // Don't close if focus moved somewhere
+                          // inside the autocomplete.
+                          if (!e.currentTarget.contains(e.relatedTarget)) {
+                            setOpen(false);
+                          }
+                        }}
+                      >
                         <Command
                           className="overflow-visible"
                           shouldFilter={false}
@@ -277,6 +298,7 @@ function Sale() {
                               field.onChange(value);
                               setOpen(true);
                             }}
+
                           />
 
                           <CommandList

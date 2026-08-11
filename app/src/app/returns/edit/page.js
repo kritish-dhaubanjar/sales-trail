@@ -6,6 +6,8 @@ import { useMutation, useQuery } from 'react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 
+import { cn } from '@/lib/utils';
+
 import dynamic from 'next/dynamic';
 import 'nepali-datepicker-reactjs/dist/index.css';
 import { NepaliDatePicker } from 'nepali-datepicker-reactjs';
@@ -63,7 +65,7 @@ import { NepaliDate } from '@/lib/date';
 import { getItems } from '@/services/item.service';
 import { useToast } from '@/hooks/use-toast';
 import { getReturn, updateReturn } from '@/services/return.service';
-import { cn } from '@/lib/utils';
+import { searchTitles } from '@/services/return.service';
 
 const DEFAULT_ITEM = {
   item_id: 0,
@@ -117,6 +119,7 @@ function Return() {
   const items = useFieldArray({ control, name: 'items', rules: { minLength: 1 } });
 
   const discount = watch('discount', 0);
+  const title = useWatch({ control, name: 'title' })
   const watchedItems = useWatch({ control, name: 'items', defaultValue: [] });
 
   const { data: products, isFetching: isFetchingItems } = useQuery({
@@ -140,6 +143,16 @@ function Return() {
       router.replace('/404');
     },
   });
+
+  const { data: { data: titles } } = useQuery({
+    queryKey: ['titles'],
+    enabled: Boolean(title.length),
+    keepPreviousData: true,
+    initialData: { data: [] },
+    queryFn: () => {
+      return searchTitles({ query: title })
+    }
+  })
 
   useEffect(() => {
     if (!isSuccess) {
@@ -250,7 +263,7 @@ function Return() {
               control={control}
               name="title"
               render={({ field }) => {
-                const options = ['Cash', 'Suresh Dhaubanjar'];
+                const options = titles || [];
                 const value = field.value ?? '';
 
                 const filteredOptions = options.filter((option) =>
@@ -264,7 +277,15 @@ function Return() {
                     <FormLabel>Title</FormLabel>
 
                     <FormControl>
-                      <div className="relative">
+                      <div className="relative"
+                        onBlur={(e) => {
+                          // Don't close if focus moved somewhere
+                          // inside the autocomplete.
+                          if (!e.currentTarget.contains(e.relatedTarget)) {
+                            setOpen(false);
+                          }
+                        }}
+                      >
                         <Command
                           className="overflow-visible"
                           shouldFilter={false}
