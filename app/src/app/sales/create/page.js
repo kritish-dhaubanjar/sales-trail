@@ -127,7 +127,7 @@ function Sale() {
   });
 
   const { data: { data: titles } } = useQuery({
-    queryKey: ['titles'],
+    queryKey: ['titles', title],
     enabled: Boolean(title.length),
     keepPreviousData: true,
     initialData: { data: [] },
