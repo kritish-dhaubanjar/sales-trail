@@ -29,3 +29,9 @@ export async function updateSale({ description, items = [], discount = 0, date, 
 
   return data;
 }
+
+export async function searchTitles({ query }) {
+  const data = await axios.get('/sales/titles', { params: { q: query } })
+
+  return data;
+}
