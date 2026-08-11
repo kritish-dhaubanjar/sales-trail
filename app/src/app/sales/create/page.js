@@ -65,7 +65,7 @@ import { NepaliDate } from '@/lib/date';
 import { getItems } from '@/services/item.service';
 import { useToast } from '@/hooks/use-toast';
 import { createSale } from '@/services/sale.service';
-import { searchTitles } from '@/services/return.service';
+import { searchTitles } from '@/services/sale.service';
 
 const DEFAULT_ITEM = {
   item_id: 0,

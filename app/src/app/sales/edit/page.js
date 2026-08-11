@@ -64,7 +64,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getSale, updateSale } from '@/services/sale.service';
 import { NepaliDate } from '@/lib/date';
 import { cn } from '@/lib/utils';
-import { searchTitles } from '@/services/return.service';
+import { searchTitles } from '@/services/sale.service';
 
 const DEFAULT_ITEM = {
   item_id: 0,
