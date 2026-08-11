@@ -34,6 +34,7 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
 
         Route::controller(SaleController::class)->group(function () {
             Route::get('/sales', 'index');
+            Route::get('/sales/titles', 'searchByTitle');
             Route::post('/sales', 'store');
             Route::get('/sales/{sale}', 'show');
             Route::put('/sales/{sale}', 'update');
@@ -42,6 +43,7 @@ Route::prefix('/v1')->middleware('auth:sanctum')->group(
 
         Route::controller(RefundController::class)->group(function () {
             Route::get('/refunds', 'index');
+            Route::get('/refunds/titles', 'searchByTitle');
             Route::post('/refunds', 'store');
             Route::get('/refunds/{refund}', 'show');
             Route::put('/refunds/{refund}', 'update');

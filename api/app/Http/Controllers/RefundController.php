@@ -32,6 +32,22 @@ class RefundController extends Controller
     }
 
     /**
+     * Search Titles
+     */
+    public function searchByTitle(PaginationRequest $request)
+    {
+        $q = $request->validated()['q'] ?? '';
+
+        return Refund::query()
+            ->where('title', 'like', "%$q%")
+            ->select('title')
+            ->distinct()
+            ->orderBy('title')
+            ->limit(10)
+            ->pluck('title');
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreRefundRequest $request)
