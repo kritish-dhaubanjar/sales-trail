@@ -1,6 +1,6 @@
 'use client';
 import { z } from 'zod';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery } from 'react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +9,14 @@ import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import dynamic from 'next/dynamic';
 import 'nepali-datepicker-reactjs/dist/index.css';
 import { NepaliDatePicker } from 'nepali-datepicker-reactjs';
+
+import {
+  Command,
+  CommandInput,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 
 import {
   Breadcrumb,
@@ -55,6 +63,7 @@ import { getItems } from '@/services/item.service';
 import { useToast } from '@/hooks/use-toast';
 import { getSale, updateSale } from '@/services/sale.service';
 import { NepaliDate } from '@/lib/date';
+import { cn } from '@/lib/utils';
 
 const DEFAULT_ITEM = {
   item_id: 0,
@@ -80,6 +89,7 @@ const schema = z.object({
 });
 
 function Sale() {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -239,16 +249,66 @@ function Sale() {
             <FormField
               control={control}
               name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
+              render={({ field }) => {
+                const options = ['Cash', 'Suresh Dhaubanjar'];
+                const value = field.value ?? '';
 
-                  <FormControl>
-                    <Textarea className="shadow-none" type="text" placeholder="#Cash" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+                const filteredOptions = options.filter((option) =>
+                  option.toLowerCase().includes(value.toLowerCase())
+                );
+
+                const showDropdown = open && filteredOptions.length > 0;
+
+                return (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+
+                    <FormControl>
+                      <div className="relative">
+                        <Command
+                          className="overflow-visible"
+                          shouldFilter={false}
+                        >
+                          <CommandInput
+                            value={value}
+                            placeholder="#Cash"
+                            onFocus={() => setOpen(true)}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              setOpen(true);
+                            }}
+                          />
+
+                          <CommandList
+                            className={cn(
+                              'absolute left-0 right-0 top-full z-50 mt-1',
+                              'rounded-md border bg-popover shadow-md',
+                              !showDropdown && 'hidden'
+                            )}
+                          >
+                            <CommandGroup>
+                              {filteredOptions.map((option) => (
+                                <CommandItem
+                                  key={option}
+                                  value={option}
+                                  onSelect={() => {
+                                    field.onChange(option);
+                                    setOpen(false);
+                                  }}
+                                >
+                                  {option}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </div>
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <FormField
@@ -372,14 +432,14 @@ function Sale() {
                         ].some(isNaN)
                           ? '0.00'
                           : formatter.format(
-                              Number(watchedItems[index].price) *
-                                Number(watchedItems[index].quantity) -
-                                ((Number(watchedItems[index].discount) || 0) / 100) *
-                                  Number(
-                                    watchedItems[index].price *
-                                      Number(watchedItems[index].quantity),
-                                  ),
-                            )}
+                            Number(watchedItems[index].price) *
+                            Number(watchedItems[index].quantity) -
+                            ((Number(watchedItems[index].discount) || 0) / 100) *
+                            Number(
+                              watchedItems[index].price *
+                              Number(watchedItems[index].quantity),
+                            ),
+                          )}
                       </TableCell>
 
                       <TableCell className="text-center">
