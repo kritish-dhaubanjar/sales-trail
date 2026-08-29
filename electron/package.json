@@ -7,7 +7,11 @@
     "build": "electron-builder --config electron-builder.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Kritish Dhaubanjar",
+  "homepage": "https://github.com/kritish-dhaubanjar/sales-trail/tree/gorakhkali-trade-and-suppliers",
+  "author": {
+    "name": "Kritish Dhaubanjar",
+    "email": "kritishdhaubanjar@gmail.com"
+  },
   "license": "ISC",
   "description": "Sales-Trail is a lightweight and intuitive sales tracking app designed for small businesses and individual entrepreneurs who need efficient sales management without the complexities of stock management.",
   "devDependencies": {

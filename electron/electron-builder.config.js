@@ -3,5 +3,9 @@ module.exports = {
   productName: 'Sales Trail',
   asar: false,
   files: ['php-bin', 'assets', 'index.js', 'php.js', { from: "api", to: "api", filter: ["**/*"] }],
-  icon: './assets/icon.png'
+  icon: './assets/icon.png',
+  linux: {
+    target: ['deb'],
+    category: 'Utility'
+  }
 }
